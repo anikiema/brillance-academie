@@ -1257,6 +1257,7 @@ function Admin({ goHome }) {
 
 export default function App() {
   const [page, setPage]       = useState("site");
+  const [adminAuth, setAdminAuth] = useState(false);
   const [booking, setBooking] = useState(null);
 
   // Détecter le retour depuis CinetPay (URL /confirmation)
@@ -1277,8 +1278,11 @@ export default function App() {
     }
   }, []);
 
-  if (page === "admin")
-    return <Admin goHome={() => setPage("site")} />;
+  if (page === "admin" && !adminAuth)
+    return <LoginAdmin onSuccess={() => setAdminAuth(true)} onBack={() => setPage("site")} />;
+
+  if (page === "admin" && adminAuth)
+    return <Admin goHome={() => { setPage("site"); setAdminAuth(false); }} />;{() => setPage("site")} />;
 
   if (page === "payment" && booking)
     return (
