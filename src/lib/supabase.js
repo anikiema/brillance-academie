@@ -3,10 +3,6 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl  = import.meta.env.VITE_SUPABASE_URL
 const supabaseKey  = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseKey) {
-  console.warn('⚠️  Variables Supabase manquantes. Copie .env.example en .env et remplis tes clés.')
-}
-
 export const supabase = createClient(supabaseUrl || '', supabaseKey || '')
 
 // ─── Tuteurs ──────────────────────────────────────────────────────────────────
@@ -17,7 +13,12 @@ export async function getTuteurs() {
     .eq('statut', 'Actif')
     .order('sessions', { ascending: false })
   if (error) throw error
-  return data
+  // Mapper snake_case → camelCase pour compatibilité avec le code React
+  return data.map(t => ({
+    ...t,
+    availableDays: t.available_days || [],
+    niveaux:       t.niveaux       || [],
+  }))
 }
 
 // ─── Parents ──────────────────────────────────────────────────────────────────
@@ -62,16 +63,16 @@ export async function creerReservation({ tuteurId, parentNom, parentEmail, enfan
   const { data, error } = await supabase
     .from('reservations')
     .insert({
-      tuteur_id:        tuteurId,
-      parent_nom:       parentNom,
-      parent_email:     parentEmail,
+      tuteur_id:           tuteurId,
+      parent_nom:          parentNom,
+      parent_email:        parentEmail,
       enfant,
       niveau,
       jour,
       creneau,
       montant,
-      statut:           'en_attente',
-      paiement_reference: ref,
+      statut:              'en_attente',
+      paiement_reference:  ref,
     })
     .select()
     .single()
