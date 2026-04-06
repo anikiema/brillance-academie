@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -532,20 +532,22 @@ function InscriptionTuteur({ onClose }) {
     setSaving(true);
     try {
       await ajouterTuteur({
-        prenom:       d.prenom,
-        nom:          d.nom,
-        subject:      d.matieres[0] || "",
-        price:        27500,
-        statut:       "En attente",
-        bio:          `${d.experience} d'expérience. ${d.diplome}`.trim(),
-        niveaux:      d.niveaux,
+        prenom:        d.prenom,
+        nom:           d.nom,
+        subject:       d.matieres.join(", ") || "Non spécifié",
+        price:         27500,
+        statut:        "En attente",
+        bio:           [d.experience && `${d.experience} d'expérience`, d.diplome].filter(Boolean).join(". "),
+        niveaux:       d.niveaux,
         availableDays: d.jours,
-        quartier:     "",
-        emoji:        "👩‍🏫",
+        quartier:      d.ville || "",
+        emoji:         "👩‍🏫",
       });
-    } catch(e) { console.error(e); }
+      setStep(4);
+    } catch(e) {
+      alert("Erreur lors de l'envoi : " + e.message);
+    }
     setSaving(false);
-    setStep(4);
   };
 
   if (step===4) return (
@@ -1211,7 +1213,7 @@ function Admin({ goHome }) {
                 <table style={{width:"100%",borderCollapse:"collapse"}}>
                   <thead>
                     <tr>
-                      {["Référence","Parent","Enfant","Tuteur ID","Jour","Créneau","Montant","Statut","Date"].map(h=>(
+                      {["Référence","Parent","Enfant","Jour · Créneau","Montant","Statut","Date","Action"].map(h=>(
                         <th key={h} style={S.th}>{h}</th>
                       ))}
                     </tr>
@@ -1222,9 +1224,7 @@ function Admin({ goHome }) {
                         <td style={S.td}><span style={{fontFamily:"monospace",fontSize:12,background:"#f1f5f9",padding:"2px 8px",borderRadius:6}}>{r.paiement_reference||"—"}</span></td>
                         <td style={S.td}><div style={{fontWeight:600}}>{r.parent_nom}</div><div style={{fontSize:12,color:"#9ca3af"}}>{r.parent_email}</div></td>
                         <td style={S.td}>{r.enfant} · {r.niveau}</td>
-                        <td style={S.td}>{r.tuteur_id}</td>
-                        <td style={S.td}>{r.jour}</td>
-                        <td style={S.td}>{r.creneau}</td>
+                        <td style={S.td}>{r.jour} · {r.creneau}</td>
                         <td style={S.td}><strong>{r.montant?.toLocaleString("fr-FR")} FCFA</strong></td>
                         <td style={S.td}>
                           <span style={{
@@ -1234,6 +1234,24 @@ function Admin({ goHome }) {
                           }}>{r.statut}</span>
                         </td>
                         <td style={{...S.td,fontSize:12,color:"#9ca3af"}}>{r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : "—"}</td>
+                        <td style={S.td}>
+                          {r.statut==="en_attente" && (
+                            <button onClick={async()=>{
+                              await changerStatutReservation(r.id,"confirmée");
+                              setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"confirmée"}:x));
+                            }} style={{padding:"4px 12px",background:"#dcfce7",color:"#065f46",border:"1px solid #86efac",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                              ✓ Confirmer
+                            </button>
+                          )}
+                          {r.statut==="confirmée" && (
+                            <button onClick={async()=>{
+                              await changerStatutReservation(r.id,"annulée");
+                              setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"annulée"}:x));
+                            }} style={{padding:"4px 12px",background:"#fee2e2",color:"#991b1b",border:"1px solid #fca5a5",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                              ✗ Annuler
+                            </button>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

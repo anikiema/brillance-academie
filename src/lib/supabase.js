@@ -96,6 +96,14 @@ export async function confirmerReservation(ref) {
   if (error) throw error
 }
 
+export async function changerStatutReservation(id, statut) {
+  const { error } = await supabase
+    .from('reservations')
+    .update({ statut })
+    .eq('id', id)
+  if (error) throw error
+}
+
 // ─── Tuteurs (admin) ───────────────────────────────────────────────────────────
 export async function getTousTuteurs() {
   const { data, error } = await supabase
