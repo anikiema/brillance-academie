@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -797,6 +797,11 @@ function SitePublic({ goAdmin, goPayment }) {
   const [creneau, setCreneau] = useState(null);
   const [bi, setBi]         = useState({nom:"",email:"",enfant:"",niveau:""});
   const [bookDone, setBookDone] = useState(false);
+  // identification parent
+  const [emailQ, setEmailQ]       = useState("");
+  const [emailLooking, setEmailLooking] = useState(false);
+  const [parentConnu, setParentConnu]   = useState(null);  // null=pas encore cherché, true/false
+  const [premiereSeance, setPremiereSeance] = useState(false);
   const [avis, setAvis]         = useState([]);
   const [showAvisForm, setShowAvisForm] = useState(false);
   const [avisForm, setAvisForm] = useState({ auteur:"", ville:"", commentaire:"", note:5, type:"parent" });
@@ -981,7 +986,7 @@ function SitePublic({ goAdmin, goPayment }) {
                   style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #e5e7eb",background:"#f8fafc",fontWeight:700,fontSize:13,cursor:"pointer",color:"#374151"}}>
                   👤 Voir le profil
                 </button>
-                <button onClick={()=>{setTuteur(t);setBook(1);scrollTo("book");}}
+                <button onClick={()=>{setTuteur(t);setBook(parentConnu!==null?2:0);scrollTo("book");}}
                   style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #4f46e5",background:"#4f46e5",fontWeight:700,fontSize:13,cursor:"pointer",color:"#fff"}}
                   onMouseOver={e=>e.currentTarget.style.background="#3730a3"}
                   onMouseOut={e=>e.currentTarget.style.background="#4f46e5"}>
@@ -1161,45 +1166,123 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
 
         <div style={{maxWidth:640,margin:"0 auto"}}>
-          <Steps labels={["Tuteur","Créneau","Infos","Paiement"]} current={bookStep}/>
+          {/* Steps : 0=Compte, 1=Tuteur, 2=Créneau, 3=Infos(si nouveau), 4=Récap */}
+          <Steps labels={["Compte","Tuteur","Créneau","Confirmation"]} current={Math.min(bookStep, 3)}/>
 
+          {/* SUCCÈS */}
           {bookDone && (
             <div style={{textAlign:"center",padding:"48px 0"}}>
               <div style={{fontSize:56}}>🎉</div>
               <h3 style={{fontSize:24,fontWeight:800,color:"#111827",marginTop:20}}>Séance confirmée !</h3>
               <p style={{color:"#6b7280",marginTop:8}}>{tuteur?.prenom} {tuteur?.nom} · {jour} à {creneau}</p>
-              <button onClick={()=>{setBook(0);setTuteur(null);setJour(null);setCreneau(null);setBookDone(false);setBi({nom:"",email:"",enfant:"",niveau:""});}}
+              <button onClick={()=>{setBook(0);setTuteur(null);setJour(null);setCreneau(null);setBookDone(false);setBi({nom:"",email:"",enfant:"",niveau:""});setEmailQ("");setParentConnu(null);setPremiereSeance(false);}}
                 style={{marginTop:24,padding:"12px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 Nouvelle réservation
               </button>
             </div>
           )}
 
+          {/* ÉTAPE 0 — Identification parent */}
           {!bookDone && bookStep===0 && (
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
-              {TUTEURS.filter(t=>t.statut==="Actif").map(t=>(
-                <button key={t.id} onClick={()=>{setTuteur(t);setBook(1);}}
-                  style={{...S.card,cursor:"pointer",border:`2px solid ${tuteur?.id===t.id?"#4f46e5":"#f3f4f6"}`,textAlign:"left",background:tuteur?.id===t.id?"#f5f3ff":"#f9fafb"}}>
-                  <div style={{display:"flex",gap:10,alignItems:"center"}}>
-                    <span style={{fontSize:28}}>{t.emoji}</span>
-                    <div><p style={{fontWeight:700,margin:0,fontSize:14,color:"#111827"}}>{t.prenom} {t.nom}</p><p style={{fontSize:12,color:"#6366f1",margin:"2px 0 0"}}>{t.subject}</p></div>
-                    <span style={{marginLeft:"auto",fontWeight:800,fontSize:15,color:"#111827"}}>{fmt(t.price)}/h</span>
+            <div style={{display:"flex",flexDirection:"column",gap:18}}>
+              <div style={{background:"#f0fdf4",borderRadius:16,padding:24,border:"1.5px solid #bbf7d0"}}>
+                <p style={{fontWeight:800,fontSize:16,color:"#111827",margin:"0 0 6px"}}>👤 Avez-vous déjà un compte ?</p>
+                <p style={{fontSize:13,color:"#6b7280",margin:"0 0 16px"}}>Entrez votre email pour retrouver votre profil et pré-remplir la réservation automatiquement.</p>
+                <div style={{display:"flex",gap:10}}>
+                  <input value={emailQ} onChange={e=>setEmailQ(e.target.value)} type="email" placeholder="votre@email.com"
+                    style={{flex:1,padding:"11px 16px",border:"1.5px solid #d1fae5",borderRadius:12,fontSize:14,outline:"none",background:"#fff"}}
+                    onKeyDown={async e=>{ if(e.key==="Enter" && emailQ) { /* same as button */ }}}/>
+                  <button disabled={!emailQ||emailLooking} onClick={async()=>{
+                    setEmailLooking(true);
+                    try {
+                      const p = await getParentByEmail(emailQ);
+                      const nb = await getReservationCountByEmail(emailQ);
+                      if (p) {
+                        setBi({ nom: p.nom||"", email: p.email||emailQ, enfant: p.enfant||"", niveau: p.niveau||"" });
+                        setParentConnu(true);
+                        setPremiereSeance(nb === 0);
+                      } else {
+                        setBi(b=>({...b, email: emailQ}));
+                        setParentConnu(false);
+                        setPremiereSeance(true);  // nouveau = 1ère séance
+                      }
+                    } catch { setParentConnu(false); setPremiereSeance(true); }
+                    setEmailLooking(false);
+                  }} style={{padding:"11px 20px",background:emailQ?"#4f46e5":"#e5e7eb",color:emailQ?"#fff":"#9ca3af",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:emailQ?"pointer":"not-allowed",whiteSpace:"nowrap"}}>
+                    {emailLooking ? "…" : "Vérifier →"}
+                  </button>
+                </div>
+
+                {/* Résultat lookup */}
+                {parentConnu === true && (
+                  <div style={{marginTop:14,background:"#dcfce7",borderRadius:12,padding:"12px 16px",display:"flex",gap:12,alignItems:"center"}}>
+                    <span style={{fontSize:24}}>✅</span>
+                    <div>
+                      <p style={{fontWeight:800,fontSize:14,color:"#065f46",margin:0}}>Compte retrouvé — {bi.nom}</p>
+                      <p style={{fontSize:12,color:"#16a34a",margin:"3px 0 0"}}>
+                        {premiereSeance ? "🌟 Première séance — réduction de 20 % appliquée !" : `Bon retour ! Vos informations sont pré-remplies.`}
+                      </p>
+                    </div>
                   </div>
-                  <Stars n={t.rating}/>
+                )}
+                {parentConnu === false && (
+                  <div style={{marginTop:14,background:"#fef3c7",borderRadius:12,padding:"12px 16px",display:"flex",gap:12,alignItems:"center"}}>
+                    <span style={{fontSize:24}}>👋</span>
+                    <div>
+                      <p style={{fontWeight:800,fontSize:14,color:"#92400e",margin:0}}>Nouveau sur Brillance Académie</p>
+                      <p style={{fontSize:12,color:"#b45309",margin:"3px 0 0"}}>🌟 Première séance — réduction de 20 % automatique !</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <p style={{textAlign:"center",fontSize:13,color:"#9ca3af",margin:0}}>— ou —</p>
+
+              <button onClick={()=>{ setParentConnu(false); setPremiereSeance(true); setBook(1); }}
+                style={{padding:"13px",border:"1.5px dashed #d1d5db",borderRadius:12,background:"transparent",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>
+                Continuer sans compte →
+              </button>
+
+              {parentConnu !== null && (
+                <button onClick={()=>setBook(tuteur ? 2 : 1)}
+                  style={{padding:"14px",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:15,cursor:"pointer"}}>
+                  {parentConnu ? "Continuer avec mon compte →" : "Continuer & créer mon compte →"}
                 </button>
-              ))}
+              )}
             </div>
           )}
 
-          {!bookDone && bookStep===1 && tuteur && (
+          {/* ÉTAPE 1 — Choix du tuteur (si pas encore sélectionné) */}
+          {!bookDone && bookStep===1 && !tuteur && (
+            <div style={{display:"flex",flexDirection:"column",gap:14}}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                {tuteursList.filter(t=>t.statut==="Actif").map(t=>(
+                  <button key={t.id} onClick={()=>{setTuteur(t);setBook(2);}}
+                    style={{...S.card,cursor:"pointer",border:"2px solid #f3f4f6",textAlign:"left",background:"#f9fafb"}}>
+                    <div style={{display:"flex",gap:10,alignItems:"center"}}>
+                      <span style={{fontSize:28}}>{t.emoji}</span>
+                      <div><p style={{fontWeight:700,margin:0,fontSize:14,color:"#111827"}}>{t.prenom} {t.nom}</p><p style={{fontSize:12,color:"#6366f1",margin:"2px 0 0"}}>{t.subject}</p></div>
+                      <span style={{marginLeft:"auto",fontWeight:800,fontSize:15,color:"#111827"}}>{fmt(t.price)}/h</span>
+                    </div>
+                    <Stars n={t.rating}/>
+                  </button>
+                ))}
+              </div>
+              <button onClick={()=>setBook(0)} style={{padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
+            </div>
+          )}
+
+          {/* ÉTAPE 2 — Créneau (tuteur déjà choisi → sauter étape 1) */}
+          {!bookDone && bookStep>=1 && bookStep<=2 && tuteur && (
             <div>
               <div style={{background:"#f5f3ff",borderRadius:16,padding:16,display:"flex",gap:14,alignItems:"center",marginBottom:24}}>
                 <span style={{fontSize:32}}>{tuteur.emoji}</span>
                 <div><p style={{fontWeight:700,margin:0,color:"#111827"}}>{tuteur.prenom} {tuteur.nom}</p><p style={{fontSize:13,color:"#6366f1",margin:"2px 0 0"}}>{tuteur.subject} · {fmt(tuteur.price)}/h</p></div>
+                {premiereSeance && <span style={{marginLeft:"auto",background:"#dcfce7",color:"#065f46",fontSize:11,fontWeight:800,padding:"4px 10px",borderRadius:999,whiteSpace:"nowrap"}}>🌟 −20 %</span>}
               </div>
               <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:10}}>Choisissez un jour</p>
               <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:20}}>
-                {tuteur.availableDays.map(d=><Pill key={d} active={jour===d} onClick={()=>setJour(d)}>{d}</Pill>)}
+                {(tuteur.availableDays||[]).map(d=><Pill key={d} active={jour===d} onClick={()=>setJour(d)}>{d}</Pill>)}
               </div>
               {jour && <>
                 <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:10}}>Choisissez un créneau</p>
@@ -1208,36 +1291,56 @@ function SitePublic({ goAdmin, goPayment }) {
                 </div>
               </>}
               <div style={{display:"flex",gap:10}}>
-                <button onClick={()=>setBook(0)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
-                <button disabled={!jour||!creneau} onClick={()=>setBook(2)} style={{flex:1,padding:13,border:"none",borderRadius:12,background:jour&&creneau?"#4f46e5":"#e5e7eb",color:jour&&creneau?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:jour&&creneau?"pointer":"not-allowed"}}>Continuer →</button>
+                <button onClick={()=>{ setBook(0); setTuteur(null); setJour(null); setCreneau(null); }} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
+                <button disabled={!jour||!creneau} onClick={()=>setBook(parentConnu ? 4 : 3)}
+                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:jour&&creneau?"#4f46e5":"#e5e7eb",color:jour&&creneau?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:jour&&creneau?"pointer":"not-allowed"}}>
+                  {parentConnu ? "Confirmer →" : "Continuer →"}
+                </button>
               </div>
             </div>
           )}
 
-          {!bookDone && bookStep===2 && (
+          {/* ÉTAPE 3 — Infos parent (uniquement si NOUVEAU) */}
+          {!bookDone && bookStep===3 && !parentConnu && (
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
-              <Inp label="Votre nom (parent)" value={bi.nom} onChange={v=>setBI("nom",v)} placeholder="Aminata Diallo"/>
-              <Inp label="E-mail" value={bi.email} onChange={v=>setBI("email",v)} placeholder="aminata@gmail.com" type="email"/>
-              <Inp label="Prénom de l'enfant" value={bi.enfant} onChange={v=>setBI("enfant",v)} placeholder="Moussa"/>
+              <div style={{background:"#fef3c7",borderRadius:12,padding:"10px 16px",fontSize:13,color:"#92400e",fontWeight:600}}>
+                🌟 Première séance — réduction −20 % appliquée automatiquement !
+              </div>
+              <Inp label="Votre nom (parent)" value={bi.nom} onChange={v=>setBI("nom",v)} placeholder=""/>
+              <Inp label="E-mail" value={bi.email} onChange={v=>setBI("email",v)} placeholder="" type="email"/>
+              <Inp label="Prénom de l'enfant" value={bi.enfant} onChange={v=>setBI("enfant",v)} placeholder=""/>
               <Sel label="Niveau de l'enfant" value={bi.niveau} onChange={v=>setBI("niveau",v)} options={NIVEAUX}/>
               <div style={{display:"flex",gap:10,marginTop:4}}>
-                <button onClick={()=>setBook(1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
-                <button disabled={!bi.nom||!bi.email||!bi.enfant} onClick={()=>setBook(3)} style={{flex:1,padding:13,border:"none",borderRadius:12,background:bi.nom&&bi.email&&bi.enfant?"#4f46e5":"#e5e7eb",color:bi.nom&&bi.email&&bi.enfant?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:bi.nom&&bi.email&&bi.enfant?"pointer":"not-allowed"}}>Continuer →</button>
+                <button onClick={()=>setBook(2)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
+                <button disabled={!bi.nom||!bi.email||!bi.enfant} onClick={()=>setBook(4)}
+                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:bi.nom&&bi.email&&bi.enfant?"#4f46e5":"#e5e7eb",color:bi.nom&&bi.email&&bi.enfant?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:bi.nom&&bi.email&&bi.enfant?"pointer":"not-allowed"}}>
+                  Confirmer →
+                </button>
               </div>
             </div>
           )}
 
-          {!bookDone && bookStep===3 && (
+          {/* ÉTAPE 4 — Récapitulatif + paiement */}
+          {!bookDone && bookStep===4 && (
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
+              {premiereSeance && (
+                <div style={{background:"linear-gradient(135deg,#d1fae5,#a7f3d0)",borderRadius:14,padding:"14px 18px",display:"flex",gap:12,alignItems:"center",border:"1.5px solid #6ee7b7"}}>
+                  <span style={{fontSize:28}}>🌟</span>
+                  <div>
+                    <p style={{fontWeight:800,fontSize:14,color:"#065f46",margin:0}}>Première séance — Réduction −20 % appliquée !</p>
+                    <p style={{fontSize:12,color:"#047857",margin:"3px 0 0"}}>Bienvenue dans la famille Brillance Académie.</p>
+                  </div>
+                </div>
+              )}
               <div style={{background:"#f5f3ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
-                {[["Tuteur",`${tuteur?.prenom} ${tuteur?.nom}`],["Matière",tuteur?.subject],["Jour",jour],["Créneau",creneau],["Parent",bi.nom],["Enfant",`${bi.enfant} · ${bi.niveau}`]].map(([k,v])=>(
+                {[["Tuteur",`${tuteur?.prenom} ${tuteur?.nom}`],["Matière",tuteur?.subject],["Jour",jour],["Créneau",creneau],["Parent",bi.nom],["Enfant",`${bi.enfant}${bi.niveau?" · "+bi.niveau:""}`]].map(([k,v])=>(
                   <div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:14}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827"}}>{v}</span></div>
                 ))}
                 <div style={{borderTop:"1.5px solid #ddd6fe",paddingTop:12,marginTop:4,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                  <span style={{fontSize:13,color:"#6b7280"}}>Séance d'essai (−20 %)</span>
+                  <span style={{fontSize:13,color:"#6b7280"}}>{premiereSeance ? "Séance d'essai (−20 %)" : "Tarif séance"}</span>
                   <div style={{textAlign:"right"}}>
-                    <span style={{textDecoration:"line-through",color:"#9ca3af",fontSize:13,marginRight:8}}>{fmt(tuteur?.price||0)}</span>
-                    <span style={{fontWeight:800,color:"#4f46e5",fontSize:20}}>{fmt(Math.round((tuteur?.price||0)*0.8))}</span>
+                    {premiereSeance && <span style={{textDecoration:"line-through",color:"#9ca3af",fontSize:13,marginRight:8}}>{fmt(tuteur?.price||0)}</span>}
+                    <span style={{fontWeight:800,color:"#4f46e5",fontSize:20}}>{fmt(premiereSeance ? Math.round((tuteur?.price||0)*0.8) : (tuteur?.price||0))}</span>
                   </div>
                 </div>
               </div>
@@ -1246,7 +1349,7 @@ function SitePublic({ goAdmin, goPayment }) {
                 style={{padding:"14px 0",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:16,cursor:"pointer"}}>
                 Procéder au paiement →
               </button>
-              <button onClick={()=>setBook(2)} style={{padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
+              <button onClick={()=>setBook(parentConnu ? 2 : 3)} style={{padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
             </div>
           )}
         </div>

@@ -58,6 +58,25 @@ export async function supprimerParent(id) {
   if (error) throw error
 }
 
+export async function getParentByEmail(email) {
+  const { data, error } = await supabase
+    .from('parents')
+    .select('*')
+    .eq('email', email.toLowerCase().trim())
+    .maybeSingle()
+  if (error) throw error
+  return data  // null si non trouvé
+}
+
+export async function getReservationCountByEmail(email) {
+  const { count, error } = await supabase
+    .from('reservations')
+    .select('*', { count: 'exact', head: true })
+    .eq('parent_email', email.toLowerCase().trim())
+  if (error) return 0
+  return count || 0
+}
+
 // ─── Réservations ─────────────────────────────────────────────────────────────
 export async function getReservations() {
   const { data, error } = await supabase
