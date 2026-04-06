@@ -147,27 +147,73 @@ function PagePaiement({ booking, onSuccess, onBack }) {
   const [cvv,     setCvv]     = useState("");
   const [loading, setLoading] = useState(false);
   const [done,    setDone]    = useState(false);
+  const [txRef,   setTxRef]   = useState("");
 
   const essaiAmount = Math.round((tuteur?.price || 27500) * 0.8);
 
   const METHODS = [
-    { id:"orange", abbr:"OM",   label:"Orange Money", abbColor:"#f97316", bg:"#fff7ed", border:"#fed7aa",  selBorder:"#f97316" },
-    { id:"wave",   abbr:"Wave", label:"Wave",          abbColor:"#3b82f6", bg:"#eff6ff", border:"#bfdbfe",  selBorder:"#3b82f6" },
-    { id:"mtn",    abbr:"MTN",  label:"MTN MoMo",      abbColor:"#fff",    bg:"#fef9c3", border:"#fde68a",  selBorder:"#eab308", abkBg:"#1c1917" },
-    { id:"moov",   abbr:"Moov", label:"Moov Money",    abbColor:"#3b82f6", bg:"#eff6ff", border:"#bfdbfe",  selBorder:"#3b82f6" },
-    { id:"visa",   abbr:"VISA / MC", label:"Carte bancaire", abbColor:"#374151", bg:"#f9fafb", border:"#e5e7eb", selBorder:"#374151" },
+    { id:"orange", abbr:"OM",   label:"Orange Money",  abbColor:"#f97316", bg:"#fff7ed", border:"#fed7aa", selBorder:"#f97316" },
+    { id:"moov",   abbr:"Moov", label:"Moov Money",    abbColor:"#0ea5e9", bg:"#e0f2fe", border:"#bae6fd", selBorder:"#0ea5e9" },
+    { id:"mtn",    abbr:"MTN",  label:"MTN MoMo",      abbColor:"#fff",    bg:"#fef9c3", border:"#fde68a", selBorder:"#eab308", abkBg:"#1c1917" },
+    { id:"visa",   abbr:"VISA", label:"Carte bancaire", abbColor:"#374151", bg:"#f9fafb", border:"#e5e7eb", selBorder:"#374151" },
   ];
 
   const cur = METHODS.find(m => m.id === method);
-  const mobileMethod = ["orange","wave","mtn","moov"].includes(method);
-  const phonePlaceholder = {orange:"+221 77 XXX XX XX", wave:"+221 70 XXX XX XX", mtn:"+221 76 XXX XX XX", moov:"+221 77 XXX XX XX"}[method] || "+221 XX XXX XX XX";
+  const mobileMethod = ["orange","moov","mtn"].includes(method);
+  const phonePlaceholder = {orange:"+226 70 XX XX XX", moov:"+226 65 XX XX XX", mtn:"+226 76 XX XX XX"}[method] || "+226 XX XX XX XX";
 
-  const canPay = mobileMethod ? phone.replace(/[\s+]/g,"").length >= 9 : cardNum.length >= 16 && expiry.length >= 4 && cvv.length >= 3;
+  const canPay = mobileMethod ? phone.replace(/[\s+]/g,"").length >= 8 : cardNum.length >= 16 && expiry.length >= 4 && cvv.length >= 3;
+
+  // Charger le script Flutterwave une seule fois
+  useEffect(() => {
+    if (document.getElementById("flw-script")) return;
+    const s = document.createElement("script");
+    s.id  = "flw-script";
+    s.src = "https://checkout.flutterwave.com/v3.js";
+    s.async = true;
+    document.head.appendChild(s);
+  }, []);
+
+  const FLW_PUBLIC_KEY = "FLWPUBK_TEST-8df603ddb75524da26e0b7c366bd681b-X";
+
+  const flwOptions = {
+    orange: "mobilemoneyfranco",
+    moov:   "mobilemoneyfranco",
+    mtn:    "mobilemoneyghana",
+    visa:   "card",
+  };
 
   const pay = () => {
-    if (!canPay) return;
+    if (!canPay || loading) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); setDone(true); setTimeout(onSuccess, 1600); }, 2400);
+    const ref = "BA-" + Date.now();
+    setTxRef(ref);
+
+    window.FlutterwaveCheckout({
+      public_key:      FLW_PUBLIC_KEY,
+      tx_ref:          ref,
+      amount:          essaiAmount,
+      currency:        "XOF",
+      payment_options: flwOptions[method] || "mobilemoneyfranco,card",
+      customer: {
+        email:       booking.parentEmail || "client@brillanceacademie.com",
+        name:        booking.parentNom   || "Parent",
+        phonenumber: phone,
+      },
+      customizations: {
+        title:       "Brillance Académie",
+        description: `Séance avec ${tuteur?.prenom || ""} ${tuteur?.nom || ""} — ${tuteur?.subject || ""}`,
+        logo:        "https://brillianceacademie.com/favicon.ico",
+      },
+      callback: (data) => {
+        setLoading(false);
+        if (data.status === "successful" || data.status === "completed") {
+          setDone(true);
+          setTimeout(onSuccess, 2000);
+        }
+      },
+      onclose: () => { setLoading(false); },
+    });
   };
 
   const S = { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827" };
