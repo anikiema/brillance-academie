@@ -5,7 +5,17 @@ const supabaseKey  = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient(supabaseUrl || '', supabaseKey || '')
 
-// ─── Tuteurs ──────────────────────────────────────────────────────────────────
+// ─── WhatsApp notification (via /api/notify — serverless Vercel) ──────────────
+// fire-and-forget : n'attend pas la réponse, ne bloque pas l'UI
+function notifWA(message) {
+  fetch('/api/notify', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ message: '🎓 Brillance Académie\n' + message }),
+  }).catch(() => {})  // silencieux en cas d'erreur réseau
+}
+
+// ─── Tuteurs (public) ─────────────────────────────────────────────────────────
 export async function getTuteurs() {
   const { data, error } = await supabase
     .from('tuteurs')
@@ -13,7 +23,6 @@ export async function getTuteurs() {
     .eq('statut', 'Actif')
     .order('sessions', { ascending: false })
   if (error) throw error
-  // Mapper snake_case → camelCase pour compatibilité avec le code React
   return data.map(t => ({
     ...t,
     availableDays:     t.available_days     || [],
@@ -39,6 +48,12 @@ export async function ajouterParent(parent) {
     .select()
     .single()
   if (error) throw error
+  notifWA(
+    `👨‍👩‍👧 Nouveau parent inscrit\n` +
+    `Nom : ${data.nom || '—'}\n` +
+    `Email : ${data.email || '—'}\n` +
+    `Enfant : ${data.enfant || '—'} · ${data.niveau || '—'}`
+  )
   return data
 }
 
@@ -48,6 +63,10 @@ export async function modifierParent(id, changes) {
     .update(changes)
     .eq('id', id)
   if (error) throw error
+  notifWA(
+    `✏️ Parent modifié (id ${id})\n` +
+    Object.entries(changes).map(([k,v]) => `${k} : ${v}`).join('\n')
+  )
 }
 
 export async function supprimerParent(id) {
@@ -56,6 +75,7 @@ export async function supprimerParent(id) {
     .delete()
     .eq('id', id)
   if (error) throw error
+  notifWA(`🗑 Parent supprimé (id ${id})`)
 }
 
 export async function getParentByEmail(email) {
@@ -65,7 +85,7 @@ export async function getParentByEmail(email) {
     .eq('email', email.toLowerCase().trim())
     .maybeSingle()
   if (error) throw error
-  return data  // null si non trouvé
+  return data
 }
 
 export async function getReservationCountByEmail(email) {
@@ -86,6 +106,7 @@ export async function getReservations() {
   if (error) throw error
   return data
 }
+
 export async function creerReservation({ tuteurId, parentNom, parentEmail, enfant, niveau, jour, creneau, montant }) {
   const ref = 'BA-' + Date.now()
   const { data, error } = await supabase
@@ -105,6 +126,14 @@ export async function creerReservation({ tuteurId, parentNom, parentEmail, enfan
     .select()
     .single()
   if (error) throw error
+  notifWA(
+    `📅 Nouvelle réservation !\n` +
+    `Parent : ${parentNom} (${parentEmail})\n` +
+    `Enfant : ${enfant} · ${niveau}\n` +
+    `Créneau : ${jour} à ${creneau}\n` +
+    `Montant : ${montant ? montant.toLocaleString('fr-FR') + ' FCFA' : '—'}\n` +
+    `Réf : ${ref}`
+  )
   return { reservation: data, ref }
 }
 
@@ -114,6 +143,7 @@ export async function confirmerReservation(ref) {
     .update({ statut: 'confirmée' })
     .eq('paiement_reference', ref)
   if (error) throw error
+  notifWA(`✅ Réservation confirmée — Réf : ${ref}`)
 }
 
 export async function changerStatutReservation(id, statut) {
@@ -122,6 +152,8 @@ export async function changerStatutReservation(id, statut) {
     .update({ statut })
     .eq('id', id)
   if (error) throw error
+  const emojis = { confirmée:'✅', annulée:'❌', en_attente:'⏳' }
+  notifWA(`${emojis[statut]||'🔄'} Réservation #${id} → ${statut}`)
 }
 
 // ─── Avis ─────────────────────────────────────────────────────────────────────
@@ -149,6 +181,12 @@ export async function ajouterAvis({ auteur, ville, commentaire, note, type }) {
     .from('avis')
     .insert({ auteur, ville, commentaire, note, type, statut: 'en_attente' })
   if (error) throw error
+  notifWA(
+    `⭐ Nouvel avis (${type}) à modérer\n` +
+    `De : ${auteur} — ${ville}\n` +
+    `Note : ${'★'.repeat(note)}\n` +
+    `« ${commentaire.slice(0, 100)}${commentaire.length > 100 ? '…' : ''} »`
+  )
 }
 
 export async function changerStatutAvis(id, statut) {
@@ -157,6 +195,7 @@ export async function changerStatutAvis(id, statut) {
     .update({ statut })
     .eq('id', id)
   if (error) throw error
+  notifWA(`${statut === 'approuvé' ? '✅' : '🗑'} Avis #${id} → ${statut}`)
 }
 
 export async function supprimerAvis(id) {
@@ -165,6 +204,7 @@ export async function supprimerAvis(id) {
     .delete()
     .eq('id', id)
   if (error) throw error
+  notifWA(`🗑 Avis #${id} supprimé`)
 }
 
 // ─── Tuteurs (admin) ───────────────────────────────────────────────────────────
@@ -205,6 +245,14 @@ export async function ajouterTuteur(tuteur) {
     .select()
     .single()
   if (error) throw error
+  notifWA(
+    `📖 Nouveau tuteur inscrit\n` +
+    `Nom : ${data.prenom || ''} ${data.nom || ''}\n` +
+    `Matière(s) : ${data.subject || '—'}\n` +
+    `Email : ${data.email || '—'}\n` +
+    `Tél : ${data.tel || '—'}\n` +
+    `Statut : ${data.statut}`
+  )
   return {
     ...data,
     availableDays:     data.available_days     || [],
@@ -220,11 +268,11 @@ export async function modifierTuteur(id, changes) {
     price:   changes.price,
     statut:  changes.statut,
   };
-  if (changes.email     !== undefined) update.email      = changes.email;
-  if (changes.tel       !== undefined) update.tel        = changes.tel;
-  if (changes.bio       !== undefined) update.bio        = changes.bio;
-  if (changes.niveaux   !== undefined) update.niveaux    = changes.niveaux;
-  if (changes.availableDays !== undefined) update.available_days = changes.availableDays;
+  if (changes.email         !== undefined) update.email             = changes.email;
+  if (changes.tel           !== undefined) update.tel               = changes.tel;
+  if (changes.bio           !== undefined) update.bio               = changes.bio;
+  if (changes.niveaux       !== undefined) update.niveaux           = changes.niveaux;
+  if (changes.availableDays !== undefined) update.available_days    = changes.availableDays;
   if (changes.quartiersCouVerts !== undefined)
     update.quartiers_couverts = changes.quartiersCouVerts;
   const { error } = await supabase
@@ -232,6 +280,14 @@ export async function modifierTuteur(id, changes) {
     .update(update)
     .eq('id', id)
   if (error) throw error
+  // Notification uniquement pour les changements importants (statut, suppression, etc.)
+  if (changes.statut) {
+    const emojis = { Actif:'✅', Inactif:'⏸', 'En attente':'⏳' }
+    notifWA(
+      `${emojis[changes.statut]||'✏️'} Tuteur #${id} → statut : ${changes.statut}\n` +
+      `Nom : ${changes.prenom || changes.name || '—'}`
+    )
+  }
 }
 
 export async function supprimerTuteur(id) {
@@ -240,4 +296,5 @@ export async function supprimerTuteur(id) {
     .delete()
     .eq('id', id)
   if (error) throw error
+  notifWA(`🗑 Tuteur #${id} supprimé de la base`)
 }
