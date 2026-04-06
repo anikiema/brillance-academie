@@ -58,6 +58,14 @@ export async function supprimerParent(id) {
 }
 
 // ─── Réservations ─────────────────────────────────────────────────────────────
+export async function getReservations() {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
 export async function creerReservation({ tuteurId, parentNom, parentEmail, enfant, niveau, jour, creneau, montant }) {
   const ref = 'BA-' + Date.now()
   const { data, error } = await supabase

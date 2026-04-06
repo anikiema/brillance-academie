@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -1065,21 +1065,25 @@ const REVENUE_DATA = [
 // ─── ADMIN ────────────────────────────────────────────────────────────────────
 
 function Admin({ goHome }) {
-  const [page, setPage]       = useState("dashboard");
-  const [parents, setParents] = useState(PARENTS_INIT);
-  const [tuteurs, setTuteurs] = useState([]);
-  const [loadingT, setLoadingT] = useState(true);
+  const [page, setPage]             = useState("dashboard");
+  const [parents, setParents]       = useState(PARENTS_INIT);
+  const [tuteurs, setTuteurs]       = useState([]);
+  const [reservations, setReservations] = useState([]);
+  const [loadingT, setLoadingT]     = useState(true);
   const [search, setSearch]   = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setET]    = useState(null);
   const [form, setForm]        = useState({});
   const setF = (k,v) => setForm(p=>({...p,[k]:v}));
 
-  // Charger les tuteurs depuis Supabase
+  // Charger les tuteurs et réservations depuis Supabase
   useEffect(() => {
     getTousTuteurs()
       .then(data => { setTuteurs(data); setLoadingT(false); })
       .catch(() => { setTuteurs(TUTEURS); setLoadingT(false); });
+    getReservations()
+      .then(data => setReservations(data))
+      .catch(() => {});
   }, []);
 
   const handleAjouterTuteur = async () => {
@@ -1115,9 +1119,10 @@ function Admin({ goHome }) {
   };
 
   const MENU = [
-    {id:"dashboard",icon:"📊",label:"Tableau de bord"},
-    {id:"parents",  icon:"👨‍👩‍👧",label:"Parents"},
-    {id:"tuteurs",  icon:"📖",label:"Tuteurs"},
+    {id:"dashboard",    icon:"📊",label:"Tableau de bord"},
+    {id:"reservations", icon:"📅",label:"Réservations"},
+    {id:"parents",      icon:"👨‍👩‍👧",label:"Parents"},
+    {id:"tuteurs",      icon:"📖",label:"Tuteurs"},
   ];
 
   const openAdd = (defaults) => { setET(null); setForm(defaults); setShowForm(true); };
@@ -1191,6 +1196,49 @@ function Admin({ goHome }) {
                   <span style={{fontSize:12,color:"#9ca3af",flexShrink:0}}>{a.time}</span>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* RÉSERVATIONS */}
+        {page==="reservations" && (
+          <div>
+            <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:"0 0 28px"}}>Réservations</h1>
+            <div style={S.card}>
+              {reservations.length === 0 ? (
+                <p style={{textAlign:"center",color:"#9ca3af",padding:"40px 0"}}>Aucune réservation pour l'instant.</p>
+              ) : (
+                <table style={{width:"100%",borderCollapse:"collapse"}}>
+                  <thead>
+                    <tr>
+                      {["Référence","Parent","Enfant","Tuteur ID","Jour","Créneau","Montant","Statut","Date"].map(h=>(
+                        <th key={h} style={S.th}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reservations.map(r=>(
+                      <tr key={r.id}>
+                        <td style={S.td}><span style={{fontFamily:"monospace",fontSize:12,background:"#f1f5f9",padding:"2px 8px",borderRadius:6}}>{r.paiement_reference||"—"}</span></td>
+                        <td style={S.td}><div style={{fontWeight:600}}>{r.parent_nom}</div><div style={{fontSize:12,color:"#9ca3af"}}>{r.parent_email}</div></td>
+                        <td style={S.td}>{r.enfant} · {r.niveau}</td>
+                        <td style={S.td}>{r.tuteur_id}</td>
+                        <td style={S.td}>{r.jour}</td>
+                        <td style={S.td}>{r.creneau}</td>
+                        <td style={S.td}><strong>{r.montant?.toLocaleString("fr-FR")} FCFA</strong></td>
+                        <td style={S.td}>
+                          <span style={{
+                            padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:700,
+                            background: r.statut==="confirmée"?"#dcfce7":r.statut==="en_attente"?"#fef3c7":"#fee2e2",
+                            color:      r.statut==="confirmée"?"#065f46":r.statut==="en_attente"?"#92400e":"#991b1b",
+                          }}>{r.statut}</span>
+                        </td>
+                        <td style={{...S.td,fontSize:12,color:"#9ca3af"}}>{r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         )}
