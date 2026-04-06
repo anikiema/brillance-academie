@@ -16,8 +16,9 @@ export async function getTuteurs() {
   // Mapper snake_case → camelCase pour compatibilité avec le code React
   return data.map(t => ({
     ...t,
-    availableDays: t.available_days || [],
-    niveaux:       t.niveaux       || [],
+    availableDays:     t.available_days     || [],
+    niveaux:           t.niveaux            || [],
+    quartiersCouVerts: t.quartiers_couverts || [],
   }))
 }
 
@@ -156,8 +157,9 @@ export async function getTousTuteurs() {
   if (error) throw error
   return data.map(t => ({
     ...t,
-    availableDays: t.available_days || [],
-    niveaux:       t.niveaux       || [],
+    availableDays:     t.available_days      || [],
+    niveaux:           t.niveaux             || [],
+    quartiersCouVerts: t.quartiers_couverts  || [],
   }))
 }
 
@@ -165,34 +167,43 @@ export async function ajouterTuteur(tuteur) {
   const { data, error } = await supabase
     .from('tuteurs')
     .insert({
-      prenom:        tuteur.prenom || tuteur.name || "",
-      nom:           tuteur.nom   || "",
-      subject:       tuteur.subject,
-      price:         tuteur.price || 27500,
-      statut:        tuteur.statut || "En attente",
-      sessions:      0,
-      rating:        5,
-      emoji:         tuteur.emoji || "👩‍🏫",
-      bio:           tuteur.bio   || "",
-      quartier:      tuteur.quartier || "",
-      niveaux:       tuteur.niveaux  || [],
-      available_days: tuteur.availableDays || [],
+      prenom:             tuteur.prenom || tuteur.name || "",
+      nom:                tuteur.nom   || "",
+      subject:            tuteur.subject,
+      price:              tuteur.price || 27500,
+      statut:             tuteur.statut || "En attente",
+      sessions:           0,
+      rating:             5,
+      emoji:              tuteur.emoji || "👩‍🏫",
+      bio:                tuteur.bio   || "",
+      quartier:           tuteur.quartier || "",
+      niveaux:            tuteur.niveaux  || [],
+      available_days:     tuteur.availableDays || [],
+      quartiers_couverts: tuteur.quartiersCouVerts || [],
     })
     .select()
     .single()
   if (error) throw error
-  return { ...data, availableDays: data.available_days || [], niveaux: data.niveaux || [] }
+  return {
+    ...data,
+    availableDays:     data.available_days     || [],
+    niveaux:           data.niveaux            || [],
+    quartiersCouVerts: data.quartiers_couverts || [],
+  }
 }
 
 export async function modifierTuteur(id, changes) {
+  const update = {
+    prenom:  changes.prenom || changes.name || "",
+    subject: changes.subject,
+    price:   changes.price,
+    statut:  changes.statut,
+  };
+  if (changes.quartiersCouVerts !== undefined)
+    update.quartiers_couverts = changes.quartiersCouVerts;
   const { error } = await supabase
     .from('tuteurs')
-    .update({
-      prenom:  changes.prenom || changes.name || "",
-      subject: changes.subject,
-      price:   changes.price,
-      statut:  changes.statut,
-    })
+    .update(update)
     .eq('id', id)
   if (error) throw error
 }

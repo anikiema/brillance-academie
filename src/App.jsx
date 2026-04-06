@@ -527,27 +527,30 @@ function InscriptionParent({ onClose }) {
 
 function InscriptionTuteur({ onClose }) {
   const [step, setStep] = useState(0);
-  const [d, setD] = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[] });
+  const [d, setD] = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false });
   const [saving, setSaving] = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
 
-  const ok = [d.prenom&&d.nom&&d.email&&d.tel&&d.ville, d.matieres.length>0&&d.niveaux.length>0&&d.experience, d.jours.length>0, true];
+  const ok = [d.prenom&&d.nom&&d.email&&d.tel&&d.ville, d.matieres.length>0&&d.niveaux.length>0&&d.experience, d.jours.length>0&&(d.tousQuartiers||d.quartiersCouVerts.length>0), true];
 
   const envoyer = async () => {
     setSaving(true);
     try {
       await ajouterTuteur({
-        prenom:        d.prenom,
-        nom:           d.nom,
-        subject:       d.matieres.join(", ") || "Non spécifié",
-        price:         27500,
-        statut:        "En attente",
-        bio:           [d.experience && `${d.experience} d'expérience`, d.diplome].filter(Boolean).join(". "),
-        niveaux:       d.niveaux,
-        availableDays: d.jours,
-        quartier:      d.ville || "",
-        emoji:         "👩‍🏫",
+        prenom:            d.prenom,
+        nom:               d.nom,
+        email:             d.email,
+        tel:               d.tel,
+        subject:           d.matieres.join(", ") || "Non spécifié",
+        price:             27500,
+        statut:            "En attente",
+        bio:               [d.experience && `${d.experience} d'expérience`, d.diplome].filter(Boolean).join(". "),
+        niveaux:           d.niveaux,
+        availableDays:     d.jours,
+        quartier:          d.ville || "",
+        emoji:             "👩‍🏫",
+        quartiersCouVerts: d.tousQuartiers ? QUARTIERS : d.quartiersCouVerts,
       });
       setStep(4);
     } catch(e) {
@@ -590,17 +593,34 @@ function InscriptionTuteur({ onClose }) {
       <Inp label="Années d'expérience" value={d.experience} onChange={v=>set("experience",v)} placeholder="Ex. : 3 ans"/>
       <Inp label="Diplôme le plus élevé" value={d.diplome} onChange={v=>set("diplome",v)} placeholder="Master Sciences de l'éducation"/>
     </div>,
-    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+    <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Vos disponibilités</p>
       <div>
         <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Jours disponibles</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{JOURS.map(j=><Pill key={j} active={d.jours.includes(j)} onClick={()=>tog("jours",j)}>{j}</Pill>)}</div>
       </div>
+      <div>
+        <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
+        <button onClick={()=>set("tousQuartiers",!d.tousQuartiers)}
+          style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.tousQuartiers?"#4f46e5":"#e5e7eb"}`,background:d.tousQuartiers?"#ede9fe":"#f9fafb",color:d.tousQuartiers?"#4f46e5":"#374151",fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:10}}>
+          {d.tousQuartiers?"✓ Tous les quartiers de Ouagadougou":"Tous les quartiers"}
+        </button>
+        {!d.tousQuartiers && (
+          <div style={{display:"flex",flexWrap:"wrap",gap:6,maxHeight:160,overflowY:"auto",padding:4}}>
+            {QUARTIERS.map(q=>(
+              <Pill key={q} active={d.quartiersCouVerts.includes(q)} onClick={()=>tog("quartiersCouVerts",q)}>{q}</Pill>
+            ))}
+          </div>
+        )}
+        {!d.tousQuartiers && d.quartiersCouVerts.length===0 && (
+          <p style={{fontSize:11,color:"#ef4444",margin:"4px 0 0"}}>Sélectionnez au moins un quartier ou cochez "Tous les quartiers"</p>
+        )}
+      </div>
     </div>,
     <div style={{display:"flex",flexDirection:"column",gap:12}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Récapitulatif</p>
       <div style={{background:"#f5f3ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
-        {[["Nom",`${d.prenom} ${d.nom}`],["Contact",d.email],["Ville",d.ville],["Matières",d.matieres.join(", ")],["Niveaux",d.niveaux.join(", ")],["Expérience",d.experience],["Jours",d.jours.join(", ")]]
+        {[["Nom",`${d.prenom} ${d.nom}`],["Contact",d.email],["Ville",d.ville],["Matières",d.matieres.join(", ")],["Niveaux",d.niveaux.join(", ")],["Expérience",d.experience],["Jours",d.jours.join(", ")],["Quartiers",d.tousQuartiers?"Tous les quartiers de Ouagadougou":d.quartiersCouVerts.join(", ")]]
           .map(([k,v])=><div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827",textAlign:"right",maxWidth:"60%"}}>{v||"—"}</span></div>)}
       </div>
       <p style={{fontSize:11,color:"#9ca3af"}}>Réponse sous 48h après examen de votre profil.</p>
@@ -782,17 +802,24 @@ function SitePublic({ goAdmin, goPayment }) {
   const [avisForm, setAvisForm] = useState({ auteur:"", ville:"", commentaire:"", note:5, type:"parent" });
   const [avisSaving, setAvisSaving] = useState(false);
   const [avisEnvoye, setAvisEnvoye] = useState(false);
+  const [tuteursList, setTuteursList] = useState(TUTEURS);
 
   useEffect(() => {
     getAvis().then(data => setAvis(data)).catch(() => {});
+    getTuteurs().then(data => { if (data && data.length > 0) setTuteursList(data); }).catch(() => {});
   }, []);
 
   const setBI = (k,v) => setBi(p=>({...p,[k]:v}));
 
-  const filteredTuteurs = TUTEURS.filter(t => {
+  const filteredTuteurs = tuteursList.filter(t => {
     if (t.statut !== "Actif") return false;
     if (activeM && t.subject !== activeM) return false;
-    if (activeQ && t.quartier !== activeQ) return false;
+    if (activeQ) {
+      const qc = t.quartiersCouVerts || [];
+      if (qc.length > 0 && !qc.includes(activeQ) && !qc.includes("Tous")) return false;
+      // if qc is empty, fall back to legacy quartier field
+      if (qc.length === 0 && t.quartier && t.quartier !== activeQ) return false;
+    }
     if (activeN && !(t.niveaux||[]).includes(activeN)) return false;
     if (search && !t.prenom.toLowerCase().includes(search.toLowerCase()) && !t.subject.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
@@ -1641,7 +1668,7 @@ function Admin({ goHome }) {
           <div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Tuteurs ({tuteurs.length})</h1>
-              <button onClick={()=>openAdd({name:"",subject:"",email:"",statut:"En attente",price:"",jours:[],availableDays:[]})}
+              <button onClick={()=>openAdd({name:"",subject:"",email:"",statut:"En attente",price:"",jours:[],availableDays:[],quartiersCouVerts:[]})}
                 style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 + Ajouter
               </button>
@@ -1695,6 +1722,23 @@ function Admin({ goHome }) {
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                       <Inp label="Tarif (FCFA/h)" value={form.price||""} onChange={v=>setF("price",+v)} placeholder="Ex: 25000" type="number"/>
                       <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif"]}/>
+                    </div>
+                    <div>
+                      <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
+                      <button type="button" onClick={()=>setF("quartiersCouVerts", (form.quartiersCouVerts||[]).length===QUARTIERS.length ? [] : [...QUARTIERS])}
+                        style={{padding:"6px 14px",borderRadius:999,border:`2px solid ${(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#4f46e5":"#e5e7eb"}`,background:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#ede9fe":"#f9fafb",color:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#4f46e5":"#374151",fontWeight:700,fontSize:12,cursor:"pointer",marginBottom:8}}>
+                        {(form.quartiersCouVerts||[]).length===QUARTIERS.length?"✓ Tous les quartiers":"Tous les quartiers"}
+                      </button>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:5,maxHeight:120,overflowY:"auto"}}>
+                        {QUARTIERS.map(q=>{
+                          const qc = form.quartiersCouVerts||[];
+                          const active = qc.includes(q);
+                          return <button key={q} type="button" onClick={()=>setF("quartiersCouVerts", active?qc.filter(x=>x!==q):[...qc,q])}
+                            style={{padding:"5px 12px",borderRadius:999,border:`1.5px solid ${active?"#4f46e5":"#e5e7eb"}`,background:active?"#eef2ff":"#fff",color:active?"#4f46e5":"#6b7280",fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>
+                            {q}
+                          </button>;
+                        })}
+                      </div>
                     </div>
                     <button disabled={!form.name&&!form.prenom||!form.subject} onClick={()=>{
                       if(editTarget) handleModifierTuteur();
