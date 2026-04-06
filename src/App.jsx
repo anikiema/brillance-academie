@@ -416,10 +416,27 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 function InscriptionParent({ onClose }) {
   const [step, setStep] = useState(0);
   const [d, setD] = useState({ nom:"", email:"", tel:"", ville:"", enfant:"", age:"", niveau:"", matieres:[], objectif:"", frequence:"1 fois par semaine" });
+  const [saving, setSaving] = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = m => set("matieres", d.matieres.includes(m)?d.matieres.filter(x=>x!==m):[...d.matieres,m]);
 
   const ok = [d.nom&&d.email&&d.tel&&d.ville, d.enfant&&d.niveau, d.matieres.length>0, true];
+
+  const envoyer = async () => {
+    setSaving(true);
+    try {
+      await ajouterParent({
+        nom:       d.nom,
+        email:     d.email,
+        telephone: d.tel,
+        enfant:    `${d.enfant}${d.niveau ? ", " + d.niveau : ""}`,
+        statut:    "En attente",
+        sessions:  0,
+      });
+    } catch(e) { console.error(e); }
+    setSaving(false);
+    setStep(4);
+  };
 
   if (step===4) return (
     <Modal title="Inscription confirmée !" onClose={onClose}>
@@ -491,9 +508,9 @@ function InscriptionParent({ onClose }) {
       {screens[step]}
       <div style={{display:"flex",gap:10,marginTop:20}}>
         {step>0 && <button onClick={()=>setStep(s=>s-1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>}
-        <button disabled={!ok[step]} onClick={()=>setStep(s=>s+1)}
-          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]?"#4f46e5":"#e5e7eb",color:ok[step]?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]?"pointer":"not-allowed",transition:"background .15s"}}>
-          {step===3?"Envoyer ma demande ✓":"Continuer →"}
+        <button disabled={!ok[step]||saving} onClick={step===3 ? envoyer : ()=>setStep(s=>s+1)}
+          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed",transition:"background .15s"}}>
+          {saving?"Envoi en cours…":step===3?"Envoyer ma demande ✓":"Continuer →"}
         </button>
       </div>
     </Modal>
@@ -505,10 +522,31 @@ function InscriptionParent({ onClose }) {
 function InscriptionTuteur({ onClose }) {
   const [step, setStep] = useState(0);
   const [d, setD] = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[] });
+  const [saving, setSaving] = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
 
   const ok = [d.prenom&&d.nom&&d.email&&d.tel&&d.ville, d.matieres.length>0&&d.niveaux.length>0&&d.experience, d.jours.length>0, true];
+
+  const envoyer = async () => {
+    setSaving(true);
+    try {
+      await ajouterTuteur({
+        prenom:       d.prenom,
+        nom:          d.nom,
+        subject:      d.matieres[0] || "",
+        price:        27500,
+        statut:       "En attente",
+        bio:          `${d.experience} d'expérience. ${d.diplome}`.trim(),
+        niveaux:      d.niveaux,
+        availableDays: d.jours,
+        quartier:     "",
+        emoji:        "👩‍🏫",
+      });
+    } catch(e) { console.error(e); }
+    setSaving(false);
+    setStep(4);
+  };
 
   if (step===4) return (
     <Modal title="Candidature envoyée !" onClose={onClose}>
@@ -567,9 +605,9 @@ function InscriptionTuteur({ onClose }) {
       {screens[step]}
       <div style={{display:"flex",gap:10,marginTop:20}}>
         {step>0 && <button onClick={()=>setStep(s=>s-1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>}
-        <button disabled={!ok[step]} onClick={()=>setStep(s=>s+1)}
-          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]?"#4f46e5":"#e5e7eb",color:ok[step]?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]?"pointer":"not-allowed"}}>
-          {step===3?"Envoyer ma candidature ✓":"Continuer →"}
+        <button disabled={!ok[step]||saving} onClick={step===3 ? envoyer : ()=>setStep(s=>s+1)}
+          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed"}}>
+          {saving?"Envoi en cours…":step===3?"Envoyer ma candidature ✓":"Continuer →"}
         </button>
       </div>
     </Modal>
@@ -1348,30 +1386,53 @@ function LoginAdmin({ onSuccess, onBack }) {
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 
+// ─── Hash routing helpers ─────────────────────────────────────────────────────
+function getHash() {
+  return window.location.hash.replace(/^#\/?/, "") || "accueil";
+}
+function setHash(h) {
+  window.location.hash = "/" + h;
+}
+
 function App() {
-  const [page, setPage]           = useState("site");
+  const [hash, setHashState]      = useState(getHash);
   const [booking, setBooking]     = useState(null);
   const [adminAuth, setAdminAuth] = useState(false);
 
+  useEffect(() => {
+    const onHash = () => setHashState(getHash());
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const goTo = (h) => { setHash(h); setHashState(h); };
+
+  const page = hash.startsWith("paiement") ? "payment"
+             : hash === "admin"            ? "admin"
+             : "site";
+
   if (page === "admin" && !adminAuth)
-    return <LoginAdmin onSuccess={() => setAdminAuth(true)} onBack={() => setPage("site")} />;
+    return <LoginAdmin
+      onSuccess={() => setAdminAuth(true)}
+      onBack={() => goTo("accueil")}
+    />;
 
   if (page === "admin" && adminAuth)
-    return <Admin goHome={() => { setPage("site"); setAdminAuth(false); }} />;
+    return <Admin goHome={() => { goTo("accueil"); setAdminAuth(false); }} />;
 
   if (page === "payment" && booking)
     return (
       <PagePaiement
         booking={booking}
-        onBack={()  => setPage("site")}
-        onSuccess={() => { setBooking(null); setPage("site"); }}
+        onBack={()  => goTo("accueil")}
+        onSuccess={() => { setBooking(null); goTo("accueil"); }}
       />
     );
 
   return (
     <SitePublic
-      goAdmin={()  => setPage("admin")}
-      goPayment={b => { setBooking(b); setPage("payment"); }}
+      goAdmin={()  => goTo("admin")}
+      goPayment={b => { setBooking(b); goTo("paiement"); }}
     />
   );
 }
