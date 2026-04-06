@@ -524,12 +524,12 @@ function InscriptionTuteur({ onClose }) {
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Votre profil</p>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
-        <Inp label="Prénom" value={d.prenom} onChange={v=>set("prenom",v)} placeholder="Sophie"/>
-        <Inp label="Nom" value={d.nom} onChange={v=>set("nom",v)} placeholder="Martin"/>
+        <Inp label="Prénom" value={d.prenom} onChange={v=>set("prenom",v)} placeholder=""/>
+        <Inp label="Nom" value={d.nom} onChange={v=>set("nom",v)} placeholder=""/>
       </div>
-      <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="sophie@email.fr" type="email"/>
-      <Inp label="Téléphone" value={d.tel} onChange={v=>set("tel",v)} placeholder="77 XXX XX XX" type="tel"/>
-      <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder="Ouagadougou"/>
+      <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="" type="email"/>
+      <Inp label="Téléphone" value={d.tel} onChange={v=>set("tel",v)} placeholder="" type="tel"/>
+      <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder=""/>
     </div>,
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Vos compétences</p>
