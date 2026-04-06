@@ -169,6 +169,8 @@ export async function ajouterTuteur(tuteur) {
     .insert({
       prenom:             tuteur.prenom || tuteur.name || "",
       nom:                tuteur.nom   || "",
+      email:              tuteur.email || "",
+      tel:                tuteur.tel   || "",
       subject:            tuteur.subject,
       price:              tuteur.price || 27500,
       statut:             tuteur.statut || "En attente",
@@ -199,6 +201,11 @@ export async function modifierTuteur(id, changes) {
     price:   changes.price,
     statut:  changes.statut,
   };
+  if (changes.email     !== undefined) update.email      = changes.email;
+  if (changes.tel       !== undefined) update.tel        = changes.tel;
+  if (changes.bio       !== undefined) update.bio        = changes.bio;
+  if (changes.niveaux   !== undefined) update.niveaux    = changes.niveaux;
+  if (changes.availableDays !== undefined) update.available_days = changes.availableDays;
   if (changes.quartiersCouVerts !== undefined)
     update.quartiers_couverts = changes.quartiersCouVerts;
   const { error } = await supabase

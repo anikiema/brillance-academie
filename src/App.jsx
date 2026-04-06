@@ -813,7 +813,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
   const filteredTuteurs = tuteursList.filter(t => {
     if (t.statut !== "Actif") return false;
-    if (activeM && t.subject !== activeM) return false;
+    if (activeM && !(t.subject||"").split(/,\s*/).some(s => s.trim() === activeM)) return false;
     if (activeQ) {
       const qc = t.quartiersCouVerts || [];
       if (qc.length > 0 && !qc.includes(activeQ) && !qc.includes("Tous")) return false;
@@ -896,7 +896,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
           {/* Matières */}
           <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Matière</span>
+            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Matières</span>
             <Pill active={activeM===null} onClick={()=>setActiveM(null)}>Toutes</Pill>
             {MATIERES.map(({label,emoji})=>(
               <Pill key={label} active={activeM===label} onClick={()=>setActiveM(activeM===label?null:label)}>{emoji} {label}</Pill>
@@ -905,7 +905,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
           {/* Quartier */}
           <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Quartier</span>
+            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Quartiers</span>
             <Pill active={activeQ===null} onClick={()=>setActiveQ(null)}>Tous</Pill>
             {QUARTIERS.map(q=>(
               <Pill key={q} active={activeQ===q} onClick={()=>setActiveQ(activeQ===q?null:q)}>📍 {q}</Pill>
@@ -914,7 +914,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
           {/* Niveau */}
           <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Niveau</span>
+            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Niveaux</span>
             <Pill active={activeN===null} onClick={()=>setActiveN(null)}>Tous</Pill>
             {NIVEAUX.map(n=>(
               <Pill key={n} active={activeN===n} onClick={()=>setActiveN(activeN===n?null:n)}>{n}</Pill>
