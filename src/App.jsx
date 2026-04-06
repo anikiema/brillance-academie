@@ -561,7 +561,7 @@ function SitePublic({ goAdmin, goPayment }) {
   const S = { // shared styles
     page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#fff", margin:0 },
     nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #f3f4f6", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 },
-    navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px" },
+    navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Comic Sans MS','Comic Sans',cursive" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
     section: { padding:"80px 40px", maxWidth:1100, margin:"0 auto" },
     label:   { fontSize:11, fontWeight:700, color:"#6366f1", textTransform:"uppercase", letterSpacing:2, display:"block", marginBottom:10 },
