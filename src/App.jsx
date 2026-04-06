@@ -30,7 +30,13 @@ const TUTEURS = [
 
 const fmt = n => n.toLocaleString("fr-FR") + " FCFA";
 
-const QUARTIERS = ["Bonheur Ville","Ouaga 2000","Hamdalaye","Gounghin","Patte d'Oie","Wemtenga","Pissy","Karpala","Dassasgo"];
+const QUARTIERS = [
+  "Bonheur Ville","Ouaga 2000","Hamdalaye","Gounghin","Patte d'Oie","Wemtenga",
+  "Pissy","Karpala","Dassasgo","Zogona","Tampouy","Nongr-Masson","Bogodogo",
+  "Baskuy","Sig-Noghin","Dapoya","Bilbalgo","Samandin","Wayalghin","Tanghin",
+  "Larlé","Cissin","Koulouba","Zone du Bois","Nioko","Paul VI",
+  "Secteur 22","Secteur 27","Secteur 28","Secteur 30","Autres",
+];
 
 const ECOLES_PARTENAIRES = [
   "École Primaire Privée Les Élites De Demain · Bonheur Ville",
