@@ -163,49 +163,10 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
   const canPay = mobileMethod ? phone.replace(/[\s+]/g,"").length >= 9 : cardNum.length >= 16 && expiry.length >= 4 && cvv.length >= 3;
 
-  const pay = async () => {
+  const pay = () => {
     if (!canPay) return;
     setLoading(true);
-    try {
-      // 1. Créer la réservation dans Supabase
-      const { ref } = await creerReservation({
-        tuteurId:    tuteur?.id,
-        parentNom:   booking.parentNom,
-        parentEmail: booking.parentEmail,
-        enfant, niveau, jour, creneau,
-        montant:     essaiAmount,
-      });
-
-      // 2. Sauvegarder les infos en sessionStorage (pour la page confirmation)
-      sessionStorage.setItem("booking_pending", JSON.stringify({
-        ...booking, ref, essaiAmount, method, phone,
-      }));
-
-      // 3. Appeler notre API serverless → CinetPay
-      const res = await fetch("/api/initier-paiement", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          montant:         essaiAmount,
-          transactionId:   ref,
-          nomClient:       booking.parentNom || "Client",
-          emailClient:     booking.parentEmail || "",
-          telephoneClient: phone,
-          description:     `Séance ${tuteur?.subject} — ${tuteur?.prenom} ${tuteur?.nom}`,
-        }),
-      });
-      const data = await res.json();
-
-      if (data.paymentUrl) {
-        // 4. Rediriger vers la page de paiement CinetPay
-        window.location.href = data.paymentUrl;
-      } else {
-        throw new Error(data.error || "Erreur paiement");
-      }
-    } catch (err) {
-      setLoading(false);
-      alert("Erreur : " + err.message + "\n\n(En développement local, le paiement CinetPay nécessite un serveur en ligne.)");
-    }
+    setTimeout(() => { setLoading(false); setDone(true); setTimeout(onSuccess, 1600); }, 2400);
   };
 
   const S = { fontFamily:"'Inter',-apple-system,sans-serif", color:"#111827" };
@@ -582,19 +543,10 @@ function SitePublic({ goAdmin, goPayment }) {
   const [creneau, setCreneau] = useState(null);
   const [bi, setBi]         = useState({nom:"",email:"",enfant:"",niveau:""});
   const [bookDone, setBookDone] = useState(false);
-  // Supabase : tuteurs chargés depuis la base de données
-  const [tuteursList, setTuteursList] = useState(TUTEURS);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    getTuteurs()
-      .then(data => { if (data?.length) setTuteursList(data); })
-      .catch(() => { /* Fallback sur données statiques */ });
-  }, []);
 
   const setBI = (k,v) => setBi(p=>({...p,[k]:v}));
 
-  const filteredTuteurs = tuteursList.filter(t => {
+  const filteredTuteurs = TUTEURS.filter(t => {
     if (t.statut !== "Actif") return false;
     if (activeM && t.subject !== activeM) return false;
     if (activeQ && t.quartier !== activeQ) return false;
@@ -1255,34 +1207,79 @@ function Admin({ goHome }) {
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 
-export default function App() {
-  const [page, setPage]       = useState("site");
-  const [adminAuth, setAdminAuth] = useState(false);
-  const [booking, setBooking] = useState(null);
+// ─── LOGIN ADMIN ──────────────────────────────────────────────────────────────
 
-  // Détecter le retour depuis CinetPay (URL /confirmation)
-  useEffect(() => {
-    const path = window.location.pathname;
-    if (path === "/confirmation") {
-      const raw = sessionStorage.getItem("booking_pending");
-      if (raw) {
-        try {
-          const b = JSON.parse(raw);
-          sessionStorage.removeItem("booking_pending");
-          setBooking(b);
-          setPage("payment");
-        } catch {}
-      }
-      // Nettoyer l'URL sans recharger la page
-      window.history.replaceState({}, "", "/");
-    }
-  }, []);
+function LoginAdmin({ onSuccess, onBack }) {
+  const [pwd, setPwd]     = useState("");
+  const [error, setError] = useState(false);
+  const [show, setShow]   = useState(false);
+
+  const check = () => {
+    if (pwd === "Kayden2020@$") { onSuccess(); }
+    else { setError(true); setTimeout(() => setError(false), 1500); }
+  };
+
+  return (
+    <div style={{minHeight:"100vh",background:"#0f172a",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Inter',sans-serif"}}>
+      <div style={{background:"#1e293b",borderRadius:24,padding:48,width:"100%",maxWidth:400,boxShadow:"0 25px 60px rgba(0,0,0,.4)"}}>
+        <div style={{textAlign:"center",marginBottom:36}}>
+          <div style={{fontSize:40,marginBottom:12}}>🎓</div>
+          <h1 style={{fontSize:22,fontWeight:900,color:"#fff",margin:"0 0 6px"}}>Brillance Académie</h1>
+          <p style={{fontSize:13,color:"#64748b",margin:0}}>Accès administration</p>
+        </div>
+
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{position:"relative"}}>
+            <input
+              type={show ? "text" : "password"}
+              value={pwd}
+              onChange={e => setPwd(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && check()}
+              placeholder="Mot de passe"
+              style={{
+                width:"100%", padding:"14px 48px 14px 18px",
+                border:`1.5px solid ${error ? "#ef4444" : "#334155"}`,
+                borderRadius:12, background:"#0f172a", color:"#fff",
+                fontSize:15, outline:"none", boxSizing:"border-box",
+                transition:"border-color .2s",
+              }}
+              autoFocus
+            />
+            <button onClick={() => setShow(s => !s)}
+              style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",color:"#64748b",cursor:"pointer",fontSize:16}}>
+              {show ? "🙈" : "👁"}
+            </button>
+          </div>
+
+          {error && <p style={{color:"#ef4444",fontSize:13,margin:0,textAlign:"center"}}>Mot de passe incorrect</p>}
+
+          <button onClick={check}
+            style={{padding:"14px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+            Accéder au tableau de bord →
+          </button>
+
+          <button onClick={onBack}
+            style={{padding:"10px",background:"none",border:"none",color:"#64748b",fontSize:13,cursor:"pointer"}}>
+            ← Retour au site
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── APP ──────────────────────────────────────────────────────────────────────
+
+function App() {
+  const [page, setPage]           = useState("site");
+  const [booking, setBooking]     = useState(null);
+  const [adminAuth, setAdminAuth] = useState(false);
 
   if (page === "admin" && !adminAuth)
     return <LoginAdmin onSuccess={() => setAdminAuth(true)} onBack={() => setPage("site")} />;
 
   if (page === "admin" && adminAuth)
-    return <Admin goHome={() => { setPage("site"); setAdminAuth(false); }} />;{() => setPage("site")} />;
+    return <Admin goHome={() => { setPage("site"); setAdminAuth(false); }} />;
 
   if (page === "payment" && booking)
     return (
