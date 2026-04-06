@@ -618,6 +618,146 @@ function InscriptionTuteur({ onClose }) {
 
 // ─── SITE PUBLIC ───────────────────────────────────────────────────────────────
 
+// ─── PAGE PROFIL TUTEUR ───────────────────────────────────────────────────────
+function PageTuteur({ tuteurId, goHome, goPayment }) {
+  const [tuteur, setTuteur]       = useState(null);
+  const [avisTuteur, setAvisTuteur] = useState([]);
+  const [showInscription, setShowInscription] = useState(false);
+  const [loading, setLoading]     = useState(true);
+
+  useEffect(() => {
+    // Cherche d'abord dans Supabase, sinon dans les données locales
+    getTuteurs()
+      .then(data => {
+        const t = data.find(t => String(t.id) === String(tuteurId));
+        if (t) setTuteur(t);
+        else setTuteur(TUTEURS.find(t => String(t.id) === String(tuteurId)) || null);
+        setLoading(false);
+      })
+      .catch(() => {
+        setTuteur(TUTEURS.find(t => String(t.id) === String(tuteurId)) || null);
+        setLoading(false);
+      });
+    getAvis()
+      .then(data => setAvisTuteur(data.filter(a => a.type === "tuteur")))
+      .catch(() => {});
+  }, [tuteurId]);
+
+  if (loading) return (
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Comic Sans MS',cursive"}}>
+      <p style={{color:"#9ca3af"}}>Chargement…</p>
+    </div>
+  );
+
+  if (!tuteur) return (
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'Comic Sans MS',cursive",gap:16}}>
+      <p style={{fontSize:48}}>😕</p>
+      <p style={{color:"#374151",fontWeight:700,fontSize:18}}>Tuteur introuvable</p>
+      <button onClick={goHome} style={{padding:"10px 28px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,cursor:"pointer"}}>← Retour</button>
+    </div>
+  );
+
+  const essaiPrice = Math.round(tuteur.price * 0.8);
+
+  return (
+    <div style={{minHeight:"100vh",background:"#f0efe8",backgroundImage:"repeating-linear-gradient(transparent,transparent 27px,rgba(148,163,184,0.25) 27px,rgba(148,163,184,0.25) 28px)",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+
+      {/* Navbar */}
+      <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
+        <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
+        <button onClick={goHome} style={{padding:"8px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Tous les tuteurs</button>
+      </nav>
+
+      <div style={{maxWidth:820,margin:"0 auto",padding:"48px 24px"}}>
+
+        {/* Carte principale */}
+        <div style={{background:"#fff",borderRadius:24,padding:36,marginBottom:24,boxShadow:"0 4px 24px rgba(0,0,0,.07)"}}>
+          <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
+            <div style={{width:90,height:90,borderRadius:999,background:"#ede9fe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:48,flexShrink:0}}>{tuteur.emoji||"👩‍🏫"}</div>
+            <div style={{flex:1,minWidth:200}}>
+              <h1 style={{fontSize:26,fontWeight:900,margin:"0 0 4px",color:"#111827"}}>{tuteur.prenom} {tuteur.nom}</h1>
+              <p style={{fontSize:16,color:"#6366f1",fontWeight:700,margin:"0 0 10px"}}>{tuteur.subject}</p>
+              <div style={{display:"flex",gap:16,flexWrap:"wrap",fontSize:14,color:"#6b7280"}}>
+                <span>📍 {tuteur.quartier||"Ouagadougou"}</span>
+                <span>🎓 {tuteur.sessions} séances réalisées</span>
+                <span><Stars n={tuteur.rating}/></span>
+              </div>
+            </div>
+            <div style={{textAlign:"center",background:"#f5f3ff",borderRadius:16,padding:"16px 24px",flexShrink:0}}>
+              <p style={{fontSize:12,color:"#9ca3af",margin:"0 0 4px"}}>Tarif / heure</p>
+              <p style={{fontSize:28,fontWeight:900,color:"#4f46e5",margin:"0 0 4px"}}>{fmt(tuteur.price)}</p>
+              <p style={{fontSize:12,color:"#10b981",fontWeight:700,margin:0}}>1ère séance −20 % → {fmt(essaiPrice)}</p>
+            </div>
+          </div>
+
+          {tuteur.bio && (
+            <div style={{marginTop:24,padding:"16px 20px",background:"#f8fafc",borderRadius:14,borderLeft:"4px solid #6366f1"}}>
+              <p style={{fontSize:14,color:"#374151",lineHeight:1.8,margin:0}}>"{tuteur.bio}"</p>
+            </div>
+          )}
+        </div>
+
+        {/* Infos détaillées */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:24}}>
+          <div style={{background:"#fff",borderRadius:16,padding:20,boxShadow:"0 2px 8px rgba(0,0,0,.05)"}}>
+            <p style={{fontWeight:700,fontSize:14,color:"#111827",margin:"0 0 12px"}}>📅 Disponibilités</p>
+            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+              {(tuteur.availableDays||[]).map(j=>(
+                <span key={j} style={{padding:"5px 12px",background:"#dcfce7",color:"#065f46",borderRadius:999,fontSize:13,fontWeight:600}}>{j}</span>
+              ))}
+              {!(tuteur.availableDays||[]).length && <span style={{color:"#9ca3af",fontSize:13}}>Non renseigné</span>}
+            </div>
+          </div>
+          <div style={{background:"#fff",borderRadius:16,padding:20,boxShadow:"0 2px 8px rgba(0,0,0,.05)"}}>
+            <p style={{fontWeight:700,fontSize:14,color:"#111827",margin:"0 0 12px"}}>📚 Niveaux enseignés</p>
+            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+              {(tuteur.niveaux||[]).map(n=>(
+                <span key={n} style={{padding:"5px 12px",background:"#ede9fe",color:"#4f46e5",borderRadius:999,fontSize:13,fontWeight:600}}>{n}</span>
+              ))}
+              {!(tuteur.niveaux||[]).length && <span style={{color:"#9ca3af",fontSize:13}}>Non renseigné</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{background:"#fff",borderRadius:20,padding:28,marginBottom:24,boxShadow:"0 4px 24px rgba(0,0,0,.07)",textAlign:"center"}}>
+          <h2 style={{fontSize:20,fontWeight:800,margin:"0 0 8px",color:"#111827"}}>Prêt à commencer ?</h2>
+          <p style={{color:"#6b7280",fontSize:14,margin:"0 0 20px"}}>Réservez directement ou inscrivez-vous pour trouver le tuteur idéal.</p>
+          <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
+            <button onClick={()=>goPayment({tuteur,jour:tuteur.availableDays?.[0]||"À définir",creneau:"À définir",enfant:"",niveau:"",parentNom:"",parentEmail:""})}
+              style={{padding:"14px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+              📅 Réserver avec {tuteur.prenom} →
+            </button>
+            <button onClick={()=>setShowInscription(true)}
+              style={{padding:"14px 32px",background:"#f0fdf4",color:"#16a34a",border:"2px solid #86efac",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+              👨‍👩‍👧 S'inscrire comme parent
+            </button>
+          </div>
+        </div>
+
+        {/* Avis */}
+        {avisTuteur.length > 0 && (
+          <div style={{background:"#fff",borderRadius:20,padding:28,boxShadow:"0 4px 24px rgba(0,0,0,.07)"}}>
+            <h2 style={{fontSize:18,fontWeight:800,margin:"0 0 20px",color:"#111827"}}>⭐ Avis des familles</h2>
+            <div style={{display:"flex",flexDirection:"column",gap:16}}>
+              {avisTuteur.slice(0,4).map((a,i)=>(
+                <div key={i} style={{padding:"16px",background:"#f8fafc",borderRadius:12}}>
+                  <div style={{display:"flex",gap:2,marginBottom:6}}>{Array.from({length:a.note},(_,j)=><span key={j} style={{color:"#f59e0b"}}>★</span>)}</div>
+                  <p style={{fontSize:14,color:"#374151",lineHeight:1.7,margin:"0 0 8px",fontStyle:"italic"}}>« {a.commentaire} »</p>
+                  <p style={{fontSize:12,fontWeight:700,color:"#111827",margin:0}}>{a.auteur} · <span style={{color:"#9ca3af",fontWeight:400}}>{a.ville}</span></p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Modal inscription parent */}
+      {showInscription && <InscriptionParent onClose={()=>setShowInscription(false)}/>}
+    </div>
+  );
+}
+
 function SitePublic({ goAdmin, goPayment }) {
   const [modal, setModal]   = useState(null);
   const [search, setSearch] = useState("");
@@ -803,12 +943,18 @@ function SitePublic({ goAdmin, goPayment }) {
                   {t.availableDays.slice(0,2).map(j=><span key={j} style={{fontSize:11,background:"#f3f4f6",padding:"3px 8px",borderRadius:999,color:"#6b7280"}}>{j}</span>)}
                 </div>
               </div>
-              <button onClick={()=>{setTuteur(t);setBook(1);scrollTo("book");}}
-                style={{width:"100%",padding:"11px",borderRadius:12,border:"1.5px solid #e5e7eb",background:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",color:"#4f46e5",marginTop:4,transition:"all .15s"}}
-                onMouseOver={e=>{e.target.style.background="#4f46e5";e.target.style.color="#fff";e.target.style.borderColor="#4f46e5"}}
-                onMouseOut={e=>{e.target.style.background="#fff";e.target.style.color="#4f46e5";e.target.style.borderColor="#e5e7eb"}}>
-                Réserver une séance →
-              </button>
+              <div style={{display:"flex",gap:8,marginTop:4}}>
+                <button onClick={()=>{ setHash("tuteur/"+t.id); setHashState("tuteur/"+t.id); }}
+                  style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #e5e7eb",background:"#f8fafc",fontWeight:700,fontSize:13,cursor:"pointer",color:"#374151"}}>
+                  👤 Voir le profil
+                </button>
+                <button onClick={()=>{setTuteur(t);setBook(1);scrollTo("book");}}
+                  style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #4f46e5",background:"#4f46e5",fontWeight:700,fontSize:13,cursor:"pointer",color:"#fff"}}
+                  onMouseOver={e=>e.currentTarget.style.background="#3730a3"}
+                  onMouseOut={e=>e.currentTarget.style.background="#4f46e5"}>
+                  📅 Réserver →
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -1649,7 +1795,10 @@ function App() {
 
   const page = hash.startsWith("paiement") ? "payment"
              : hash === "admin"            ? "admin"
+             : hash.startsWith("tuteur/")  ? "tuteur"
              : "site";
+
+  const tuteurId = hash.startsWith("tuteur/") ? hash.split("/")[1] : null;
 
   if (page === "admin" && !adminAuth)
     return <LoginAdmin
@@ -1659,6 +1808,13 @@ function App() {
 
   if (page === "admin" && adminAuth)
     return <Admin goHome={() => { goTo("accueil"); setAdminAuth(false); }} />;
+
+  if (page === "tuteur" && tuteurId)
+    return <PageTuteur
+      tuteurId={tuteurId}
+      goHome={() => goTo("accueil")}
+      goPayment={b => { setBooking(b); goTo("paiement"); }}
+    />;
 
   if (page === "payment" && booking)
     return (
