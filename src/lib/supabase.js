@@ -104,6 +104,49 @@ export async function changerStatutReservation(id, statut) {
   if (error) throw error
 }
 
+// ─── Avis ─────────────────────────────────────────────────────────────────────
+export async function getAvis() {
+  const { data, error } = await supabase
+    .from('avis')
+    .select('*')
+    .eq('statut', 'approuvé')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+export async function getTousAvis() {
+  const { data, error } = await supabase
+    .from('avis')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+export async function ajouterAvis({ auteur, ville, commentaire, note, type }) {
+  const { error } = await supabase
+    .from('avis')
+    .insert({ auteur, ville, commentaire, note, type, statut: 'en_attente' })
+  if (error) throw error
+}
+
+export async function changerStatutAvis(id, statut) {
+  const { error } = await supabase
+    .from('avis')
+    .update({ statut })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function supprimerAvis(id) {
+  const { error } = await supabase
+    .from('avis')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
+
 // ─── Tuteurs (admin) ───────────────────────────────────────────────────────────
 export async function getTousTuteurs() {
   const { data, error } = await supabase

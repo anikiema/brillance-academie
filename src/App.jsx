@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -631,6 +631,15 @@ function SitePublic({ goAdmin, goPayment }) {
   const [creneau, setCreneau] = useState(null);
   const [bi, setBi]         = useState({nom:"",email:"",enfant:"",niveau:""});
   const [bookDone, setBookDone] = useState(false);
+  const [avis, setAvis]         = useState([]);
+  const [showAvisForm, setShowAvisForm] = useState(false);
+  const [avisForm, setAvisForm] = useState({ auteur:"", ville:"", commentaire:"", note:5, type:"parent" });
+  const [avisSaving, setAvisSaving] = useState(false);
+  const [avisEnvoye, setAvisEnvoye] = useState(false);
+
+  useEffect(() => {
+    getAvis().then(data => setAvis(data)).catch(() => {});
+  }, []);
 
   const setBI = (k,v) => setBi(p=>({...p,[k]:v}));
 
@@ -872,31 +881,95 @@ function SitePublic({ goAdmin, goPayment }) {
       {/* AVIS */}
       <div id="avis" style={{...S.section,background:"rgba(255,255,255,0.35)",maxWidth:"none",padding:"80px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:40}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:40,flexWrap:"wrap",gap:16}}>
             <div><span style={S.label}>Témoignages</span><h2 style={{...S.h2,marginBottom:0}}>Ce que disent les familles</h2></div>
-            <div style={{display:"flex",gap:8}}>
+            <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
               {[["parents","👨‍👩‍👧 Parents"],["tuteurs","📖 Tuteurs"]].map(([v,l])=>(
                 <Pill key={v} active={tab===v} onClick={()=>setTab(v)}>{l}</Pill>
               ))}
+              <button onClick={()=>{ setAvisForm({auteur:"",ville:"",commentaire:"",note:5,type:tab}); setShowAvisForm(true); setAvisEnvoye(false); }}
+                style={{padding:"8px 18px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>
+                ✏️ Laisser un avis
+              </button>
             </div>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:20}}>
-            {(tab==="parents" ? [
-              {q:"Mon fils avait de grosses difficultés en maths. Après 4 séances, il a eu 14/20 à son contrôle. Je suis bluffée !",a:"Aminata D.",v:"Ouaga 2000",s:5},
-              {q:"Le tuteur est venu à domicile, c'était parfait. Ma fille est plus motivée et ses notes progressent.",a:"Ibrahima S.",v:"Pikine",s:5},
-              {q:"Inscription rapide, tuteur trouvé en 24h. Je recommande à tous les parents !",a:"Rokhaya N.",v:"Hamdalaye",s:5},
-              {q:"On reçoit un compte-rendu après chaque séance. C'est très rassurant.",a:"Ndéye F.",v:"Gounghin",s:4},
-            ] : [
-              {q:"J'ai trouvé des familles vraiment engagées. Le système est simple et la rémunération est correcte.",a:"Kwame A.",v:"Tuteur Mathématiques",s:5},
-              {q:"Brillance s'occupe de tout l'administratif. Je n'ai qu'à enseigner.",a:"Sofia R.",v:"Tutrice Sciences",s:5},
-            ]).map(({q,a,v,s},i)=>(
-              <div key={i} style={{...S.card,gap:12}}>
-                <div style={{display:"flex",gap:2}}>{Array.from({length:s},(_,i)=><span key={i} style={{color:"#f59e0b"}}>★</span>)}</div>
-                <p style={{fontSize:14,color:"#374151",lineHeight:1.7,margin:0,fontStyle:"italic"}}>« {q} »</p>
-                <div><p style={{fontWeight:700,fontSize:14,margin:0,color:"#111827"}}>{a}</p><p style={{fontSize:12,color:"#9ca3af",margin:"2px 0 0"}}>{v}</p></div>
+
+          {/* Avis réels depuis Supabase */}
+          {avis.filter(a=>a.type===tab).length > 0 ? (
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:20}}>
+              {avis.filter(a=>a.type===tab).map((a,i)=>(
+                <div key={i} style={{...S.card,gap:12}}>
+                  <div style={{display:"flex",gap:2}}>{Array.from({length:a.note},(_,j)=><span key={j} style={{color:"#f59e0b"}}>★</span>)}</div>
+                  <p style={{fontSize:14,color:"#374151",lineHeight:1.7,margin:0,fontStyle:"italic"}}>« {a.commentaire} »</p>
+                  <div><p style={{fontWeight:700,fontSize:14,margin:0,color:"#111827"}}>{a.auteur}</p><p style={{fontSize:12,color:"#9ca3af",margin:"2px 0 0"}}>{a.ville}</p></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{textAlign:"center",padding:"48px 0",color:"#9ca3af"}}>
+              <p style={{fontSize:16}}>Soyez le premier à laisser un avis ! 🌟</p>
+            </div>
+          )}
+
+          {/* Formulaire avis */}
+          {showAvisForm && (
+            <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:16}}>
+              <div style={{background:"#fff",borderRadius:24,padding:36,width:"100%",maxWidth:460,position:"relative"}}>
+                <button onClick={()=>setShowAvisForm(false)} style={{position:"absolute",top:16,right:18,background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#9ca3af"}}>×</button>
+                {avisEnvoye ? (
+                  <div style={{textAlign:"center",padding:"24px 0"}}>
+                    <div style={{fontSize:52}}>🎉</div>
+                    <h3 style={{fontWeight:800,fontSize:20,margin:"16px 0 8px"}}>Merci pour votre avis !</h3>
+                    <p style={{color:"#6b7280",fontSize:14}}>Votre témoignage sera publié après validation par notre équipe.</p>
+                    <button onClick={()=>setShowAvisForm(false)} style={{marginTop:20,padding:"10px 28px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,cursor:"pointer"}}>Fermer</button>
+                  </div>
+                ) : (
+                  <>
+                    <h2 style={{fontSize:18,fontWeight:800,margin:"0 0 20px"}}>✏️ Laisser un avis</h2>
+                    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+                      <div style={{display:"flex",gap:8}}>
+                        {[["parent","👨‍👩‍👧 Parent"],["tuteur","📖 Tuteur"]].map(([v,l])=>(
+                          <button key={v} onClick={()=>setAvisForm(f=>({...f,type:v}))}
+                            style={{flex:1,padding:"10px",border:`2px solid ${avisForm.type===v?"#4f46e5":"#e5e7eb"}`,borderRadius:10,background:avisForm.type===v?"#f5f3ff":"#fff",fontWeight:700,fontSize:13,cursor:"pointer",color:avisForm.type===v?"#4f46e5":"#374151"}}>
+                            {l}
+                          </button>
+                        ))}
+                      </div>
+                      <Inp label="Votre nom" value={avisForm.auteur} onChange={v=>setAvisForm(f=>({...f,auteur:v}))} placeholder=""/>
+                      <Inp label="Ville / Quartier" value={avisForm.ville} onChange={v=>setAvisForm(f=>({...f,ville:v}))} placeholder=""/>
+                      <div>
+                        <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Note</label>
+                        <div style={{display:"flex",gap:6}}>
+                          {[1,2,3,4,5].map(n=>(
+                            <button key={n} onClick={()=>setAvisForm(f=>({...f,note:n}))}
+                              style={{fontSize:28,background:"none",border:"none",cursor:"pointer",color:n<=avisForm.note?"#f59e0b":"#d1d5db",padding:0}}>★</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:6}}>Votre commentaire</label>
+                        <textarea value={avisForm.commentaire} onChange={e=>setAvisForm(f=>({...f,commentaire:e.target.value}))}
+                          rows={4} placeholder="Partagez votre expérience avec Brillance Académie…"
+                          style={{width:"100%",padding:"12px 16px",border:"1.5px solid #e5e7eb",borderRadius:12,fontSize:14,resize:"vertical",outline:"none",boxSizing:"border-box",fontFamily:"inherit"}}/>
+                      </div>
+                      <button disabled={!avisForm.auteur||!avisForm.commentaire||avisSaving}
+                        onClick={async()=>{
+                          setAvisSaving(true);
+                          try {
+                            await ajouterAvis(avisForm);
+                            setAvisEnvoye(true);
+                          } catch(e){ alert("Erreur : "+e.message); }
+                          setAvisSaving(false);
+                        }}
+                        style={{padding:"13px",background:avisForm.auteur&&avisForm.commentaire?"#4f46e5":"#e5e7eb",color:avisForm.auteur&&avisForm.commentaire?"#fff":"#9ca3af",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:avisForm.auteur&&avisForm.commentaire?"pointer":"not-allowed"}}>
+                        {avisSaving?"Envoi en cours…":"Envoyer mon avis →"}
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1071,6 +1144,7 @@ function Admin({ goHome }) {
   const [parents, setParents]       = useState(PARENTS_INIT);
   const [tuteurs, setTuteurs]       = useState([]);
   const [reservations, setReservations] = useState([]);
+  const [tousAvis, setTousAvis]         = useState([]);
   const [loadingT, setLoadingT]     = useState(true);
   const [search, setSearch]   = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -1088,6 +1162,9 @@ function Admin({ goHome }) {
       .catch(() => {});
     getReservations()
       .then(data => setReservations(data))
+      .catch(() => {});
+    getTousAvis()
+      .then(data => setTousAvis(data))
       .catch(() => {});
   }, []);
 
@@ -1139,6 +1216,7 @@ function Admin({ goHome }) {
     {id:"reservations", icon:"📅",label:"Réservations"},
     {id:"parents",      icon:"👨‍👩‍👧",label:"Parents"},
     {id:"tuteurs",      icon:"📖",label:"Tuteurs"},
+    {id:"avis",         icon:"⭐",label:"Avis"},
   ];
 
   const openAdd = (defaults) => { setET(null); setForm(defaults); setShowForm(true); };
@@ -1348,6 +1426,61 @@ function Admin({ goHome }) {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* AVIS */}
+        {page==="avis" && (
+          <div>
+            <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:"0 0 8px"}}>Avis</h1>
+            <p style={{color:"#6b7280",fontSize:14,marginBottom:28}}>Approuvez les avis avant qu'ils apparaissent sur le site public.</p>
+            <div style={S.card}>
+              {tousAvis.length === 0 ? (
+                <p style={{textAlign:"center",color:"#9ca3af",padding:"40px 0"}}>Aucun avis pour l'instant.</p>
+              ) : (
+                <table style={{width:"100%",borderCollapse:"collapse"}}>
+                  <thead>
+                    <tr>{["Auteur","Ville","Type","Note","Commentaire","Statut","Action"].map(h=><th key={h} style={S.th}>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {tousAvis.map(a=>(
+                      <tr key={a.id}>
+                        <td style={{...S.td,fontWeight:600}}>{a.auteur}</td>
+                        <td style={S.td}>{a.ville||"—"}</td>
+                        <td style={S.td}><span style={{padding:"2px 8px",borderRadius:999,fontSize:12,fontWeight:700,background:a.type==="tuteur"?"#dcfce7":"#ede9fe",color:a.type==="tuteur"?"#065f46":"#4f46e5"}}>{a.type}</span></td>
+                        <td style={S.td}><span style={{color:"#f59e0b"}}>{"★".repeat(a.note)}</span></td>
+                        <td style={{...S.td,maxWidth:280,fontSize:13,color:"#374151"}}>« {a.commentaire} »</td>
+                        <td style={S.td}>
+                          <span style={{padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:700,
+                            background:a.statut==="approuvé"?"#dcfce7":"#fef3c7",
+                            color:a.statut==="approuvé"?"#065f46":"#92400e"}}>
+                            {a.statut}
+                          </span>
+                        </td>
+                        <td style={S.td}>
+                          <div style={{display:"flex",gap:6}}>
+                            {a.statut==="en_attente" && (
+                              <button onClick={async()=>{
+                                await changerStatutAvis(a.id,"approuvé");
+                                setTousAvis(tt=>tt.map(x=>x.id===a.id?{...x,statut:"approuvé"}:x));
+                              }} style={{padding:"4px 12px",background:"#dcfce7",color:"#065f46",border:"1px solid #86efac",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                                ✓ Approuver
+                              </button>
+                            )}
+                            <button onClick={async()=>{
+                              await supprimerAvis(a.id);
+                              setTousAvis(tt=>tt.filter(x=>x.id!==a.id));
+                            }} style={{padding:"4px 12px",background:"#fee2e2",color:"#991b1b",border:"1px solid #fca5a5",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                              🗑 Suppr.
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         )}
 
