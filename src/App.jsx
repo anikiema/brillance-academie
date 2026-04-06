@@ -20,25 +20,25 @@ const JOURS   = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 const CRENEAUX = ["08h00", "09h00", "10h00", "11h00", "14h00", "15h00", "16h00", "17h00"];
 
 const TUTEURS = [
-  { id:1, prenom:"Claire", nom:"B.",  subject:"Mathématiques",     rating:5, sessions:42, price:32500, availableDays:["Lundi","Mercredi","Vendredi"], statut:"Actif",     bio:"Spécialiste CP–CM2, passionnée par les méthodes ludiques.",            emoji:"👩‍🏫", quartier:"Plateau",     niveaux:["CP","CE1","CE2","CM1","CM2"] },
-  { id:2, prenom:"Kwame",  nom:"A.",  subject:"Lecture & phonics", rating:5, sessions:38, price:27500, availableDays:["Mardi","Jeudi","Samedi"],      statut:"Actif",     bio:"Expert en conscience phonologique et fluence de lecture.",              emoji:"👨‍🏫", quartier:"Almadies",    niveaux:["CP","CE1","CE2"] },
-  { id:3, prenom:"Sofia",  nom:"R.",  subject:"Sciences",          rating:4, sessions:27, price:35000, availableDays:["Lundi","Mardi","Jeudi"],       statut:"Actif",     bio:"Rend les sciences concrètes et amusantes pour les enfants.",            emoji:"👩‍🔬", quartier:"Mermoz",      niveaux:["CM1","CM2","6ème","5ème"] },
-  { id:4, prenom:"Liam",   nom:"T.",  subject:"Histoire & Géo",    rating:5, sessions:15, price:27500, availableDays:["Mercredi","Vendredi"],         statut:"Inactif",   bio:"Passionné par l'histoire de l'Afrique et du monde.",                   emoji:"👨‍🎓", quartier:"Fann",        niveaux:["6ème","5ème","4ème","3ème"] },
-  { id:5, prenom:"Amara",  nom:"N.",  subject:"Arts & Musique",    rating:4, sessions:0,  price:25000, availableDays:["Lundi","Samedi"],              statut:"En attente",bio:"Artiste et musicienne, accompagne les enfants avec créativité.",        emoji:"👩‍🎨", quartier:"Yoff",        niveaux:["CP","CE1","CE2","CM1","CM2"] },
-  { id:6, prenom:"Daniel", nom:"K.",  subject:"Technologie",       rating:5, sessions:31, price:40000, availableDays:["Mardi","Mercredi","Vendredi"], statut:"Actif",     bio:"Initie les enfants au code et à la pensée computationnelle.",           emoji:"👨‍💻", quartier:"Sacré-Cœur",  niveaux:["CM1","CM2","6ème","5ème","4ème","3ème"] },
+  { id:1, prenom:"Claire", nom:"B.",  subject:"Mathématiques",     rating:5, sessions:42, price:32500, availableDays:["Lundi","Mercredi","Vendredi"], statut:"Actif",     bio:"Spécialiste CP–CM2, passionnée par les méthodes ludiques.",            emoji:"👩‍🏫", quartier:"Ouaga 2000",  niveaux:["CP","CE1","CE2","CM1","CM2"] },
+  { id:2, prenom:"Kwame",  nom:"A.",  subject:"Lecture & phonics", rating:5, sessions:38, price:27500, availableDays:["Mardi","Jeudi","Samedi"],      statut:"Actif",     bio:"Expert en conscience phonologique et fluence de lecture.",              emoji:"👨‍🏫", quartier:"Hamdalaye",   niveaux:["CP","CE1","CE2"] },
+  { id:3, prenom:"Sofia",  nom:"R.",  subject:"Sciences",          rating:4, sessions:27, price:35000, availableDays:["Lundi","Mardi","Jeudi"],       statut:"Actif",     bio:"Rend les sciences concrètes et amusantes pour les enfants.",            emoji:"👩‍🔬", quartier:"Gounghin",    niveaux:["CM1","CM2","6ème","5ème"] },
+  { id:4, prenom:"Liam",   nom:"T.",  subject:"Histoire & Géo",    rating:5, sessions:15, price:27500, availableDays:["Mercredi","Vendredi"],         statut:"Inactif",   bio:"Passionné par l'histoire de l'Afrique et du monde.",                   emoji:"👨‍🎓", quartier:"Patte d'Oie", niveaux:["6ème","5ème","4ème","3ème"] },
+  { id:5, prenom:"Amara",  nom:"N.",  subject:"Arts & Musique",    rating:4, sessions:0,  price:25000, availableDays:["Lundi","Samedi"],              statut:"En attente",bio:"Artiste et musicienne, accompagne les enfants avec créativité.",        emoji:"👩‍🎨", quartier:"Wemtenga",    niveaux:["CP","CE1","CE2","CM1","CM2"] },
+  { id:6, prenom:"Daniel", nom:"K.",  subject:"Technologie",       rating:5, sessions:31, price:40000, availableDays:["Mardi","Mercredi","Vendredi"], statut:"Actif",     bio:"Initie les enfants au code et à la pensée computationnelle.",           emoji:"👨‍💻", quartier:"Pissy",       niveaux:["CM1","CM2","6ème","5ème","4ème","3ème"] },
 ];
 
 const fmt = n => n.toLocaleString("fr-FR") + " FCFA";
 
-const QUARTIERS = ["Plateau","Almadies","Mermoz","Sacré-Cœur","Fann","Yoff","Point E","Ouakam"];
+const QUARTIERS = ["Ouaga 2000","Hamdalaye","Gounghin","Patte d'Oie","Wemtenga","Pissy","Karpala","Dassasgo"];
 
 const ECOLES_PARTENAIRES = [
-  "École Victor Hugo · Dakar",
-  "Collège Léopold Sédar · Thiès",
-  "École Sainte-Marie · Saint-Louis",
-  "Institut Excellence · Ziguinchor",
-  "École Les Étoiles · Kaolack",
-  "Académie Sunnydale · Rufisque",
+  "École Privée La Réussite · Ouaga 2000",
+  "Collège Saint-Viateur · Gounghin",
+  "École Les Étoiles Brillantes · Hamdalaye",
+  "Institut Sainte-Famille · Patte d'Oie",
+  "École Primaire La Lumière · Wemtenga",
+  "Académie Excellence · Pissy",
 ];
 
 const PARENTS_INIT = [
@@ -391,7 +391,7 @@ function InscriptionParent({ onClose }) {
         <Inp label="Votre nom complet" value={d.nom} onChange={v=>set("nom",v)} placeholder="Aminata Diallo"/>
         <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="aminata@gmail.com" type="email"/>
         <Inp label="Téléphone (WhatsApp)" value={d.tel} onChange={v=>set("tel",v)} placeholder="77 XXX XX XX" type="tel"/>
-        <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder="Dakar"/>
+        <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder="Ouagadougou"/>
       </div>
     </>,
     <>
@@ -482,7 +482,7 @@ function InscriptionTuteur({ onClose }) {
       </div>
       <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="sophie@email.fr" type="email"/>
       <Inp label="Téléphone" value={d.tel} onChange={v=>set("tel",v)} placeholder="77 XXX XX XX" type="tel"/>
-      <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder="Dakar"/>
+      <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder="Ouagadougou"/>
     </div>,
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Vos compétences</p>
@@ -745,7 +745,7 @@ function SitePublic({ goAdmin, goPayment }) {
           {/* Steps timeline */}
           <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:24,marginBottom:56}}>
             {[
-              {n:"01",icon:"📝",bg:"#ede9fe",color:"#7c3aed",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Dakar, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
+              {n:"01",icon:"📝",bg:"#ede9fe",color:"#7c3aed",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Ouagadougou, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
               {n:"02",icon:"🔍",bg:"#dbeafe",color:"#2563eb",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés au niveau et au programme de votre école. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
               {n:"03",icon:"📅",bg:"#dcfce7",color:"#16a34a",t:"Vous choisissez le créneau",d:"On vous propose des créneaux disponibles selon votre quartier. Séances à domicile ou en ligne, selon votre préférence.",tag:"Flexible"},
               {n:"04",icon:"💳",bg:"#fef3c7",color:"#d97706",t:"Paiement sécurisé à la séance",d:"Orange Money, Wave, MTN MoMo, Moov ou carte bancaire. Aucun abonnement, aucun engagement. La première séance d'essai est à −20 %.",tag:"Sans engagement"},
@@ -795,10 +795,10 @@ function SitePublic({ goAdmin, goPayment }) {
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:20}}>
             {(tab==="parents" ? [
-              {q:"Mon fils avait de grosses difficultés en maths. Après 4 séances, il a eu 14/20 à son contrôle. Je suis bluffée !",a:"Aminata D.",v:"Dakar",s:5},
+              {q:"Mon fils avait de grosses difficultés en maths. Après 4 séances, il a eu 14/20 à son contrôle. Je suis bluffée !",a:"Aminata D.",v:"Ouaga 2000",s:5},
               {q:"Le tuteur est venu à domicile, c'était parfait. Ma fille est plus motivée et ses notes progressent.",a:"Ibrahima S.",v:"Pikine",s:5},
-              {q:"Inscription rapide, tuteur trouvé en 24h. Je recommande à tous les parents !",a:"Rokhaya N.",v:"Thiès",s:5},
-              {q:"On reçoit un compte-rendu après chaque séance. C'est très rassurant.",a:"Ndéye F.",v:"Kaolack",s:4},
+              {q:"Inscription rapide, tuteur trouvé en 24h. Je recommande à tous les parents !",a:"Rokhaya N.",v:"Hamdalaye",s:5},
+              {q:"On reçoit un compte-rendu après chaque séance. C'est très rassurant.",a:"Ndéye F.",v:"Gounghin",s:4},
             ] : [
               {q:"J'ai trouvé des familles vraiment engagées. Le système est simple et la rémunération est correcte.",a:"Kwame A.",v:"Tuteur Mathématiques",s:5},
               {q:"Brillance s'occupe de tout l'administratif. Je n'ai qu'à enseigner.",a:"Sofia R.",v:"Tutrice Sciences",s:5},
