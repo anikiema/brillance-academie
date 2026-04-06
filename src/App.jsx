@@ -1078,15 +1078,29 @@ function Admin({ goHome }) {
   const [form, setForm]        = useState({});
   const setF = (k,v) => setForm(p=>({...p,[k]:v}));
 
-  // Charger les tuteurs et réservations depuis Supabase
+  // Charger tuteurs, parents et réservations depuis Supabase
   useEffect(() => {
     getTousTuteurs()
       .then(data => { setTuteurs(data); setLoadingT(false); })
       .catch(() => { setTuteurs(TUTEURS); setLoadingT(false); });
+    getParents()
+      .then(data => { if(data?.length) setParents(data); })
+      .catch(() => {});
     getReservations()
       .then(data => setReservations(data))
       .catch(() => {});
   }, []);
+
+  // Email de confirmation via le client mail
+  const envoyerEmail = (email, nom, type) => {
+    const sujet = type === "tuteur"
+      ? "Bienvenue dans l'équipe Brillance Académie !"
+      : "Votre inscription est confirmée — Brillance Académie";
+    const corps = type === "tuteur"
+      ? `Bonjour ${nom},\n\nVotre candidature en tant que tuteur a été acceptée par Brillance Académie. Bienvenue dans l'équipe !\n\nNous vous contacterons très prochainement pour les prochaines étapes.\n\nCordialement,\nL'équipe Brillance Académie\nbrillanceacademie.com`
+      : `Bonjour ${nom},\n\nVotre inscription sur Brillance Académie est confirmée. Nous allons vous trouver le meilleur tuteur pour votre enfant dans les 24h.\n\nN'hésitez pas à nous contacter pour toute question.\n\nCordialement,\nL'équipe Brillance Académie\nbrillanceacademie.com`;
+    window.open(`mailto:${email}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`);
+  };
 
   const handleAjouterTuteur = async () => {
     try {
@@ -1285,9 +1299,25 @@ function Admin({ goHome }) {
                       <td style={{...S.td,fontWeight:700,color:"#4f46e5"}}>{p.sessions}</td>
                       <td style={S.td}><BadgeStatus s={p.statut}/></td>
                       <td style={S.td}>
-                        <div style={{display:"flex",gap:8}}>
+                        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                          {p.statut==="En attente" && (
+                            <button onClick={async()=>{
+                              try {
+                                await modifierParent(p.id,{statut:"Actif"});
+                                setParents(pp=>pp.map(x=>x.id===p.id?{...x,statut:"Actif"}:x));
+                                envoyerEmail(p.email, p.nom, "parent");
+                              } catch(e){ alert("Erreur : "+e.message); }
+                            }} style={{padding:"5px 12px",background:"#dcfce7",color:"#065f46",border:"1px solid #86efac",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                              ✓ Confirmer
+                            </button>
+                          )}
                           <button onClick={()=>openEdit(p)} style={{padding:"5px 12px",border:"1px solid #e5e7eb",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#374151"}}>Modifier</button>
-                          <button onClick={()=>setParents(pp=>pp.filter(x=>x.id!==p.id))} style={{padding:"5px 12px",border:"1px solid #fee2e2",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#ef4444"}}>Suppr.</button>
+                          <button onClick={async()=>{
+                            try {
+                              await supprimerParent(p.id);
+                              setParents(pp=>pp.filter(x=>x.id!==p.id));
+                            } catch(e){ alert("Erreur : "+e.message); }
+                          }} style={{padding:"5px 12px",border:"1px solid #fee2e2",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#ef4444"}}>Suppr.</button>
                         </div>
                       </td>
                     </tr>
@@ -1346,7 +1376,18 @@ function Admin({ goHome }) {
                       <td style={S.td}><Stars n={t.rating}/></td>
                       <td style={S.td}><BadgeStatus s={t.statut}/></td>
                       <td style={S.td}>
-                        <div style={{display:"flex",gap:8}}>
+                        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                          {t.statut==="En attente" && (
+                            <button onClick={async()=>{
+                              try {
+                                await modifierTuteur(t.id,{statut:"Actif"});
+                                setTuteurs(tt=>tt.map(x=>x.id===t.id?{...x,statut:"Actif"}:x));
+                                if(t.email) envoyerEmail(t.email, t.prenom||t.name, "tuteur");
+                              } catch(e){ alert("Erreur : "+e.message); }
+                            }} style={{padding:"5px 12px",background:"#dcfce7",color:"#065f46",border:"1px solid #86efac",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                              ✓ Confirmer
+                            </button>
+                          )}
                           <button onClick={()=>openEdit(t)} style={{padding:"5px 12px",border:"1px solid #e5e7eb",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#374151"}}>Modifier</button>
                           <button onClick={()=>handleSupprimerTuteur(t.id)} style={{padding:"5px 12px",border:"1px solid #fee2e2",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#ef4444"}}>Suppr.</button>
                         </div>
