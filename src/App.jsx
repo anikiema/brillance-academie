@@ -1,3 +1,4 @@
+// Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
 import { getTuteurs, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent } from "./lib/supabase.js";
 
