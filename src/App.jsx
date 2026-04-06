@@ -452,17 +452,17 @@ function InscriptionParent({ onClose }) {
     <>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:16}}>Vos informations</p>
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
-        <Inp label="Votre nom complet" value={d.nom} onChange={v=>set("nom",v)} placeholder="Aminata Diallo"/>
-        <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="aminata@gmail.com" type="email"/>
-        <Inp label="Téléphone (WhatsApp)" value={d.tel} onChange={v=>set("tel",v)} placeholder="77 XXX XX XX" type="tel"/>
-        <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder="Ouagadougou"/>
+        <Inp label="Votre nom complet" value={d.nom} onChange={v=>set("nom",v)} placeholder=""/>
+        <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="" type="email"/>
+        <Inp label="Téléphone (WhatsApp)" value={d.tel} onChange={v=>set("tel",v)} placeholder="" type="tel"/>
+        <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder=""/>
       </div>
     </>,
     <>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:16}}>Votre enfant</p>
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
-        <Inp label="Prénom de l'enfant" value={d.enfant} onChange={v=>set("enfant",v)} placeholder="Moussa"/>
-        <Inp label="Âge" value={d.age} onChange={v=>set("age",v)} placeholder="10" type="number"/>
+        <Inp label="Prénom de l'enfant" value={d.enfant} onChange={v=>set("enfant",v)} placeholder=""/>
+        <Inp label="Âge" value={d.age} onChange={v=>set("age",v)} placeholder="" type="number"/>
         <Sel label="Niveau scolaire" value={d.niveau} onChange={v=>set("niveau",v)} options={NIVEAUX}/>
         <div>
           <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>École fréquentée (optionnel)</label>
