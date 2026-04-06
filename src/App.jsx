@@ -170,7 +170,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
     setTimeout(() => { setLoading(false); setDone(true); setTimeout(onSuccess, 1600); }, 2400);
   };
 
-  const S = { fontFamily:"'Inter',-apple-system,sans-serif", color:"#111827" };
+  const S = { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827" };
 
   const refNum = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
 
@@ -559,9 +559,9 @@ function SitePublic({ goAdmin, goPayment }) {
   const hasFilters = activeM || activeQ || activeN || search;
 
   const S = { // shared styles
-    page:    { fontFamily:"'Inter',-apple-system,sans-serif", color:"#111827", background:"#fff", margin:0 },
+    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#fff", margin:0 },
     nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #f3f4f6", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 },
-    navLink: { background:"none", border:"none", color:"#111827", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px" },
+    navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
     section: { padding:"80px 40px", maxWidth:1100, margin:"0 auto" },
     label:   { fontSize:11, fontWeight:700, color:"#6366f1", textTransform:"uppercase", letterSpacing:2, display:"block", marginBottom:10 },
@@ -582,7 +582,7 @@ function SitePublic({ goAdmin, goPayment }) {
         <span style={{fontSize:18,fontWeight:800,color:"#4f46e5",letterSpacing:"-0.5px"}}>Brillance Académie</span>
         <div style={{display:"flex",gap:28}}>
           {[["Trouver un tuteur","tutors"],["Matières","matieres"],["Comment ça marche","how"],["Avis","avis"]].map(([l,id])=>(
-            <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color="#dc2626"} onMouseOut={e=>e.target.style.color="#111827"}>{l}</button>
+            <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color="#16a34a"} onMouseOut={e=>e.target.style.color="#22c55e"}>{l}</button>
           ))}
         </div>
         <div style={{display:"flex",gap:10,alignItems:"center"}}>
@@ -1008,7 +1008,7 @@ function Admin({ goHome }) {
   const openEdit = (row) => { setET(row); setForm({...row}); setShowForm(true); };
 
   return (
-    <div style={{display:"flex",minHeight:"100vh",fontFamily:"'Inter',-apple-system,sans-serif"}}>
+    <div style={{display:"flex",minHeight:"100vh",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
       {/* Sidebar */}
       <div style={S.sidebar}>
         <div style={{marginBottom:28,paddingLeft:14}}>
@@ -1221,7 +1221,7 @@ function LoginAdmin({ onSuccess, onBack }) {
   };
 
   return (
-    <div style={{minHeight:"100vh",background:"#0f172a",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Inter',sans-serif"}}>
+    <div style={{minHeight:"100vh",background:"#0f172a",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
       <div style={{background:"#1e293b",borderRadius:24,padding:48,width:"100%",maxWidth:400,boxShadow:"0 25px 60px rgba(0,0,0,.4)"}}>
         <div style={{textAlign:"center",marginBottom:36}}>
           <div style={{fontSize:40,marginBottom:12}}>🎓</div>
