@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -30,9 +30,10 @@ const TUTEURS = [
 
 const fmt = n => n.toLocaleString("fr-FR") + " FCFA";
 
-const QUARTIERS = ["Ouaga 2000","Hamdalaye","Gounghin","Patte d'Oie","Wemtenga","Pissy","Karpala","Dassasgo"];
+const QUARTIERS = ["Bonheur Ville","Ouaga 2000","Hamdalaye","Gounghin","Patte d'Oie","Wemtenga","Pissy","Karpala","Dassasgo"];
 
 const ECOLES_PARTENAIRES = [
+  "École Primaire Privée Les Élites De Demain · Bonheur Ville",
   "École Privée La Réussite · Ouaga 2000",
   "Collège Saint-Viateur · Gounghin",
   "École Les Étoiles Brillantes · Hamdalaye",
@@ -1026,14 +1027,45 @@ const REVENUE_DATA = [
 // ─── ADMIN ────────────────────────────────────────────────────────────────────
 
 function Admin({ goHome }) {
-  const [page, setPage]     = useState("dashboard");
+  const [page, setPage]       = useState("dashboard");
   const [parents, setParents] = useState(PARENTS_INIT);
-  const [tuteurs, setTuteurs] = useState(TUTEURS);
+  const [tuteurs, setTuteurs] = useState([]);
+  const [loadingT, setLoadingT] = useState(true);
   const [search, setSearch]   = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setET]    = useState(null);
   const [form, setForm]        = useState({});
   const setF = (k,v) => setForm(p=>({...p,[k]:v}));
+
+  // Charger les tuteurs depuis Supabase
+  useEffect(() => {
+    getTousTuteurs()
+      .then(data => { setTuteurs(data); setLoadingT(false); })
+      .catch(() => { setTuteurs(TUTEURS); setLoadingT(false); });
+  }, []);
+
+  const handleAjouterTuteur = async () => {
+    try {
+      const data = await ajouterTuteur({ ...form, prenom: form.name || form.prenom, nom: "" });
+      setTuteurs(t => [...t, data]);
+      setShowForm(false);
+    } catch(e) { alert("Erreur Supabase : " + e.message); }
+  };
+
+  const handleModifierTuteur = async () => {
+    try {
+      await modifierTuteur(editTarget.id, form);
+      setTuteurs(t => t.map(x => x.id === editTarget.id ? { ...x, ...form, prenom: form.name || form.prenom } : x));
+      setShowForm(false);
+    } catch(e) { alert("Erreur Supabase : " + e.message); }
+  };
+
+  const handleSupprimerTuteur = async (id) => {
+    try {
+      await supprimerTuteur(id);
+      setTuteurs(tt => tt.filter(x => x.id !== id));
+    } catch(e) { alert("Erreur Supabase : " + e.message); }
+  };
 
   const S = {
     sidebar: {width:220,background:"#0f172a",minHeight:"100vh",padding:"28px 16px",display:"flex",flexDirection:"column",gap:4,flexShrink:0},
@@ -1190,7 +1222,7 @@ function Admin({ goHome }) {
           <div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Tuteurs ({tuteurs.length})</h1>
-              <button onClick={()=>openAdd({name:"",subject:"",email:"",statut:"En attente",price:50,jours:[],availableDays:[]})}
+              <button onClick={()=>openAdd({name:"",subject:"",email:"",statut:"En attente",price:"",jours:[],availableDays:[]})}
                 style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 + Ajouter
               </button>
@@ -1212,7 +1244,7 @@ function Admin({ goHome }) {
                       <td style={S.td}>
                         <div style={{display:"flex",gap:8}}>
                           <button onClick={()=>openEdit(t)} style={{padding:"5px 12px",border:"1px solid #e5e7eb",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#374151"}}>Modifier</button>
-                          <button onClick={()=>setTuteurs(tt=>tt.filter(x=>x.id!==t.id))} style={{padding:"5px 12px",border:"1px solid #fee2e2",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#ef4444"}}>Suppr.</button>
+                          <button onClick={()=>handleSupprimerTuteur(t.id)} style={{padding:"5px 12px",border:"1px solid #fee2e2",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#ef4444"}}>Suppr.</button>
                         </div>
                       </td>
                     </tr>
@@ -1227,17 +1259,16 @@ function Admin({ goHome }) {
                   <button onClick={()=>setShowForm(false)} style={{position:"absolute",top:16,right:18,background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#9ca3af"}}>×</button>
                   <h2 style={{fontSize:18,fontWeight:800,margin:"0 0 20px",color:"#111827"}}>{editTarget?"Modifier":"Ajouter"} un tuteur</h2>
                   <div style={{display:"flex",flexDirection:"column",gap:14}}>
-                    <Inp label="Nom complet" value={form.name||form.prenom||""} onChange={v=>setF("name",v)} placeholder="Mme Sophie Martin"/>
-                    <Sel label="Matière" value={form.subject||""} onChange={v=>setF("subject",v)} options={MATIERES.map(m=>m.label)}/>
-                    <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="tuteur@brillance.fr" type="email"/>
+                    <Inp label="Nom complet" value={form.name||form.prenom||""} onChange={v=>setF("name",v)} placeholder="Ex: Aminata Traoré"/>
+                    <Sel label="Matière" value={form.subject||""} onChange={v=>setF("subject",v)} options={["", ...MATIERES.map(m=>m.label)]}/>
+                    <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="Ex: aminata@gmail.com" type="email"/>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-                      <Inp label="Tarif (FCFA/h)" value={String(form.price||27500)} onChange={v=>setF("price",+v)} placeholder="27500" type="number"/>
+                      <Inp label="Tarif (FCFA/h)" value={form.price||""} onChange={v=>setF("price",+v)} placeholder="Ex: 25000" type="number"/>
                       <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif"]}/>
                     </div>
                     <button disabled={!form.name&&!form.prenom||!form.subject} onClick={()=>{
-                      if(editTarget) setTuteurs(t=>t.map(x=>x.id===editTarget.id?{...x,...form}:x));
-                      else setTuteurs(t=>[...t,{...form,id:Date.now(),sessions:0,rating:5,emoji:"👩‍🏫",prenom:form.name,nom:"",availableDays:form.jours||[]}]);
-                      setShowForm(false);
+                      if(editTarget) handleModifierTuteur();
+                      else handleAjouterTuteur();
                     }} style={{padding:13,background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                       {editTarget?"Enregistrer":"Ajouter"}
                     </button>

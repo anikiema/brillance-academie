@@ -87,3 +87,61 @@ export async function confirmerReservation(ref) {
     .eq('paiement_reference', ref)
   if (error) throw error
 }
+
+// ─── Tuteurs (admin) ───────────────────────────────────────────────────────────
+export async function getTousTuteurs() {
+  const { data, error } = await supabase
+    .from('tuteurs')
+    .select('*')
+    .order('sessions', { ascending: false })
+  if (error) throw error
+  return data.map(t => ({
+    ...t,
+    availableDays: t.available_days || [],
+    niveaux:       t.niveaux       || [],
+  }))
+}
+
+export async function ajouterTuteur(tuteur) {
+  const { data, error } = await supabase
+    .from('tuteurs')
+    .insert({
+      prenom:        tuteur.prenom || tuteur.name || "",
+      nom:           tuteur.nom   || "",
+      subject:       tuteur.subject,
+      price:         tuteur.price || 27500,
+      statut:        tuteur.statut || "En attente",
+      sessions:      0,
+      rating:        5,
+      emoji:         tuteur.emoji || "👩‍🏫",
+      bio:           tuteur.bio   || "",
+      quartier:      tuteur.quartier || "",
+      niveaux:       tuteur.niveaux  || [],
+      available_days: tuteur.availableDays || [],
+    })
+    .select()
+    .single()
+  if (error) throw error
+  return { ...data, availableDays: data.available_days || [], niveaux: data.niveaux || [] }
+}
+
+export async function modifierTuteur(id, changes) {
+  const { error } = await supabase
+    .from('tuteurs')
+    .update({
+      prenom:  changes.prenom || changes.name || "",
+      subject: changes.subject,
+      price:   changes.price,
+      statut:  changes.statut,
+    })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function supprimerTuteur(id) {
+  const { error } = await supabase
+    .from('tuteurs')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
