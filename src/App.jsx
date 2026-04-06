@@ -559,8 +559,8 @@ function SitePublic({ goAdmin, goPayment }) {
   const hasFilters = activeM || activeQ || activeN || search;
 
   const S = { // shared styles
-    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#fff", margin:0 },
-    nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #f3f4f6", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 },
+    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#f0efe8", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(148,163,184,0.25) 27px, rgba(148,163,184,0.25) 28px)", margin:0 },
+    nav:     { position:"sticky", top:0, zIndex:100, background:"#ebebE2", borderBottom:"1px solid #d4d4c8", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 },
     navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Comic Sans MS','Comic Sans',cursive" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
     section: { padding:"80px 40px", maxWidth:1100, margin:"0 auto" },
@@ -622,7 +622,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* FILTRES */}
-      <div id="matieres" style={{borderTop:"1px solid #f3f4f6",borderBottom:"1px solid #f3f4f6",padding:"20px 40px",background:"#fff"}}>
+      <div id="matieres" style={{borderTop:"1px solid #d4d4c8",borderBottom:"1px solid #d4d4c8",padding:"20px 40px",background:"rgba(255,255,255,0.45)"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"flex",flexDirection:"column",gap:14}}>
 
           {/* Matières */}
@@ -734,7 +734,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* COMMENT ÇA MARCHE */}
-      <div id="how" style={{background:"#fafafa",padding:"80px 40px"}}>
+      <div id="how" style={{background:"rgba(255,255,255,0.35)",padding:"80px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div style={{textAlign:"center",marginBottom:56}}>
             <span style={S.label}>Comment ça marche</span>
@@ -783,7 +783,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* AVIS */}
-      <div id="avis" style={{...S.section,background:"#fafafa",maxWidth:"none",padding:"80px 40px"}}>
+      <div id="avis" style={{...S.section,background:"rgba(255,255,255,0.35)",maxWidth:"none",padding:"80px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:40}}>
             <div><span style={S.label}>Témoignages</span><h2 style={{...S.h2,marginBottom:0}}>Ce que disent les familles</h2></div>
