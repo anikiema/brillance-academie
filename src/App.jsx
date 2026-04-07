@@ -686,7 +686,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
   const essaiPrice = Math.round(tuteur.price * 0.8);
 
   return (
-    <div style={{minHeight:"100vh",background:"#f0efe8",backgroundImage:"repeating-linear-gradient(transparent,transparent 27px,rgba(148,163,184,0.25) 27px,rgba(148,163,184,0.25) 28px)",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+    <div style={{minHeight:"100vh",background:"#f5f0e8",backgroundImage:"repeating-linear-gradient(transparent,transparent 27px,rgba(148,163,184,0.25) 27px,rgba(148,163,184,0.25) 28px)",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
 
       {/* Navbar */}
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
@@ -833,7 +833,7 @@ function SitePublic({ goAdmin, goPayment }) {
   const hasFilters = activeM || activeQ || activeN || search;
 
   const S = { // shared styles
-    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#f0efe8", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(148,163,184,0.25) 27px, rgba(148,163,184,0.25) 28px)", margin:0 },
+    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#f5f0e8", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(148,163,184,0.25) 27px, rgba(148,163,184,0.25) 28px)", margin:0 },
     nav:     { position:"sticky", top:0, zIndex:100, background:"#ebebE2", borderBottom:"1px solid #d4d4c8", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 },
     navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Comic Sans MS','Comic Sans',cursive" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
