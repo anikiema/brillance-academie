@@ -149,9 +149,6 @@ function PagePaiement({ booking, onSuccess, onBack }) {
   const { tuteur, jour, creneau, enfant, niveau, duree = "1h" } = booking;
   const [method, setMethod] = useState("orange");
   const [phone,  setPhone]  = useState("");
-  const [cardNum, setCardNum] = useState("");
-  const [expiry,  setExpiry]  = useState("");
-  const [cvv,     setCvv]     = useState("");
   const [loading, setLoading] = useState(false);
   const [done,    setDone]    = useState(false);
   const [txRef,   setTxRef]   = useState("");
@@ -159,67 +156,85 @@ function PagePaiement({ booking, onSuccess, onBack }) {
   const essaiAmount = Math.round((tuteur?.price || 27500) * 0.8);
 
   const METHODS = [
-    { id:"orange", abbr:"OM",   label:"Orange Money",  abbColor:"#f97316", bg:"#fff7ed", border:"#fed7aa", selBorder:"#f97316" },
-    { id:"moov",   abbr:"Moov", label:"Moov Money",    abbColor:"#0ea5e9", bg:"#e0f2fe", border:"#bae6fd", selBorder:"#0ea5e9" },
-    { id:"mtn",    abbr:"MTN",  label:"MTN MoMo",      abbColor:"#fff",    bg:"#fef9c3", border:"#fde68a", selBorder:"#eab308", abkBg:"#1c1917" },
-    { id:"visa",   abbr:"VISA", label:"Carte bancaire", abbColor:"#374151", bg:"#f9fafb", border:"#e5e7eb", selBorder:"#374151" },
+    { id:"orange", abbr:"OM",    label:"Orange Money",  abbColor:"#f97316", bg:"#fff7ed", border:"#fed7aa", selBorder:"#f97316" },
+    { id:"moov",   abbr:"Moov",  label:"Moov Money",    abbColor:"#0ea5e9", bg:"#e0f2fe", border:"#bae6fd", selBorder:"#0ea5e9" },
+    { id:"coris",  abbr:"Coris", label:"Coris Money",   abbColor:"#16a34a", bg:"#f0fdf4", border:"#bbf7d0", selBorder:"#16a34a" },
+    { id:"visa",   abbr:"VISA",  label:"Carte bancaire", abbColor:"#374151", bg:"#f9fafb", border:"#e5e7eb", selBorder:"#374151" },
   ];
 
   const cur = METHODS.find(m => m.id === method);
-  const mobileMethod = ["orange","moov","mtn"].includes(method);
-  const phonePlaceholder = {orange:"+226 70 XX XX XX", moov:"+226 65 XX XX XX", mtn:"+226 76 XX XX XX"}[method] || "+226 XX XX XX XX";
+  const mobileMethod = ["orange","moov","coris"].includes(method);
+  const phonePlaceholder = {orange:"+226 70 XX XX XX", moov:"+226 65 XX XX XX", coris:"+226 XX XX XX XX"}[method] || "+226 XX XX XX XX";
 
-  const canPay = mobileMethod ? phone.replace(/[\s+]/g,"").length >= 8 : cardNum.length >= 16 && expiry.length >= 4 && cvv.length >= 3;
+  const canPay = mobileMethod ? phone.replace(/[\s+]/g,"").length >= 8 : true;
 
-  // Charger le script Flutterwave une seule fois
+  // Charger le SDK CinetPay une seule fois
   useEffect(() => {
-    if (document.getElementById("flw-script")) return;
+    if (document.getElementById("cp-script")) return;
     const s = document.createElement("script");
-    s.id  = "flw-script";
-    s.src = "https://checkout.flutterwave.com/v3.js";
+    s.id  = "cp-script";
+    s.src = "https://cdn.cinetpay.com/seamless/main.js";
     s.async = true;
     document.head.appendChild(s);
   }, []);
 
-  const FLW_PUBLIC_KEY = "FLWPUBK_TEST-8df603ddb75524da26e0b7c366bd681b-X";
+  // ⚠️ Remplacer par vos identifiants CinetPay (tableau de bord CinetPay)
+  const CP_API_KEY = "VOTRE_CINETPAY_API_KEY";
+  const CP_SITE_ID = "VOTRE_CINETPAY_SITE_ID";
 
-  const flwOptions = {
-    orange: "mobilemoneyfranco",
-    moov:   "mobilemoneyfranco",
-    mtn:    "mobilemoneyghana",
-    visa:   "card",
+  const cpChannels = {
+    orange: "MOBILE_MONEY",
+    moov:   "MOBILE_MONEY",
+    coris:  "MOBILE_MONEY",
+    visa:   "CREDIT_CARD",
   };
 
   const pay = () => {
     if (!canPay || loading) return;
     setLoading(true);
-    const ref = "BA-" + Date.now();
-    setTxRef(ref);
+    const txId = "BA" + Date.now();
+    setTxRef(txId);
 
-    window.FlutterwaveCheckout({
-      public_key:      FLW_PUBLIC_KEY,
-      tx_ref:          ref,
-      amount:          essaiAmount,
-      currency:        "XOF",
-      payment_options: flwOptions[method] || "mobilemoneyfranco,card",
-      customer: {
-        email:       booking.parentEmail || "client@brillanceacademie.com",
-        name:        booking.parentNom   || "Parent",
-        phonenumber: phone,
-      },
-      customizations: {
-        title:       "Brillance Académie",
-        description: `Séance avec ${tuteur?.prenom || ""} ${tuteur?.nom || ""} — ${tuteur?.subject || ""}`,
-        logo:        "https://brillianceacademie.com/favicon.ico",
-      },
-      callback: (data) => {
-        setLoading(false);
-        if (data.status === "successful" || data.status === "completed") {
-          setDone(true);
-          setTimeout(onSuccess, 2000);
-        }
-      },
-      onclose: () => { setLoading(false); },
+    const CP = window.CinetPay;
+    if (!CP) { alert("SDK CinetPay non chargé. Réessayez."); setLoading(false); return; }
+
+    CP.setConfig({
+      apikey:     CP_API_KEY,
+      site_id:    CP_SITE_ID,
+      notify_url: "https://brillanceacademie.com/api/notify",
+      mode:       "PRODUCTION",
+      lang:       "fr",
+    });
+
+    CP.getCheckout({
+      transaction_id:        txId,
+      amount:                essaiAmount,
+      currency:              "XOF",
+      channels:              cpChannels[method] || "ALL",
+      description:           `Séance avec ${tuteur?.prenom||""} ${tuteur?.nom||""} — ${tuteur?.subject||""}`,
+      customer_name:         booking.parentNom   || "Parent",
+      customer_surname:      "",
+      customer_email:        booking.parentEmail || "client@brillanceacademie.com",
+      customer_phone_number: phone,
+      customer_address:      "Ouagadougou",
+      customer_city:         "Ouagadougou",
+      customer_country:      "BF",
+      customer_state:        "BF",
+      customer_zip_code:     "00000",
+      metadata:              "brillance-seance",
+    });
+
+    CP.waitResponse((data) => {
+      setLoading(false);
+      if (data.status === "ACCEPTED") {
+        setDone(true);
+        setTimeout(onSuccess, 2000);
+      }
+    });
+
+    CP.onError((data) => {
+      setLoading(false);
+      console.error("CinetPay erreur :", data);
     });
   };
 
@@ -256,7 +271,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
           {[
             ["📅 Jour & heure", `${jour} à ${creneau}`],
             ["👧 Élève",        `${enfant} · ${niveau}`],
-            ["💳 Paiement",     {orange:"Orange Money",wave:"Wave",mtn:"MTN MoMo",moov:"Moov Money",visa:"Carte bancaire"}[method] || method],
+            ["💳 Paiement",     {orange:"Orange Money",moov:"Moov Money",coris:"Coris Money",visa:"Carte bancaire"}[method] || method],
             ["📱 Contact",      phone || "—"],
           ].map(([k,v])=>(
             <div key={k} style={{display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:"1px solid #f9fafb", fontSize:14}}>
@@ -324,9 +339,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
               style={{padding:"16px 10px", borderRadius:14, border:`2px solid ${method===m.id?"#4f46e5":m.border}`,
                 background: method===m.id?"#f5f3ff":"#fff", cursor:"pointer", display:"flex", flexDirection:"column",
                 alignItems:"center", justifyContent:"center", gap:6, transition:"all .15s", minHeight:90}}>
-              {m.id==="mtn"
-                ? <span style={{background:"#1c1917", color:"#eab308", fontWeight:900, fontSize:13, padding:"3px 8px", borderRadius:6}}>{m.abbr}</span>
-                : <span style={{fontWeight:900, fontSize:17, color: method===m.id?"#4f46e5":m.abbColor}}>{m.abbr}</span>}
+              <span style={{fontWeight:900, fontSize:17, color: method===m.id?"#4f46e5":m.abbColor}}>{m.abbr}</span>
               <span style={{fontSize:12, color: method===m.id?"#4f46e5":"#6b7280", fontWeight:500}}>{m.label}</span>
             </button>
           ))}
@@ -354,29 +367,15 @@ function PagePaiement({ booking, onSuccess, onBack }) {
             </div>
           </>}
 
-          {method === "visa" && <>
-            <p style={{fontWeight:700, fontSize:16, margin:0, color:"#374151"}}>Paiement par carte bancaire</p>
-            <div style={{display:"flex", flexDirection:"column", gap:6}}>
-              <label style={{fontSize:13, fontWeight:600, color:"#374151"}}>Numéro de carte</label>
-              <input value={cardNum} onChange={e=>setCardNum(e.target.value.replace(/\D/g,"").slice(0,16))}
-                placeholder="1234 5678 9012 3456" type="text"
-                style={{padding:"14px 18px", borderRadius:12, border:"1.5px solid #d1d5db", fontSize:15, background:"#fff", outline:"none"}}/>
-            </div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:12}}>
-              <div style={{display:"flex", flexDirection:"column", gap:6}}>
-                <label style={{fontSize:13, fontWeight:600, color:"#374151"}}>Expiration (MM/AA)</label>
-                <input value={expiry} onChange={e=>setExpiry(e.target.value.replace(/\D/g,"").slice(0,4))}
-                  placeholder="MM/AA" type="text"
-                  style={{padding:"14px 18px", borderRadius:12, border:"1.5px solid #d1d5db", fontSize:15, background:"#fff", outline:"none"}}/>
-              </div>
-              <div style={{display:"flex", flexDirection:"column", gap:6}}>
-                <label style={{fontSize:13, fontWeight:600, color:"#374151"}}>CVV</label>
-                <input value={cvv} onChange={e=>setCvv(e.target.value.replace(/\D/g,"").slice(0,3))}
-                  placeholder="123" type="text"
-                  style={{padding:"14px 18px", borderRadius:12, border:"1.5px solid #d1d5db", fontSize:15, background:"#fff", outline:"none"}}/>
+          {method === "visa" && (
+            <div style={{display:"flex", alignItems:"center", gap:14, background:"#fff", borderRadius:12, padding:"16px 20px", border:"1.5px solid #e5e7eb"}}>
+              <span style={{fontSize:28}}>💳</span>
+              <div>
+                <p style={{fontWeight:700, fontSize:14, margin:"0 0 3px", color:"#374151"}}>Carte VISA / Mastercard</p>
+                <p style={{fontSize:12, color:"#6b7280", margin:0}}>Vos informations de carte seront saisies dans le formulaire sécurisé CinetPay.</p>
               </div>
             </div>
-          </>}
+          )}
 
           {/* Total + bouton payer */}
           <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fff", borderRadius:12, padding:"14px 18px", marginTop:4}}>
@@ -401,7 +400,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
           </button>
 
           <div style={{display:"flex", justifyContent:"center", gap:20, marginTop:4}}>
-            {["🔒 SSL sécurisé", "✓ Paiement chiffré", "✓ Aucune donnée stockée"].map(t=>(
+            {["🔒 SSL sécurisé", "✓ CinetPay certifié", "✓ Aucune donnée stockée"].map(t=>(
               <span key={t} style={{fontSize:11, color:"#6b7280"}}>{t}</span>
             ))}
           </div>
@@ -986,6 +985,55 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
+      {/* COMMENT ÇA MARCHE */}
+      <div id="how" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
+        <div style={{maxWidth:1100,margin:"0 auto"}}>
+          <div style={{textAlign:"center",marginBottom:56}}>
+            <span style={S.label}>Comment ça marche</span>
+            <h2 style={S.h2}>De la recherche à la première séance<br/>en moins de 24h</h2>
+            <p style={{...S.sub,margin:"0 auto"}}>Un processus simple, transparent, sans surprise.</p>
+          </div>
+
+          {/* Steps timeline */}
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:24,marginBottom:56}}>
+            {[
+              {n:"01",icon:"📝",bg:"#ede9fe",color:"#7c3aed",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Ouagadougou, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
+              {n:"02",icon:"🔍",bg:"#dbeafe",color:"#2563eb",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés au niveau et au programme de votre école. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
+              {n:"03",icon:"📅",bg:"#dcfce7",color:"#16a34a",t:"Vous choisissez le créneau",d:"On vous propose des créneaux disponibles selon votre quartier. Séances à domicile ou en ligne, selon votre préférence.",tag:"Flexible"},
+              {n:"04",icon:"💳",bg:"#fef3c7",color:"#d97706",t:"Paiement sécurisé à la séance",d:"Orange Money, Moov Money, Coris Money ou carte bancaire. Aucun abonnement, aucun engagement. La première séance d'essai est à −20 %.",tag:"Sans engagement"},
+              {n:"05",icon:"📊",bg:"#fce7f3",color:"#db2777",t:"Suivi & compte-rendu",d:"Après chaque séance, vous recevez un compte-rendu par WhatsApp : points travaillés, progrès, exercices recommandés.",tag:"Après chaque séance"},
+              {n:"06",icon:"🏆",bg:"#f0fdf4",color:"#15803d",t:"Résultats garantis",d:"Si vous n'êtes pas satisfait après la première séance, nous vous remboursons intégralement. Zéro risque, satisfaction garantie.",tag:"Garantie 100 %"},
+            ].map(({n,icon,bg,color,t,d,tag})=>(
+              <div key={n} style={{background:"#fff",borderRadius:20,padding:28,display:"flex",gap:20,alignItems:"flex-start",border:"1.5px solid #f3f4f6",transition:"box-shadow .2s"}}
+                onMouseOver={e=>e.currentTarget.style.boxShadow="0 8px 28px rgba(0,0,0,.09)"}
+                onMouseOut={e=>e.currentTarget.style.boxShadow="none"}>
+                <div style={{width:52,height:52,borderRadius:16,background:bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{icon}</div>
+                <div style={{flex:1}}>
+                  <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                    <span style={{fontSize:10,fontWeight:800,color:"#d1d5db",letterSpacing:2}}>{n}</span>
+                    <span style={{fontSize:11,fontWeight:700,background:bg,color,padding:"2px 10px",borderRadius:999}}>{tag}</span>
+                  </div>
+                  <h3 style={{fontSize:16,fontWeight:800,color:"#111827",margin:"0 0 8px"}}>{t}</h3>
+                  <p style={{fontSize:13,color:"#6b7280",lineHeight:1.7,margin:0}}>{d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Guarantee banner */}
+          <div style={{background:"#111827",borderRadius:24,padding:"36px 48px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:24,flexWrap:"wrap"}}>
+            <div>
+              <p style={{color:"#a5b4fc",fontSize:12,fontWeight:700,textTransform:"uppercase",letterSpacing:2,margin:"0 0 8px"}}>Notre engagement</p>
+              <h3 style={{fontSize:22,fontWeight:800,color:"#fff",margin:"0 0 8px"}}>Première séance non satisfaisante ? On rembourse.</h3>
+              <p style={{color:"#9ca3af",fontSize:14,margin:0}}>Aucun risque pour les familles. C'est ça, la confiance Brillance Académie.</p>
+            </div>
+            <button onClick={()=>setModal("parent")} style={{padding:"14px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
+              Démarrer gratuitement →
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* TUTEURS */}
       <div id="tutors" style={{...S.section}}>
         <div style={{textAlign:"center",marginBottom:32}}>
@@ -1044,55 +1092,6 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
-
-      {/* COMMENT ÇA MARCHE */}
-      <div id="how" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
-        <div style={{maxWidth:1100,margin:"0 auto"}}>
-          <div style={{textAlign:"center",marginBottom:56}}>
-            <span style={S.label}>Comment ça marche</span>
-            <h2 style={S.h2}>De la recherche à la première séance<br/>en moins de 24h</h2>
-            <p style={{...S.sub,margin:"0 auto"}}>Un processus simple, transparent, sans surprise.</p>
-          </div>
-
-          {/* Steps timeline */}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:24,marginBottom:56}}>
-            {[
-              {n:"01",icon:"📝",bg:"#ede9fe",color:"#7c3aed",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Ouagadougou, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
-              {n:"02",icon:"🔍",bg:"#dbeafe",color:"#2563eb",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés au niveau et au programme de votre école. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
-              {n:"03",icon:"📅",bg:"#dcfce7",color:"#16a34a",t:"Vous choisissez le créneau",d:"On vous propose des créneaux disponibles selon votre quartier. Séances à domicile ou en ligne, selon votre préférence.",tag:"Flexible"},
-              {n:"04",icon:"💳",bg:"#fef3c7",color:"#d97706",t:"Paiement sécurisé à la séance",d:"Orange Money, Wave, MTN MoMo, Moov ou carte bancaire. Aucun abonnement, aucun engagement. La première séance d'essai est à −20 %.",tag:"Sans engagement"},
-              {n:"05",icon:"📊",bg:"#fce7f3",color:"#db2777",t:"Suivi & compte-rendu",d:"Après chaque séance, vous recevez un compte-rendu par WhatsApp : points travaillés, progrès, exercices recommandés.",tag:"Après chaque séance"},
-              {n:"06",icon:"🏆",bg:"#f0fdf4",color:"#15803d",t:"Résultats garantis",d:"Si vous n'êtes pas satisfait après la première séance, nous vous remboursons intégralement. Zéro risque, satisfaction garantie.",tag:"Garantie 100 %"},
-            ].map(({n,icon,bg,color,t,d,tag})=>(
-              <div key={n} style={{background:"#fff",borderRadius:20,padding:28,display:"flex",gap:20,alignItems:"flex-start",border:"1.5px solid #f3f4f6",transition:"box-shadow .2s"}}
-                onMouseOver={e=>e.currentTarget.style.boxShadow="0 8px 28px rgba(0,0,0,.09)"}
-                onMouseOut={e=>e.currentTarget.style.boxShadow="none"}>
-                <div style={{width:52,height:52,borderRadius:16,background:bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{icon}</div>
-                <div style={{flex:1}}>
-                  <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-                    <span style={{fontSize:10,fontWeight:800,color:"#d1d5db",letterSpacing:2}}>{n}</span>
-                    <span style={{fontSize:11,fontWeight:700,background:bg,color,padding:"2px 10px",borderRadius:999}}>{tag}</span>
-                  </div>
-                  <h3 style={{fontSize:16,fontWeight:800,color:"#111827",margin:"0 0 8px"}}>{t}</h3>
-                  <p style={{fontSize:13,color:"#6b7280",lineHeight:1.7,margin:0}}>{d}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Guarantee banner */}
-          <div style={{background:"#111827",borderRadius:24,padding:"36px 48px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:24,flexWrap:"wrap"}}>
-            <div>
-              <p style={{color:"#a5b4fc",fontSize:12,fontWeight:700,textTransform:"uppercase",letterSpacing:2,margin:"0 0 8px"}}>Notre engagement</p>
-              <h3 style={{fontSize:22,fontWeight:800,color:"#fff",margin:"0 0 8px"}}>Première séance non satisfaisante ? On rembourse.</h3>
-              <p style={{color:"#9ca3af",fontSize:14,margin:0}}>Aucun risque pour les familles. C'est ça, la confiance Brillance Académie.</p>
-            </div>
-            <button onClick={()=>setModal("parent")} style={{padding:"14px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
-              Démarrer gratuitement →
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* AVIS */}
       <div id="avis" style={{...S.section,background:"rgba(255,255,255,0.6)",maxWidth:"none",padding:"80px 40px"}}>
