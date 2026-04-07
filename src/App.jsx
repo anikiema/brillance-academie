@@ -895,42 +895,51 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
-      {/* FILTRES */}
-      <div id="matieres" style={{borderTop:"1px solid #d4d4c8",borderBottom:"1px solid #d4d4c8",padding:"20px 40px",background:"rgba(255,255,255,0.45)"}}>
-        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",flexDirection:"column",gap:14}}>
+      {/* FILTRES — dropdowns compacts */}
+      <div id="matieres" style={{borderTop:"1px solid #d4d4c8",borderBottom:"1px solid #d4d4c8",padding:"16px 40px",background:"rgba(255,255,255,0.45)"}}>
+        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
 
           {/* Matières */}
-          <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Matières</span>
-            <Pill active={activeM===null} onClick={()=>setActiveM(null)}>Toutes</Pill>
-            {MATIERES.map(({label,emoji})=>(
-              <Pill key={label} active={activeM===label} onClick={()=>setActiveM(activeM===label?null:label)}>{emoji} {label}</Pill>
-            ))}
+          <div style={{position:"relative"}}>
+            <select value={activeM||""} onChange={e=>setActiveM(e.target.value||null)}
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 36px 10px 14px",borderRadius:10,border:`1.5px solid ${activeM?"#4f46e5":"#e5e7eb"}`,background:activeM?"#eef2ff":"#fff",color:activeM?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:150}}>
+              <option value="">📚 Toutes les matières</option>
+              {MATIERES.map(({label,emoji})=><option key={label} value={label}>{emoji} {label}</option>)}
+            </select>
+            <span style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none",fontSize:11,color:activeM?"#4f46e5":"#9ca3af"}}>▼</span>
           </div>
 
-          {/* Quartier */}
-          <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Quartiers</span>
-            <Pill active={activeQ===null} onClick={()=>setActiveQ(null)}>Tous</Pill>
-            {QUARTIERS.map(q=>(
-              <Pill key={q} active={activeQ===q} onClick={()=>setActiveQ(activeQ===q?null:q)}>📍 {q}</Pill>
-            ))}
+          {/* Quartiers */}
+          <div style={{position:"relative"}}>
+            <select value={activeQ||""} onChange={e=>setActiveQ(e.target.value||null)}
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 36px 10px 14px",borderRadius:10,border:`1.5px solid ${activeQ?"#4f46e5":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff",color:activeQ?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:160}}>
+              <option value="">📍 Tous les quartiers</option>
+              {QUARTIERS.map(q=><option key={q} value={q}>{q}</option>)}
+            </select>
+            <span style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none",fontSize:11,color:activeQ?"#4f46e5":"#9ca3af"}}>▼</span>
           </div>
 
-          {/* Niveau */}
-          <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span style={{fontSize:12,fontWeight:700,color:"#9ca3af",minWidth:60}}>Niveaux</span>
-            <Pill active={activeN===null} onClick={()=>setActiveN(null)}>Tous</Pill>
-            {NIVEAUX.map(n=>(
-              <Pill key={n} active={activeN===n} onClick={()=>setActiveN(activeN===n?null:n)}>{n}</Pill>
-            ))}
+          {/* Niveaux */}
+          <div style={{position:"relative"}}>
+            <select value={activeN||""} onChange={e=>setActiveN(e.target.value||null)}
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 36px 10px 14px",borderRadius:10,border:`1.5px solid ${activeN?"#4f46e5":"#e5e7eb"}`,background:activeN?"#eef2ff":"#fff",color:activeN?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:140}}>
+              <option value="">🎓 Tous les niveaux</option>
+              {NIVEAUX.map(n=><option key={n} value={n}>{n}</option>)}
+            </select>
+            <span style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none",fontSize:11,color:activeN?"#4f46e5":"#9ca3af"}}>▼</span>
           </div>
 
+          {/* Badges filtres actifs + reset */}
           {hasFilters && (
-            <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setSearch("");}}
-              style={{alignSelf:"flex-start",background:"none",border:"none",color:"#6366f1",fontWeight:700,fontSize:13,cursor:"pointer",padding:0}}>
-              ✕ Effacer tous les filtres
-            </button>
+            <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+              {activeM && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeM}</span>}
+              {activeQ && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeQ}</span>}
+              {activeN && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeN}</span>}
+              <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setSearch("");}}
+                style={{background:"none",border:"none",color:"#ef4444",fontWeight:700,fontSize:12,cursor:"pointer",padding:"4px 8px"}}>
+                ✕ Effacer
+              </button>
+            </div>
           )}
         </div>
       </div>
