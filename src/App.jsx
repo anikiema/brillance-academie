@@ -965,6 +965,28 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
+      {/* TICKER ÉCOLES PARTENAIRES — juste au-dessus des tuteurs */}
+      <div style={{borderTop:"1px solid rgba(0,0,0,0.06)",borderBottom:"1px solid rgba(0,0,0,0.06)",background:"rgba(255,255,255,0.7)",padding:"10px 0",overflow:"hidden"}}>
+        <p style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:2,textAlign:"center",margin:"0 0 8px"}}>Établissements partenaires</p>
+        <style>{`
+          @keyframes ticker {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .ticker-track { display:flex; width:max-content; animation:ticker 28s linear infinite; }
+          .ticker-track:hover { animation-play-state:paused; }
+        `}</style>
+        <div style={{overflow:"hidden"}}>
+          <div className="ticker-track">
+            {[...ECOLES_PARTENAIRES,...ECOLES_PARTENAIRES].map((e,i)=>(
+              <span key={i} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#fff",border:"1px solid #e8ddd0",borderRadius:999,padding:"6px 16px",fontSize:12,color:"#374151",fontWeight:600,whiteSpace:"nowrap",margin:"0 8px",boxShadow:"0 1px 4px rgba(0,0,0,0.05)"}}>
+                🏫 {e}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* TUTEURS */}
       <div id="tutors" style={{...S.section}}>
         <div style={{textAlign:"center",marginBottom:32}}>
@@ -1023,20 +1045,6 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
-      {/* ÉCOLES PARTENAIRES (marketing) */}
-      <div style={{background:"rgba(255,255,255,0.55)",borderTop:"1px solid rgba(0,0,0,0.06)",padding:"48px 40px"}}>
-        <div style={{maxWidth:1100,margin:"0 auto",textAlign:"center"}}>
-          <p style={{fontSize:12,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:2,marginBottom:24}}>
-            Nos tuteurs maîtrisent les programmes de ces établissements
-          </p>
-          <div style={{display:"flex",flexWrap:"wrap",gap:12,justifyContent:"center"}}>
-            {ECOLES_PARTENAIRES.map(e=>(
-              <span key={e} style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:10,padding:"8px 16px",fontSize:13,color:"#6b7280",fontWeight:500}}>🏫 {e}</span>
-            ))}
-          </div>
-          <p style={{fontSize:12,color:"#d1d5db",marginTop:16}}>Votre enfant n'est pas dans une école partenaire ? Nos tuteurs s'adaptent à tous les programmes.</p>
-        </div>
-      </div>
 
       {/* COMMENT ÇA MARCHE */}
       <div id="how" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
