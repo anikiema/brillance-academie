@@ -887,6 +887,24 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </nav>
 
+      {/* TICKER ÉCOLES PARTENAIRES */}
+      <div style={{borderBottom:"1px solid rgba(0,0,0,0.06)",background:"rgba(255,255,255,0.7)",padding:"10px 0",overflow:"hidden"}}>
+        <style>{`
+          @keyframes ticker { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
+          .ticker-track { display:flex; width:max-content; animation:ticker 28s linear infinite; }
+          .ticker-track:hover { animation-play-state:paused; }
+        `}</style>
+        <div style={{overflow:"hidden"}}>
+          <div className="ticker-track">
+            {[...ECOLES_PARTENAIRES,...ECOLES_PARTENAIRES].map((e,i)=>(
+              <span key={i} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#fff",border:"1px solid #e8ddd0",borderRadius:999,padding:"6px 16px",fontSize:12,color:"#374151",fontWeight:600,whiteSpace:"nowrap",margin:"0 8px",boxShadow:"0 1px 4px rgba(0,0,0,0.05)"}}>
+                🏫 {e}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* HERO */}
       <div style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
         <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
@@ -962,28 +980,6 @@ function SitePublic({ goAdmin, goPayment }) {
               </button>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* TICKER ÉCOLES PARTENAIRES — juste au-dessus des tuteurs */}
-      <div style={{borderTop:"1px solid rgba(0,0,0,0.06)",borderBottom:"1px solid rgba(0,0,0,0.06)",background:"rgba(255,255,255,0.7)",padding:"10px 0",overflow:"hidden"}}>
-        <p style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:2,textAlign:"center",margin:"0 0 8px"}}>Établissements partenaires</p>
-        <style>{`
-          @keyframes ticker {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-          }
-          .ticker-track { display:flex; width:max-content; animation:ticker 28s linear infinite; }
-          .ticker-track:hover { animation-play-state:paused; }
-        `}</style>
-        <div style={{overflow:"hidden"}}>
-          <div className="ticker-track">
-            {[...ECOLES_PARTENAIRES,...ECOLES_PARTENAIRES].map((e,i)=>(
-              <span key={i} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#fff",border:"1px solid #e8ddd0",borderRadius:999,padding:"6px 16px",fontSize:12,color:"#374151",fontWeight:600,whiteSpace:"nowrap",margin:"0 8px",boxShadow:"0 1px 4px rgba(0,0,0,0.05)"}}>
-                🏫 {e}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
 
