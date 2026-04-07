@@ -148,6 +148,20 @@ function Modal({ title, sub, onClose, children }) {
   );
 }
 
+function FaqItem({ q, r }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{borderBottom:"1px solid #e5e7eb",padding:"20px 0"}}>
+      <button onClick={()=>setOpen(!open)}
+        style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",background:"none",border:"none",cursor:"pointer",textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+        <span style={{fontSize:16,fontWeight:700,color:"#111827"}}>{q}</span>
+        <span style={{fontSize:22,color:"#4f46e5",fontWeight:300,flexShrink:0,marginLeft:16,lineHeight:1}}>{open?"−":"+"}</span>
+      </button>
+      {open && <p style={{fontSize:14,color:"#6b7280",lineHeight:1.8,margin:"12px 0 0",paddingRight:32}}>{r}</p>}
+    </div>
+  );
+}
+
 // ─── PAGE PAIEMENT SÉCURISÉ ───────────────────────────────────────────────────
 
 function PagePaiement({ booking, onSuccess, onBack }) {
@@ -930,12 +944,16 @@ function SitePublic({ goAdmin, goPayment }) {
   const [avisForm, setAvisForm] = useState({ auteur:"", ville:"", commentaire:"", note:5, type:"parent" });
   const [avisSaving, setAvisSaving] = useState(false);
   const [avisEnvoye, setAvisEnvoye] = useState(false);
-  const [tuteursList, setTuteursList] = useState(TUTEURS);
-  const [ecolesList, setEcolesList]   = useState(ECOLES_PARTENAIRES.map(n=>({nom:n,quartier:"",type:"École"})));
+  const [tuteursList, setTuteursList]       = useState(TUTEURS);
+  const [loadingTuteurs, setLoadingTuteurs] = useState(true);
+  const [ecolesList, setEcolesList]         = useState(ECOLES_PARTENAIRES.map(n=>({nom:n,quartier:"",type:"École"})));
 
   useEffect(() => {
     getAvis().then(data => setAvis(data)).catch(() => {});
-    getTuteurs().then(data => { if (data && data.length > 0) setTuteursList(data); }).catch(() => {});
+    getTuteurs()
+      .then(data => { if (data && data.length > 0) setTuteursList(data); })
+      .catch(() => {})
+      .finally(() => setLoadingTuteurs(false));
     getEcoles().then(data => { if (data && data.length > 0) setEcolesList(data); }).catch(() => {});
   }, []);
 
@@ -1173,22 +1191,38 @@ function SitePublic({ goAdmin, goPayment }) {
       <div id="tutors" style={{...S.section}}>
         <div style={{textAlign:"center",marginBottom:32}}>
           <span style={S.label}>Notre équipe</span>
-          <h2 style={{...S.h2,marginBottom:0}}>{filteredTuteurs.length} tuteur{filteredTuteurs.length>1?"s":""} disponible{filteredTuteurs.length>1?"s":""}</h2>
+          <h2 style={{...S.h2,marginBottom:0}}>
+            {loadingTuteurs ? "Chargement…" : `${filteredTuteurs.length} tuteur${filteredTuteurs.length>1?"s":""} disponible${filteredTuteurs.length>1?"s":""}`}
+          </h2>
         </div>
 
-        {filteredTuteurs.length===0 && (
+        {loadingTuteurs && (
+          <div style={{textAlign:"center",padding:"60px 0"}}>
+            <div style={{display:"inline-block",width:40,height:40,border:"4px solid #ede9fe",borderTopColor:"#4f46e5",borderRadius:999,animation:"spin 0.8s linear infinite"}}/>
+            <p style={{fontSize:14,color:"#9ca3af",marginTop:16}}>Chargement des tuteurs…</p>
+          </div>
+        )}
+
+        {!loadingTuteurs && filteredTuteurs.length===0 && (
           <div style={{textAlign:"center",padding:"60px 0",color:"#9ca3af"}}>
             <p style={{fontSize:40}}>🔍</p>
             <p style={{fontSize:16,fontWeight:600,marginTop:12}}>Aucun tuteur trouvé</p>
             <p style={{fontSize:14,marginTop:4}}>Essayez un autre terme ou matière.</p>
+            <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setSearch("");}}
+              style={{marginTop:16,padding:"10px 24px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+              Effacer les filtres
+            </button>
           </div>
         )}
 
         <div className="ba-tutor-cards" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:20}}>
-          {filteredTuteurs.map(t=>(
-            <div key={t.id} style={{...S.card,transition:"box-shadow .2s"}}
+          {!loadingTuteurs && filteredTuteurs.map(t=>{
+            const isNew = t.created_at && (Date.now() - new Date(t.created_at).getTime()) < 30*24*60*60*1000;
+            return (
+            <div key={t.id} style={{...S.card,transition:"box-shadow .2s",position:"relative"}}
               onMouseOver={e=>e.currentTarget.style.boxShadow="0 8px 30px rgba(0,0,0,.1)"}
               onMouseOut={e=>e.currentTarget.style.boxShadow="none"}>
+              {isNew && <span style={{position:"absolute",top:14,right:14,background:"#16a34a",color:"#fff",fontSize:10,fontWeight:800,padding:"3px 10px",borderRadius:999,letterSpacing:0.5}}>✨ NOUVEAU</span>}
               <div style={{display:"flex",alignItems:"center",gap:14}}>
                 <div style={{width:52,height:52,borderRadius:999,background:"#ede9fe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>{t.emoji}</div>
                 <div>
@@ -1223,7 +1257,7 @@ function SitePublic({ goAdmin, goPayment }) {
                 </button>
               </div>
             </div>
-          ))}
+          );})}
         </div>
       </div>
 
@@ -1535,6 +1569,36 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
+      {/* FAQ */}
+      <div style={{background:"rgba(255,255,255,0.55)",padding:"80px 40px"}}>
+        <div style={{maxWidth:760,margin:"0 auto"}}>
+          <div style={{textAlign:"center",marginBottom:48}}>
+            <span style={S.label}>Questions fréquentes</span>
+            <h2 style={S.h2}>Tout ce que vous devez savoir</h2>
+          </div>
+          {[
+            {q:"Comment sont sélectionnés les tuteurs ?",r:"Chaque tuteur passe par un processus de vérification : entretien, vérification des diplômes et expériences, test pédagogique. Seuls les candidats ayant obtenu une évaluation positive sont mis en ligne."},
+            {q:"Combien coûte une séance ?",r:"Le tarif varie selon le tuteur et la matière, entre 25 000 et 40 000 FCFA par heure. La première séance bénéficie d'une réduction de 20 %. Vous ne payez qu'à la séance, sans abonnement."},
+            {q:"Les séances se font à domicile ou en ligne ?",r:"Les deux options sont disponibles selon votre tuteur et votre préférence. La majorité des séances se font à domicile dans les quartiers de Ouagadougou. Les séances en ligne se font via WhatsApp Video ou Zoom."},
+            {q:"Comment se passe le paiement ?",r:"Le paiement se fait via Orange Money, Moov Money, Coris Money ou carte bancaire. Tout est sécurisé via CinetPay. Vous payez après avoir confirmé votre réservation."},
+            {q:"Que faire si je ne suis pas satisfait ?",r:"Si la première séance ne vous convient pas, nous vous remboursons intégralement. Aucune question posée. Nous pouvons également vous proposer un autre tuteur sans frais supplémentaires."},
+            {q:"Est-ce que Brillance Académie couvre toute la ville ?",r:"Nous couvrons actuellement les principaux quartiers de Ouagadougou : Ouaga 2000, Hamdalaye, Gounghin, Pissy, Patte d'Oie, Wemtenga, et bien d'autres. La liste s'agrandit chaque mois."},
+            {q:"Comment devenir tuteur sur la plateforme ?",r:"Cliquez sur « Devenir tuteur » et remplissez le formulaire. Notre équipe examine votre candidature sous 48h. Si votre profil est retenu, il sera mis en ligne après validation. Des frais d'inscription de 2 000 FCFA sont appliqués."},
+          ].map(({q,r},i)=>(
+            <FaqItem key={i} q={q} r={r}/>
+          ))}
+        </div>
+      </div>
+
+      {/* BOUTON WHATSAPP FLOTTANT */}
+      <a href="https://wa.me/22600000000?text=Bonjour%2C%20je%20souhaite%20trouver%20un%20tuteur%20pour%20mon%20enfant."
+        target="_blank" rel="noopener noreferrer"
+        style={{position:"fixed",bottom:28,right:28,zIndex:999,width:56,height:56,borderRadius:999,background:"#25d366",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 20px rgba(37,211,102,0.5)",textDecoration:"none",transition:"transform .2s"}}
+        onMouseOver={e=>e.currentTarget.style.transform="scale(1.1)"}
+        onMouseOut={e=>e.currentTarget.style.transform="scale(1)"}>
+        <svg viewBox="0 0 24 24" fill="white" width="28" height="28"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </a>
+
       {/* FOOTER */}
       <footer style={{background:"#0f172a",padding:"56px 40px 28px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
@@ -1748,6 +1812,19 @@ function Admin({ goHome }) {
   const openAdd = (defaults) => { setET(null); setForm(defaults); setShowForm(true); };
   const openEdit = (row) => { setET(row); setForm({...row}); setShowForm(true); };
 
+  const exportCSV = (rows, cols, filename) => {
+    const header = cols.map(c=>c.label).join(",");
+    const lines  = rows.map(r => cols.map(c => {
+      const v = String(r[c.key] ?? "").replace(/"/g,'""');
+      return `"${v}"`;
+    }).join(","));
+    const blob = new Blob(["\uFEFF" + [header,...lines].join("\n")], {type:"text/csv;charset=utf-8;"});
+    const url  = URL.createObjectURL(blob);
+    const a    = Object.assign(document.createElement("a"), {href:url, download:filename});
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  };
+
   return (
     <div style={{display:"flex",minHeight:"100vh",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
       {/* Sidebar */}
@@ -1775,7 +1852,16 @@ function Admin({ goHome }) {
           <div>
             <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:"0 0 28px"}}>Tableau de bord</h1>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
-              {[{l:"Parents inscrits",v:parents.length,icon:"👨‍👩‍👧",c:"#ede9fe"},{l:"Tuteurs actifs",v:tuteurs.filter(t=>t.statut==="Actif").length,icon:"📖",c:"#dcfce7"},{l:"Séances ce mois",v:47,icon:"📅",c:"#fef3c7"},{l:"Revenus",v:"1 540 000 FCFA",icon:"💰",c:"#fee2e2"}].map(({l,v,icon,c})=>(
+              {(()=>{
+                const confirmed = reservations.filter(r=>r.statut==="confirmée");
+                const now = new Date();
+                const thisMonth = confirmed.filter(r=>{
+                  const d = new Date(r.created_at||r.date||0);
+                  return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+                });
+                const revenus = confirmed.reduce((s,r)=>s+(r.montant||0),0);
+                return [{l:"Parents inscrits",v:parents.length,icon:"👨‍👩‍👧",c:"#ede9fe"},{l:"Tuteurs actifs",v:tuteurs.filter(t=>t.statut==="Actif").length,icon:"📖",c:"#dcfce7"},{l:"Séances ce mois",v:thisMonth.length||confirmed.length,icon:"📅",c:"#fef3c7"},{l:"Revenus totaux",v:revenus>0?revenus.toLocaleString("fr-FR")+" FCFA":"—",icon:"💰",c:"#fee2e2"}];
+              })().map(({l,v,icon,c})=>(
                 <div key={l} style={{...S.card,background:c,boxShadow:"none"}}>
                   <p style={{fontSize:24,margin:"0 0 8px"}}>{icon}</p>
                   <p style={{fontSize:32,fontWeight:900,margin:"0 0 4px",color:"#111827"}}>{v}</p>
@@ -1823,7 +1909,13 @@ function Admin({ goHome }) {
         {/* RÉSERVATIONS */}
         {page==="reservations" && (
           <div>
-            <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:"0 0 28px"}}>Réservations</h1>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:28}}>
+              <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Réservations ({reservations.length})</h1>
+              <button onClick={()=>exportCSV(reservations,[{label:"Référence",key:"paiement_reference"},{label:"Parent",key:"parent_nom"},{label:"Email",key:"parent_email"},{label:"Enfant",key:"enfant"},{label:"Niveau",key:"niveau"},{label:"Tuteur",key:"tuteur_nom"},{label:"Jour",key:"jour"},{label:"Créneau",key:"creneau"},{label:"Montant",key:"montant"},{label:"Statut",key:"statut"},{label:"Date",key:"created_at"}],"reservations.csv")}
+                style={{padding:"10px 20px",background:"#f1f5f9",color:"#374151",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                ⬇ Exporter CSV
+              </button>
+            </div>
             <div style={S.card}>
               {reservations.length === 0 ? (
                 <p style={{textAlign:"center",color:"#9ca3af",padding:"40px 0"}}>Aucune réservation pour l'instant.</p>
@@ -2106,10 +2198,16 @@ function Admin({ goHome }) {
           <div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Tuteurs ({tuteurs.length})</h1>
-              <button onClick={()=>openAdd({name:"",subject:"",email:"",statut:"En attente",price:"",jours:[],availableDays:[],quartiersCouVerts:[]})}
-                style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
-                + Ajouter
-              </button>
+              <div style={{display:"flex",gap:10}}>
+                <button onClick={()=>exportCSV(tuteurs,[{label:"Prénom",key:"prenom"},{label:"Nom",key:"nom"},{label:"Matière",key:"subject"},{label:"Tarif",key:"price"},{label:"Séances",key:"sessions"},{label:"Statut",key:"statut"},{label:"Quartier",key:"quartier"},{label:"Email",key:"email"}],"tuteurs.csv")}
+                  style={{padding:"10px 20px",background:"#f1f5f9",color:"#374151",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                  ⬇ CSV
+                </button>
+                <button onClick={()=>openAdd({name:"",subject:"",email:"",statut:"En attente",price:"",jours:[],availableDays:[],quartiersCouVerts:[]})}
+                  style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                  + Ajouter
+                </button>
+              </div>
             </div>
             <div style={S.card}>
               <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher…"
