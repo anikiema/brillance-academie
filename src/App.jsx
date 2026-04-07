@@ -907,37 +907,8 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
-      {/* HERO */}
-      <div style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
-        <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
-          Tuteurs spécialisés · CP au 3ème
-        </span>
-        <h1 style={{fontSize:54,fontWeight:900,color:"#111827",lineHeight:1.1,maxWidth:640,margin:"0 auto 18px",letterSpacing:"-1.5px"}}>
-          Trouvez le bon tuteur<br/>pour votre enfant
-        </h1>
-        <p style={{fontSize:17,color:"#6b7280",maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
-          Chaque tuteur sur Brillance Académie est sélectionné pour son expérience avec les jeunes élèves — phonics, maths de base, lecture, et plus encore.
-        </p>
-        {/* Search bar */}
-        <div style={{display:"flex",maxWidth:580,margin:"0 auto 28px",background:"#fff",borderRadius:999,border:"1.5px solid #e5e7eb",overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Matière, niveau ou nom du tuteur…"
-            style={{flex:1,padding:"16px 24px",border:"none",fontSize:15,outline:"none",background:"transparent",color:"#111827"}}/>
-          <button onClick={()=>scrollTo("tutors")} style={{padding:"0 28px",background:"#111827",color:"#fff",border:"none",fontWeight:700,fontSize:15,cursor:"pointer",borderRadius:"0 999px 999px 0"}}>
-            Rechercher
-          </button>
-        </div>
-        {/* Trust pills */}
-        <div style={{display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
-          {[["✓","Tuteurs vérifiés"],["✓","Certifiés élémentaire"],["✓","Première séance gratuite"]].map(([icon,txt])=>(
-            <span key={txt} style={{fontSize:14,color:"#374151",display:"flex",alignItems:"center",gap:6}}>
-              <span style={{color:"#10b981",fontWeight:700}}>{icon}</span>{txt}
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* FILTRES — dropdowns compacts */}
-      <div id="matieres" style={{borderTop:"1px solid #d4d4c8",borderBottom:"1px solid #d4d4c8",padding:"16px 40px",background:"rgba(255,255,255,0.65)"}}>
+      <div id="matieres" style={{borderBottom:"1px solid #d4d4c8",padding:"14px 40px",background:"rgba(255,255,255,0.65)"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
 
           {/* Matières */}
@@ -984,6 +955,36 @@ function SitePublic({ goAdmin, goPayment }) {
           )}
         </div>
       </div>
+
+      {/* HERO */}
+      <div style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
+        <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
+          Tuteurs spécialisés · CP au 3ème
+        </span>
+        <h1 style={{fontSize:54,fontWeight:900,color:"#111827",lineHeight:1.1,maxWidth:640,margin:"0 auto 18px",letterSpacing:"-1.5px"}}>
+          Trouvez le bon tuteur<br/>pour votre enfant
+        </h1>
+        <p style={{fontSize:17,color:"#6b7280",maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
+          Chaque tuteur sur Brillance Académie est sélectionné pour son expérience avec les jeunes élèves — phonics, maths de base, lecture, et plus encore.
+        </p>
+        {/* Search bar */}
+        <div style={{display:"flex",maxWidth:580,margin:"0 auto 28px",background:"#fff",borderRadius:999,border:"1.5px solid #e5e7eb",overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Matière, niveau ou nom du tuteur…"
+            style={{flex:1,padding:"16px 24px",border:"none",fontSize:15,outline:"none",background:"transparent",color:"#111827"}}/>
+          <button onClick={()=>scrollTo("tutors")} style={{padding:"0 28px",background:"#111827",color:"#fff",border:"none",fontWeight:700,fontSize:15,cursor:"pointer",borderRadius:"0 999px 999px 0"}}>
+            Rechercher
+          </button>
+        </div>
+        {/* Trust pills */}
+        <div style={{display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
+          {[["✓","Tuteurs vérifiés"],["✓","Certifiés élémentaire"],["✓","Première séance gratuite"]].map(([icon,txt])=>(
+            <span key={txt} style={{fontSize:14,color:"#374151",display:"flex",alignItems:"center",gap:6}}>
+              <span style={{color:"#10b981",fontWeight:700}}>{icon}</span>{txt}
+            </span>
+          ))}
+        </div>
+      </div>
+
 
       {/* COMMENT ÇA MARCHE */}
       <div id="how" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
