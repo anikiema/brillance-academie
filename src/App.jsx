@@ -889,6 +889,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
       {/* TICKER ÉCOLES PARTENAIRES */}
       <div style={{borderBottom:"1px solid rgba(0,0,0,0.06)",background:"rgba(255,255,255,0.7)",padding:"10px 0",overflow:"hidden"}}>
+        <p style={{fontSize:10,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:2,textAlign:"center",margin:"0 0 8px"}}>Établissements Partenaires</p>
         <style>{`
           @keyframes ticker { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
           .ticker-track { display:flex; width:max-content; animation:ticker 28s linear infinite; }
