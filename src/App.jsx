@@ -30,6 +30,11 @@ const TUTEURS = [
 
 const fmt = n => n.toLocaleString("fr-FR") + " FCFA";
 
+// ─── CINETPAY ────────────────────────────────────────────────────────────────
+// ⚠️ Remplacer par vos identifiants CinetPay (tableau de bord → Mes paramètres → API)
+const CP_API_KEY = "VOTRE_CINETPAY_API_KEY";
+const CP_SITE_ID = "VOTRE_CINETPAY_SITE_ID";
+
 const QUARTIERS = [
   "Bonheur Ville","Ouaga 2000","Hamdalaye","Gounghin","Patte d'Oie","Wemtenga",
   "Pissy","Karpala","Dassasgo","Zogona","Tampouy","Nongr-Masson","Bogodogo",
@@ -178,9 +183,6 @@ function PagePaiement({ booking, onSuccess, onBack }) {
     document.head.appendChild(s);
   }, []);
 
-  // ⚠️ Remplacer par vos identifiants CinetPay (tableau de bord CinetPay)
-  const CP_API_KEY = "VOTRE_CINETPAY_API_KEY";
-  const CP_SITE_ID = "VOTRE_CINETPAY_SITE_ID";
 
   const cpChannels = {
     orange: "MOBILE_MONEY",
@@ -525,13 +527,31 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
 // ─── INSCRIPTION TUTEUR ────────────────────────────────────────────────────────
 
 function InscriptionTuteur({ onClose }) {
-  const [step, setStep] = useState(0);
-  const [d, setD] = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000 });
-  const [saving, setSaving] = useState(false);
+  const [step, setStep]           = useState(0);
+  const [d, setD]                 = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000 });
+  const [saving, setSaving]       = useState(false);
+  const [paying, setPaying]       = useState(false);
+  const [payPhone, setPayPhone]   = useState("");
+  const [payMethod, setPayMethod] = useState("orange");
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
 
-  const ok = [d.prenom&&d.nom&&d.email&&d.tel&&d.ville, d.matieres.length>0&&d.niveaux.length>0&&d.experience, d.jours.length>0&&(d.tousQuartiers||d.quartiersCouVerts.length>0), true];
+  // Charger SDK CinetPay à l'étape paiement
+  useEffect(() => {
+    if (step < 4) return;
+    if (document.getElementById("cp-script")) return;
+    const s = document.createElement("script");
+    s.id = "cp-script"; s.src = "https://cdn.cinetpay.com/seamless/main.js"; s.async = true;
+    document.head.appendChild(s);
+  }, [step]);
+
+  const ok = [
+    d.prenom&&d.nom&&d.email&&d.tel&&d.ville,
+    d.matieres.length>0&&d.niveaux.length>0&&d.experience,
+    d.jours.length>0&&(d.tousQuartiers||d.quartiersCouVerts.length>0),
+    true,
+    payMethod==="visa" || payPhone.replace(/[\s+]/g,"").length>=8,
+  ];
 
   const envoyer = async () => {
     setSaving(true);
@@ -551,18 +571,45 @@ function InscriptionTuteur({ onClose }) {
         emoji:             "👩‍🏫",
         quartiersCouVerts: d.tousQuartiers ? QUARTIERS : d.quartiersCouVerts,
       });
-      setStep(4);
+      setStep(5);
     } catch(e) {
       alert("Erreur lors de l'envoi : " + e.message);
     }
     setSaving(false);
   };
 
-  if (step===4) return (
+  const payer = () => {
+    if (paying) return;
+    setPaying(true);
+    const CP = window.CinetPay;
+    if (!CP) { alert("SDK CinetPay non chargé. Réessayez dans quelques secondes."); setPaying(false); return; }
+    CP.setConfig({ apikey:CP_API_KEY, site_id:CP_SITE_ID, notify_url:"https://brillanceacademie.com/api/notify", mode:"PRODUCTION", lang:"fr" });
+    CP.getCheckout({
+      transaction_id:        "TUT" + Date.now(),
+      amount:                2000,
+      currency:              "XOF",
+      channels:              payMethod==="visa" ? "CREDIT_CARD" : "MOBILE_MONEY",
+      description:           "Frais d'inscription tuteur — Brillance Académie",
+      customer_name:         d.prenom,
+      customer_surname:      d.nom,
+      customer_email:        d.email,
+      customer_phone_number: payPhone,
+      customer_address:      "Ouagadougou",
+      customer_city:         "Ouagadougou",
+      customer_country:      "BF",
+      customer_state:        "BF",
+      customer_zip_code:     "00000",
+      metadata:              "tuteur-inscription",
+    });
+    CP.waitResponse((data) => { setPaying(false); if (data.status==="ACCEPTED") envoyer(); });
+    CP.onError((data)     => { setPaying(false); console.error("CinetPay:", data); });
+  };
+
+  if (step===5) return (
     <Modal title="Candidature envoyée !" onClose={onClose}>
       <div style={{textAlign:"center",padding:"24px 0"}}>
         <div style={{fontSize:52}}>🎉</div>
-        <p style={{color:"#6b7280",marginTop:16,lineHeight:1.6}}>Votre profil sera examiné par notre équipe.<br/>Réponse garantie sous 48h.</p>
+        <p style={{color:"#6b7280",marginTop:16,lineHeight:1.6}}>Paiement confirmé. Votre profil sera examiné par notre équipe.<br/>Réponse garantie sous 48h.</p>
         <button onClick={onClose} style={{marginTop:24,padding:"12px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>Fermer</button>
       </div>
     </Modal>
@@ -645,17 +692,51 @@ function InscriptionTuteur({ onClose }) {
       </div>
       <p style={{fontSize:11,color:"#9ca3af"}}>Réponse sous 48h après examen de votre profil.</p>
     </div>,
+
+    /* ── STEP 4 : PAIEMENT FRAIS INSCRIPTION ── */
+    <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <div style={{background:"#f5f3ff",borderRadius:16,padding:20,textAlign:"center"}}>
+        <p style={{fontSize:12,fontWeight:700,color:"#7c3aed",textTransform:"uppercase",letterSpacing:1,margin:"0 0 8px"}}>Frais d'inscription</p>
+        <p style={{fontSize:40,fontWeight:900,color:"#4f46e5",margin:"0 0 4px"}}>2 000 <span style={{fontSize:18}}>FCFA</span></p>
+        <p style={{fontSize:12,color:"#6b7280",margin:0}}>Paiement unique · Accès à vie à la plateforme</p>
+      </div>
+
+      <p style={{fontSize:13,fontWeight:600,color:"#374151",margin:0}}>Moyen de paiement</p>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+        {[{id:"orange",label:"Orange Money",color:"#f97316"},{id:"moov",label:"Moov Money",color:"#0ea5e9"},{id:"coris",label:"Coris Money",color:"#16a34a"}].map(m=>(
+          <button key={m.id} type="button" onClick={()=>setPayMethod(m.id)}
+            style={{padding:"12px 8px",borderRadius:12,border:`2px solid ${payMethod===m.id?"#4f46e5":"#e5e7eb"}`,background:payMethod===m.id?"#f5f3ff":"#fff",cursor:"pointer",textAlign:"center"}}>
+            <p style={{fontWeight:800,fontSize:13,color:payMethod===m.id?"#4f46e5":m.color,margin:"0 0 2px"}}>{m.id==="orange"?"OM":m.id==="moov"?"Moov":"Coris"}</p>
+            <p style={{fontSize:10,color:payMethod===m.id?"#4f46e5":"#6b7280",margin:0,lineHeight:1.3}}>{m.label}</p>
+          </button>
+        ))}
+      </div>
+
+      {payMethod !== "visa" && (
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          <label style={{fontSize:13,fontWeight:600,color:"#374151"}}>Numéro {{orange:"+226 70 XX XX XX",moov:"+226 65 XX XX XX",coris:"+226 XX XX XX XX"}[payMethod]}</label>
+          <input value={payPhone} onChange={e=>setPayPhone(e.target.value)} type="tel"
+            placeholder={{orange:"+226 70 XX XX XX",moov:"+226 65 XX XX XX",coris:"+226 XX XX XX XX"}[payMethod]}
+            style={{padding:"13px 16px",borderRadius:12,border:"1.5px solid #e5e7eb",fontSize:14,outline:"none"}}/>
+        </div>
+      )}
+
+      <div style={{display:"flex",alignItems:"center",gap:8,background:"#f0fdf4",borderRadius:10,padding:"10px 14px"}}>
+        <span style={{color:"#16a34a",fontSize:16}}>✓</span>
+        <p style={{fontSize:12,color:"#166534",margin:0}}>Paiement sécurisé via CinetPay · Aucun abonnement</p>
+      </div>
+    </div>,
   ];
 
   return (
     <Modal title="Devenir tuteur" sub="Rejoignez notre réseau et aidez des enfants à progresser." onClose={onClose}>
-      <Steps labels={["Profil","Compétences","Dispo.","Confirmation"]} current={step}/>
+      <Steps labels={["Profil","Compétences","Dispo.","Récap.","Paiement"]} current={step}/>
       {screens[step]}
       <div style={{display:"flex",gap:10,marginTop:20}}>
-        {step>0 && <button onClick={()=>setStep(s=>s-1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>}
-        <button disabled={!ok[step]||saving} onClick={step===3 ? envoyer : ()=>setStep(s=>s+1)}
-          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed"}}>
-          {saving?"Envoi en cours…":step===3?"Envoyer ma candidature ✓":"Continuer →"}
+        {step>0 && step<5 && <button onClick={()=>setStep(s=>s-1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>}
+        <button disabled={!ok[step]||saving||paying} onClick={step===4 ? payer : ()=>setStep(s=>s+1)}
+          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving&&!paying?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving&&!paying?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving&&!paying?"pointer":"not-allowed"}}>
+          {paying?"Traitement…":saving?"Enregistrement…":step===4?"💳 Payer 2 000 FCFA →":step===3?"Procéder au paiement →":"Continuer →"}
         </button>
       </div>
     </Modal>
@@ -870,18 +951,49 @@ function SitePublic({ goAdmin, goPayment }) {
 
   return (
     <div style={S.page}>
+      {/* ── CSS RESPONSIVE MOBILE ── */}
+      <style>{`
+        @media (max-width: 768px) {
+          .ba-nav-links { display: none !important; }
+          .ba-nav-btns  { gap: 6px !important; }
+          .ba-nav-btns button { padding: 8px 12px !important; font-size: 12px !important; }
+          .ba-hero      { padding: 48px 20px 36px !important; }
+          .ba-hero h1   { font-size: 32px !important; letter-spacing: -0.5px !important; }
+          .ba-hero p    { font-size: 14px !important; }
+          .ba-search    { margin: 0 16px 24px !important; }
+          .ba-filters   { padding: 12px 16px !important; }
+          .ba-filters > div { flex-direction: column !important; align-items: stretch !important; }
+          .ba-filters select { min-width: unset !important; width: 100% !important; }
+          .ba-section   { padding: 48px 16px !important; }
+          .ba-grid-2    { grid-template-columns: 1fr !important; }
+          .ba-grid-3    { grid-template-columns: 1fr 1fr !important; }
+          .ba-grid-4    { grid-template-columns: 1fr 1fr !important; }
+          .ba-tutor-cards { grid-template-columns: 1fr !important; }
+          .ba-footer-grid { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+          .ba-footer-brand { grid-column: 1 / -1 !important; }
+          .ba-how-grid  { grid-template-columns: 1fr !important; }
+          .ba-guarantee { padding: 24px 20px !important; flex-direction: column !important; }
+          .ba-team-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 480px) {
+          .ba-grid-3    { grid-template-columns: 1fr !important; }
+          .ba-footer-grid { grid-template-columns: 1fr !important; }
+          .ba-team-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
       {modal==="parent" && <InscriptionParent onClose={()=>setModal(null)} ecolesList={ecolesList}/>}
       {modal==="tuteur" && <InscriptionTuteur onClose={()=>setModal(null)}/>}
 
       {/* NAV */}
       <nav style={S.nav}>
         <span style={{fontSize:18,fontWeight:800,color:"#4f46e5",letterSpacing:"-0.5px"}}>Brillance Académie</span>
-        <div style={{display:"flex",gap:28}}>
+        <div className="ba-nav-links" style={{display:"flex",gap:28}}>
           {[["Trouver un tuteur","tutors"],["Matières","matieres"],["Comment ça marche","how"],["Avis","avis"]].map(([l,id])=>(
             <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color="#16a34a"} onMouseOut={e=>e.target.style.color="#22c55e"}>{l}</button>
           ))}
         </div>
-        <div style={{display:"flex",gap:10,alignItems:"center"}}>
+        <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
           <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#f3f4f6",color:"#374151"}}>Devenir tuteur</button>
           <button onClick={()=>setModal("parent")} style={{...S.btn,background:"#dc2626",color:"#fff"}}>Commencer</button>
           <button onClick={goAdmin} style={{...S.btn,background:"#111827",color:"#fff",fontSize:12,padding:"9px 16px"}}>⚙</button>
@@ -908,7 +1020,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* FILTRES — dropdowns compacts */}
-      <div id="matieres" style={{borderBottom:"1px solid #d4d4c8",padding:"14px 40px",background:"rgba(255,255,255,0.65)"}}>
+      <div id="matieres" className="ba-filters" style={{borderBottom:"1px solid #d4d4c8",padding:"14px 40px",background:"rgba(255,255,255,0.65)"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
 
           {/* Matières */}
@@ -957,7 +1069,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* HERO */}
-      <div style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
+      <div className="ba-hero" style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
         <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
           Tuteurs spécialisés · CP au 3ème
         </span>
@@ -987,7 +1099,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
 
       {/* COMMENT ÇA MARCHE */}
-      <div id="how" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
+      <div id="how" className="ba-section" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div style={{textAlign:"center",marginBottom:56}}>
             <span style={S.label}>Comment ça marche</span>
@@ -996,7 +1108,7 @@ function SitePublic({ goAdmin, goPayment }) {
           </div>
 
           {/* Steps timeline */}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:24,marginBottom:56}}>
+          <div className="ba-how-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:24,marginBottom:56}}>
             {[
               {n:"01",icon:"📝",bg:"#ede9fe",color:"#7c3aed",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Ouagadougou, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
               {n:"02",icon:"🔍",bg:"#dbeafe",color:"#2563eb",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés au niveau et au programme de votre école. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
@@ -1050,7 +1162,7 @@ function SitePublic({ goAdmin, goPayment }) {
           </div>
         )}
 
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:20}}>
+        <div className="ba-tutor-cards" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:20}}>
           {filteredTuteurs.map(t=>(
             <div key={t.id} style={{...S.card,transition:"box-shadow .2s"}}
               onMouseOver={e=>e.currentTarget.style.boxShadow="0 8px 30px rgba(0,0,0,.1)"}
@@ -1402,14 +1514,87 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* FOOTER */}
-      <footer style={{background:"#0f172a",padding:"32px 40px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16}}>
-        <span style={{fontWeight:800,fontSize:15,color:"#fff"}}>Brillance Académie</span>
-        <div style={{display:"flex",gap:24}}>
-          {["Politique de confidentialité","Conditions d'utilisation","Nous contacter"].map(l=>(
-            <button key={l} style={{background:"none",border:"none",color:"#6b7280",fontSize:13,cursor:"pointer"}}>{l}</button>
-          ))}
+      <footer style={{background:"#0f172a",padding:"56px 40px 28px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+        <div style={{maxWidth:1100,margin:"0 auto"}}>
+
+          {/* Grille principale */}
+          <div className="ba-footer-grid" style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:40,marginBottom:48}}>
+
+            {/* Colonne marque */}
+            <div className="ba-footer-brand">
+              <p style={{fontWeight:900,fontSize:20,color:"#fff",margin:"0 0 10px"}}>🎓 Brillance Académie</p>
+              <p style={{fontSize:13,color:"#94a3b8",lineHeight:1.8,margin:"0 0 20px",maxWidth:280}}>
+                La plateforme de tutorat de référence à Ouagadougou. Des tuteurs certifiés pour les élèves du CP au 3ème.
+              </p>
+              {/* WhatsApp CTA */}
+              <a href="https://wa.me/22600000000" target="_blank" rel="noreferrer"
+                style={{display:"inline-flex",alignItems:"center",gap:8,background:"#25d366",color:"#fff",padding:"10px 18px",borderRadius:999,fontSize:13,fontWeight:700,textDecoration:"none"}}>
+                <span style={{fontSize:16}}>💬</span> WhatsApp nous
+              </a>
+            </div>
+
+            {/* Liens tuteurs */}
+            <div>
+              <p style={{fontSize:11,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:2,margin:"0 0 16px"}}>Tuteurs</p>
+              {["Devenir tuteur","Comment ça marche","Tarification","FAQ"].map(l=>(
+                <p key={l} style={{margin:"0 0 10px"}}>
+                  <button style={{background:"none",border:"none",color:"#94a3b8",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+                </p>
+              ))}
+            </div>
+
+            {/* Liens parents */}
+            <div>
+              <p style={{fontSize:11,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:2,margin:"0 0 16px"}}>Parents</p>
+              {["Trouver un tuteur","S'inscrire","Matières disponibles","Nos garanties"].map(l=>(
+                <p key={l} style={{margin:"0 0 10px"}}>
+                  <button style={{background:"none",border:"none",color:"#94a3b8",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+                </p>
+              ))}
+            </div>
+
+            {/* Contact */}
+            <div>
+              <p style={{fontSize:11,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:2,margin:"0 0 16px"}}>Contact</p>
+              {[
+                {icon:"📍",txt:"Ouagadougou, Burkina Faso"},
+                {icon:"📱",txt:"+226 XX XX XX XX"},
+                {icon:"✉️",txt:"contact@brillanceacademie.com"},
+              ].map(({icon,txt})=>(
+                <p key={txt} style={{margin:"0 0 12px",display:"flex",gap:8,alignItems:"flex-start"}}>
+                  <span style={{fontSize:14,marginTop:1}}>{icon}</span>
+                  <span style={{color:"#94a3b8",fontSize:13,lineHeight:1.5}}>{txt}</span>
+                </p>
+              ))}
+              {/* Réseaux sociaux */}
+              <div style={{display:"flex",gap:10,marginTop:8}}>
+                {[{icon:"📘",label:"Facebook"},
+                  {icon:"📸",label:"Instagram"},
+                  {icon:"🐦",label:"X / Twitter"},
+                ].map(({icon,label})=>(
+                  <button key={label} title={label}
+                    style={{width:34,height:34,borderRadius:8,background:"#1e293b",border:"none",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    {icon}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Séparateur */}
+          <div style={{borderTop:"1px solid #1e293b",paddingTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+            <p style={{color:"#475569",fontSize:12,margin:0}}>© {new Date().getFullYear()} Brillance Académie · Tous droits réservés</p>
+            <div style={{display:"flex",gap:20}}>
+              {["Confidentialité","Conditions d'utilisation","Mentions légales"].map(l=>(
+                <button key={l} style={{background:"none",border:"none",color:"#475569",fontSize:12,cursor:"pointer",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+              ))}
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:6}}>
+              <span style={{width:8,height:8,borderRadius:999,background:"#22c55e",display:"inline-block"}}/>
+              <span style={{color:"#475569",fontSize:12}}>Plateforme en ligne · Ouagadougou</span>
+            </div>
+          </div>
         </div>
-        <p style={{color:"#6b7280",fontSize:13,margin:0}}>© {new Date().getFullYear()} Brillance Académie</p>
       </footer>
     </div>
   );
