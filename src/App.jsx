@@ -946,14 +946,9 @@ function SitePublic({ goAdmin, goPayment }) {
 
       {/* TUTEURS */}
       <div id="tutors" style={{...S.section}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:32}}>
-          <div>
-            <span style={S.label}>Notre équipe</span>
-            <h2 style={{...S.h2,marginBottom:0}}>{filteredTuteurs.length} tuteur{filteredTuteurs.length>1?"s":""} disponible{filteredTuteurs.length>1?"s":""}</h2>
-          </div>
-          <div style={{display:"flex",gap:8,alignItems:"center"}}>
-            {(activeQ||activeN) && <span style={{fontSize:13,color:"#6b7280"}}>{[activeQ,activeN].filter(Boolean).map(f=><span key={f} style={{background:"#eef2ff",color:"#4f46e5",padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:600,marginRight:4}}>✓ {f}</span>)}</span>}
-          </div>
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <span style={S.label}>Notre équipe</span>
+          <h2 style={{...S.h2,marginBottom:0}}>{filteredTuteurs.length} tuteur{filteredTuteurs.length>1?"s":""} disponible{filteredTuteurs.length>1?"s":""}</h2>
         </div>
 
         {filteredTuteurs.length===0 && (
