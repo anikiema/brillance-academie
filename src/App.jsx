@@ -527,7 +527,7 @@ function InscriptionParent({ onClose }) {
 
 function InscriptionTuteur({ onClose }) {
   const [step, setStep] = useState(0);
-  const [d, setD] = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false });
+  const [d, setD] = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000 });
   const [saving, setSaving] = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
@@ -543,7 +543,7 @@ function InscriptionTuteur({ onClose }) {
         email:             d.email,
         tel:               d.tel,
         subject:           d.matieres.join(", ") || "Non spécifié",
-        price:             27500,
+        price:             d.tarif,
         statut:            "En attente",
         bio:               [d.experience && `${d.experience} d'expérience`, d.diplome].filter(Boolean).join(". "),
         niveaux:           d.niveaux,
@@ -592,6 +592,27 @@ function InscriptionTuteur({ onClose }) {
       </div>
       <Inp label="Années d'expérience" value={d.experience} onChange={v=>set("experience",v)} placeholder="Ex. : 3 ans"/>
       <Inp label="Diplôme le plus élevé" value={d.diplome} onChange={v=>set("diplome",v)} placeholder="Master Sciences de l'éducation"/>
+      <div>
+        <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:12}}>💰 Tarif horaire souhaité</label>
+        <div style={{background:"#f5f3ff",borderRadius:14,padding:"18px 20px"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+            <span style={{fontSize:13,color:"#6b7280"}}>1 000 FCFA</span>
+            <span style={{fontSize:22,fontWeight:900,color:"#4f46e5"}}>{d.tarif.toLocaleString("fr-FR")} FCFA<span style={{fontSize:13,fontWeight:500,color:"#6b7280"}}>/h</span></span>
+            <span style={{fontSize:13,color:"#6b7280"}}>15 000 FCFA</span>
+          </div>
+          <input type="range" min={1000} max={15000} step={1000} value={d.tarif}
+            onChange={e=>set("tarif", +e.target.value)}
+            style={{width:"100%",accentColor:"#4f46e5",cursor:"pointer",height:6}}/>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:10,flexWrap:"wrap",gap:6}}>
+            {[1000,3000,5000,8000,10000,12000,15000].map(v=>(
+              <button key={v} type="button" onClick={()=>set("tarif",v)}
+                style={{padding:"4px 10px",borderRadius:999,border:`1.5px solid ${d.tarif===v?"#4f46e5":"#e5e7eb"}`,background:d.tarif===v?"#4f46e5":"#fff",color:d.tarif===v?"#fff":"#6b7280",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                {(v/1000).toLocaleString("fr-FR")}k
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>,
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Vos disponibilités</p>
@@ -620,7 +641,7 @@ function InscriptionTuteur({ onClose }) {
     <div style={{display:"flex",flexDirection:"column",gap:12}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Récapitulatif</p>
       <div style={{background:"#f5f3ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
-        {[["Nom",`${d.prenom} ${d.nom}`],["Contact",d.email],["Ville",d.ville],["Matières",d.matieres.join(", ")],["Niveaux",d.niveaux.join(", ")],["Expérience",d.experience],["Jours",d.jours.join(", ")],["Quartiers",d.tousQuartiers?"Tous les quartiers de Ouagadougou":d.quartiersCouVerts.join(", ")]]
+        {[["Nom",`${d.prenom} ${d.nom}`],["Contact",d.email],["Ville",d.ville],["Matières",d.matieres.join(", ")],["Niveaux",d.niveaux.join(", ")],["Expérience",d.experience],["Tarif",`${d.tarif.toLocaleString("fr-FR")} FCFA/h`],["Jours",d.jours.join(", ")],["Quartiers",d.tousQuartiers?"Tous les quartiers de Ouagadougou":d.quartiersCouVerts.join(", ")]]
           .map(([k,v])=><div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827",textAlign:"right",maxWidth:"60%"}}>{v||"—"}</span></div>)}
       </div>
       <p style={{fontSize:11,color:"#9ca3af"}}>Réponse sous 48h après examen de votre profil.</p>
