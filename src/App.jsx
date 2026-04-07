@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -419,7 +419,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
 // ─── INSCRIPTION PARENT ────────────────────────────────────────────────────────
 
-function InscriptionParent({ onClose }) {
+function InscriptionParent({ onClose, ecolesList=[] }) {
   const [step, setStep] = useState(0);
   const [d, setD] = useState({ nom:"", email:"", tel:"", ville:"", enfant:"", age:"", niveau:"", matieres:[], objectif:"", frequence:"1 fois par semaine" });
   const [saving, setSaving] = useState(false);
@@ -474,7 +474,7 @@ function InscriptionParent({ onClose }) {
           <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>École fréquentée (optionnel)</label>
           <select style={{width:"100%",border:"1.5px solid #e5e7eb",borderRadius:12,padding:"11px 16px",fontSize:13,background:"#fafafa",outline:"none"}}>
             <option>— Choisir une école partenaire —</option>
-            {ECOLES_PARTENAIRES.map(e=><option key={e}>{e}</option>)}
+            {ecolesList.map(e=><option key={e.id||e.nom} value={e.nom}>{e.nom}{e.quartier ? " · " + e.quartier : ""}</option>)}
             <option>Autre école</option>
           </select>
           <p style={{fontSize:11,color:"#9ca3af",marginTop:5}}>Nos tuteurs connaissent les programmes de ces écoles.</p>
@@ -829,10 +829,12 @@ function SitePublic({ goAdmin, goPayment }) {
   const [avisSaving, setAvisSaving] = useState(false);
   const [avisEnvoye, setAvisEnvoye] = useState(false);
   const [tuteursList, setTuteursList] = useState(TUTEURS);
+  const [ecolesList, setEcolesList]   = useState(ECOLES_PARTENAIRES.map(n=>({nom:n,quartier:"",type:"École"})));
 
   useEffect(() => {
     getAvis().then(data => setAvis(data)).catch(() => {});
     getTuteurs().then(data => { if (data && data.length > 0) setTuteursList(data); }).catch(() => {});
+    getEcoles().then(data => { if (data && data.length > 0) setEcolesList(data); }).catch(() => {});
   }, []);
 
   const setBI = (k,v) => setBi(p=>({...p,[k]:v}));
@@ -869,7 +871,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
   return (
     <div style={S.page}>
-      {modal==="parent" && <InscriptionParent onClose={()=>setModal(null)}/>}
+      {modal==="parent" && <InscriptionParent onClose={()=>setModal(null)} ecolesList={ecolesList}/>}
       {modal==="tuteur" && <InscriptionTuteur onClose={()=>setModal(null)}/>}
 
       {/* NAV */}
@@ -897,9 +899,9 @@ function SitePublic({ goAdmin, goPayment }) {
         `}</style>
         <div style={{overflow:"hidden"}}>
           <div className="ticker-track">
-            {[...ECOLES_PARTENAIRES,...ECOLES_PARTENAIRES].map((e,i)=>(
+            {[...ecolesList,...ecolesList].map((e,i)=>(
               <span key={i} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#fff",border:"1px solid #e8ddd0",borderRadius:999,padding:"6px 16px",fontSize:12,color:"#374151",fontWeight:600,whiteSpace:"nowrap",margin:"0 8px",boxShadow:"0 1px 4px rgba(0,0,0,0.05)"}}>
-                🏫 {e}
+                🏫 {e.nom}{e.quartier ? " · " + e.quartier : ""}
               </span>
             ))}
           </div>
@@ -1457,6 +1459,7 @@ function Admin({ goHome }) {
   const [tuteurs, setTuteurs]       = useState([]);
   const [reservations, setReservations] = useState([]);
   const [tousAvis, setTousAvis]         = useState([]);
+  const [ecolesAdmin, setEcolesAdmin]   = useState([]);
   const [loadingT, setLoadingT]     = useState(true);
   const [search, setSearch]   = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -1477,6 +1480,9 @@ function Admin({ goHome }) {
       .catch(() => {});
     getTousAvis()
       .then(data => setTousAvis(data))
+      .catch(() => {});
+    getEcoles()
+      .then(data => setEcolesAdmin(data))
       .catch(() => {});
   }, []);
 
@@ -1529,6 +1535,7 @@ function Admin({ goHome }) {
     {id:"parents",      icon:"👨‍👩‍👧",label:"Parents"},
     {id:"tuteurs",      icon:"📖",label:"Tuteurs"},
     {id:"avis",         icon:"⭐",label:"Avis"},
+    {id:"ecoles",       icon:"🏫",label:"Écoles partenaires"},
   ];
 
   const openAdd = (defaults) => { setET(null); setForm(defaults); setShowForm(true); };
@@ -1793,6 +1800,97 @@ function Admin({ goHome }) {
                 </table>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ÉCOLES PARTENAIRES */}
+        {page==="ecoles" && (
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+              <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Écoles partenaires ({ecolesAdmin.length})</h1>
+              <button onClick={()=>{ setET(null); setForm({nom:"",quartier:"",type:"École"}); setShowForm(true); }}
+                style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                + Ajouter
+              </button>
+            </div>
+            <p style={{color:"#6b7280",fontSize:14,marginBottom:24}}>Ces établissements apparaissent dans le défilant du site et dans le formulaire d'inscription.</p>
+            <div style={S.card}>
+              {ecolesAdmin.length === 0 ? (
+                <p style={{textAlign:"center",color:"#9ca3af",padding:"40px 0"}}>Aucun établissement pour l'instant.</p>
+              ) : (
+                <table style={{width:"100%",borderCollapse:"collapse"}}>
+                  <thead><tr>{["Nom de l'établissement","Quartier","Type",""].map(h=><th key={h} style={S.th}>{h}</th>)}</tr></thead>
+                  <tbody>
+                    {ecolesAdmin.map(ec=>(
+                      <tr key={ec.id}>
+                        <td style={{...S.td,fontWeight:600}}>🏫 {ec.nom}</td>
+                        <td style={S.td}>{ec.quartier||"—"}</td>
+                        <td style={S.td}>
+                          <span style={{padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:700,
+                            background:ec.type==="Lycée"?"#ede9fe":ec.type==="Collège"?"#dbeafe":ec.type==="Institut"?"#fef3c7":ec.type==="Académie"?"#dcfce7":"#f3f4f6",
+                            color:ec.type==="Lycée"?"#5b21b6":ec.type==="Collège"?"#1e40af":ec.type==="Institut"?"#92400e":ec.type==="Académie"?"#065f46":"#374151"}}>
+                            {ec.type||"École"}
+                          </span>
+                        </td>
+                        <td style={S.td}>
+                          <div style={{display:"flex",gap:6}}>
+                            <button onClick={()=>{ setET(ec); setForm({nom:ec.nom,quartier:ec.quartier||"",type:ec.type||"École"}); setShowForm(true); }}
+                              style={{padding:"5px 12px",border:"1px solid #e5e7eb",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#374151"}}>
+                              Modifier
+                            </button>
+                            <button onClick={async()=>{
+                              if(!confirm(`Supprimer "${ec.nom}" ?`)) return;
+                              try { await supprimerEcole(ec.id); setEcolesAdmin(l=>l.filter(x=>x.id!==ec.id)); }
+                              catch(e){ alert("Erreur : "+e.message); }
+                            }} style={{padding:"5px 12px",border:"1px solid #fee2e2",borderRadius:8,background:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",color:"#ef4444"}}>
+                              Suppr.
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {showForm && page==="ecoles" && (
+              <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.4)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999}}>
+                <div style={{background:"#fff",borderRadius:20,padding:32,width:420,position:"relative"}}>
+                  <button onClick={()=>setShowForm(false)} style={{position:"absolute",top:16,right:18,background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#9ca3af"}}>×</button>
+                  <h2 style={{fontSize:18,fontWeight:800,margin:"0 0 20px",color:"#111827"}}>{editTarget?"Modifier":"Ajouter"} un établissement</h2>
+                  <div style={{display:"flex",flexDirection:"column",gap:14}}>
+                    <Inp label="Nom de l'établissement" value={form.nom||""} onChange={v=>setF("nom",v)} placeholder="Ex: École Primaire Les Étoiles"/>
+                    <Inp label="Quartier" value={form.quartier||""} onChange={v=>setF("quartier",v)} placeholder="Ex: Ouaga 2000"/>
+                    <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                      <label style={{fontSize:13,fontWeight:600,color:"#374151"}}>Type</label>
+                      <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                        {["École","Collège","Lycée","Institut","Académie"].map(t=>(
+                          <button key={t} type="button" onClick={()=>setF("type",t)}
+                            style={{padding:"8px 16px",borderRadius:999,border:`1.5px solid ${form.type===t?"#4f46e5":"#e5e7eb"}`,background:form.type===t?"#eef2ff":"#fff",color:form.type===t?"#4f46e5":"#6b7280",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+                            {t}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <button disabled={!form.nom} onClick={async()=>{
+                      try {
+                        if(editTarget) {
+                          await modifierEcole(editTarget.id, {nom:form.nom,quartier:form.quartier,type:form.type||"École"});
+                          setEcolesAdmin(l=>l.map(x=>x.id===editTarget.id?{...x,...form}:x));
+                        } else {
+                          const data = await ajouterEcole({nom:form.nom,quartier:form.quartier||"",type:form.type||"École"});
+                          setEcolesAdmin(l=>[...l, data]);
+                        }
+                        setShowForm(false);
+                      } catch(e){ alert("Erreur : "+e.message); }
+                    }} style={{padding:13,background:form.nom?"#4f46e5":"#e5e7eb",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:form.nom?"pointer":"not-allowed"}}>
+                      {editTarget?"Enregistrer les modifications":"Ajouter l'établissement"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

@@ -298,3 +298,40 @@ export async function supprimerTuteur(id) {
   if (error) throw error
   notifWA(`🗑 Tuteur #${id} supprimé de la base`)
 }
+
+// ─── Écoles partenaires ───────────────────────────────────────────────────────
+export async function getEcoles() {
+  const { data, error } = await supabase
+    .from('ecoles_partenaires')
+    .select('*')
+    .order('nom', { ascending: true })
+  if (error) throw error
+  return data
+}
+
+export async function ajouterEcole({ nom, quartier, type }) {
+  const { data, error } = await supabase
+    .from('ecoles_partenaires')
+    .insert({ nom, quartier: quartier || '', type: type || 'École' })
+    .select()
+    .single()
+  if (error) throw error
+  notifWA(`🏫 Nouvelle école partenaire : ${nom} · ${quartier}`)
+  return data
+}
+
+export async function modifierEcole(id, changes) {
+  const { error } = await supabase
+    .from('ecoles_partenaires')
+    .update(changes)
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function supprimerEcole(id) {
+  const { error } = await supabase
+    .from('ecoles_partenaires')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
