@@ -897,7 +897,7 @@ function SitePublic({ goAdmin, goPayment }) {
 
       {/* FILTRES — dropdowns compacts */}
       <div id="matieres" style={{borderTop:"1px solid #d4d4c8",borderBottom:"1px solid #d4d4c8",padding:"16px 40px",background:"rgba(255,255,255,0.45)"}}>
-        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
 
           {/* Matières */}
           <div style={{position:"relative"}}>
