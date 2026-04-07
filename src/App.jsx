@@ -890,7 +890,7 @@ function SitePublic({ goAdmin, goPayment }) {
       {/* HERO */}
       <div style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
         <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
-          Tuteurs spécialisés élémentaire · CP au CM2
+          Tuteurs spécialisés · CP au 3ème
         </span>
         <h1 style={{fontSize:54,fontWeight:900,color:"#111827",lineHeight:1.1,maxWidth:640,margin:"0 auto 18px",letterSpacing:"-1.5px"}}>
           Trouvez le bon tuteur<br/>pour votre enfant
