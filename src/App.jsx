@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -229,6 +229,19 @@ function PagePaiement({ booking, onSuccess, onBack }) {
     CP.waitResponse((data) => {
       setLoading(false);
       if (data.status === "ACCEPTED") {
+        // ── Email confirmation réservation ──
+        if (booking.parentEmail) {
+          const tpl = emailTemplates.reservation_confirmee({
+            parentNom:    booking.parentNom   || "Parent",
+            tuteurPrenom: tuteur?.prenom       || "",
+            tuteurNom:    tuteur?.nom          || "",
+            matiere:      tuteur?.subject      || "",
+            jour,
+            creneau,
+            montant:      essaiAmount,
+          });
+          sendEmail({ to: booking.parentEmail, ...tpl });
+        }
         setDone(true);
         setTimeout(onSuccess, 2000);
       }
@@ -440,6 +453,11 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
         statut:    "En attente",
         sessions:  0,
       });
+      // ── Email de bienvenue parent ──
+      if (d.email) {
+        const tpl = emailTemplates.bienvenue_parent({ nom: d.nom, enfant: d.enfant, niveau: d.niveau });
+        sendEmail({ to: d.email, ...tpl });
+      }
     } catch(e) { console.error(e); }
     setSaving(false);
     setStep(4);
@@ -536,14 +554,13 @@ function InscriptionTuteur({ onClose }) {
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
 
-  // Charger SDK CinetPay à l'étape paiement
+  // Charger SDK CinetPay dès l'ouverture du formulaire (pas seulement au step 4)
   useEffect(() => {
-    if (step < 4) return;
     if (document.getElementById("cp-script")) return;
     const s = document.createElement("script");
     s.id = "cp-script"; s.src = "https://cdn.cinetpay.com/seamless/main.js"; s.async = true;
     document.head.appendChild(s);
-  }, [step]);
+  }, []);
 
   const ok = [
     d.prenom&&d.nom&&d.email&&d.tel&&d.ville,
@@ -571,6 +588,11 @@ function InscriptionTuteur({ onClose }) {
         emoji:             "👩‍🏫",
         quartiersCouVerts: d.tousQuartiers ? QUARTIERS : d.quartiersCouVerts,
       });
+      // ── Email confirmation candidature tuteur ──
+      if (d.email) {
+        const tpl = emailTemplates.candidature_tuteur({ prenom: d.prenom, nom: d.nom, matieres: d.matieres.join(", "), tarif: d.tarif });
+        sendEmail({ to: d.email, ...tpl });
+      }
       setStep(5);
     } catch(e) {
       alert("Erreur lors de l'envoi : " + e.message);
@@ -2110,7 +2132,11 @@ function Admin({ goHome }) {
                               try {
                                 await modifierTuteur(t.id,{statut:"Actif"});
                                 setTuteurs(tt=>tt.map(x=>x.id===t.id?{...x,statut:"Actif"}:x));
-                                if(t.email) envoyerEmail(t.email, t.prenom||t.name, "tuteur");
+                                if(t.email) {
+                                  // Email "profil approuvé" via Resend
+                                  const tpl = emailTemplates.tuteur_approuve({ prenom: t.prenom||t.name, nom: t.nom||"" });
+                                  sendEmail({ to: t.email, ...tpl });
+                                }
                               } catch(e){ alert("Erreur : "+e.message); }
                             }} style={{padding:"5px 12px",background:"#dcfce7",color:"#065f46",border:"1px solid #86efac",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
                               ✓ Confirmer

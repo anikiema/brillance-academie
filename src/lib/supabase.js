@@ -6,13 +6,116 @@ const supabaseKey  = import.meta.env.VITE_SUPABASE_ANON_KEY
 export const supabase = createClient(supabaseUrl || '', supabaseKey || '')
 
 // ─── WhatsApp notification (via /api/notify — serverless Vercel) ──────────────
-// fire-and-forget : n'attend pas la réponse, ne bloque pas l'UI
 function notifWA(message) {
   fetch('/api/notify', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify({ message: '🎓 Brillance Académie\n' + message }),
-  }).catch(() => {})  // silencieux en cas d'erreur réseau
+  }).catch(() => {})
+}
+
+// ─── Email (via /api/email — Resend) ─────────────────────────────────────────
+// fire-and-forget : ne bloque pas l'UI
+export function sendEmail({ to, subject, html }) {
+  fetch('/api/email', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ to, subject, html }),
+  }).catch(() => {})
+}
+
+// ── Templates HTML emails ────────────────────────────────────────────────────
+const emailBase = (contenu) => `
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+  body{margin:0;padding:0;background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif;}
+  .wrap{max-width:560px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);}
+  .header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:32px 36px;text-align:center;}
+  .header h1{color:#fff;font-size:22px;margin:0;font-weight:800;letter-spacing:-0.5px;}
+  .header p{color:#c4b5fd;font-size:13px;margin:6px 0 0;}
+  .body{padding:32px 36px;}
+  .body p{color:#374151;font-size:15px;line-height:1.7;margin:0 0 14px;}
+  .highlight{background:#f5f3ff;border-left:4px solid #4f46e5;padding:16px 20px;border-radius:0 10px 10px 0;margin:20px 0;}
+  .highlight p{margin:4px 0;font-size:14px;color:#374151;}
+  .highlight strong{color:#4f46e5;}
+  .btn{display:inline-block;background:#4f46e5;color:#fff;padding:13px 28px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;margin:20px 0;}
+  .footer{background:#f9fafb;padding:20px 36px;text-align:center;border-top:1px solid #f3f4f6;}
+  .footer p{color:#9ca3af;font-size:12px;margin:0;}
+</style></head>
+<body><div class="wrap">
+  <div class="header">
+    <h1>🎓 Brillance Académie</h1>
+    <p>Tutorat à domicile · Ouagadougou</p>
+  </div>
+  <div class="body">${contenu}</div>
+  <div class="footer"><p>© ${new Date().getFullYear()} Brillance Académie · Ouagadougou, Burkina Faso<br/>contact@brillanceacademie.com</p></div>
+</div></body></html>`
+
+export const emailTemplates = {
+
+  bienvenue_parent: ({ nom, enfant, niveau }) => ({
+    subject: "Bienvenue sur Brillance Académie ! 🎓",
+    html: emailBase(`
+      <p>Bonjour <strong>${nom}</strong>,</p>
+      <p>Votre inscription sur <strong>Brillance Académie</strong> est confirmée. Bienvenue dans la famille !</p>
+      <div class="highlight">
+        <p>👧 <strong>Élève :</strong> ${enfant}</p>
+        <p>📚 <strong>Niveau :</strong> ${niveau}</p>
+        <p>⏱️ <strong>Prochaine étape :</strong> Nous vous trouvons un tuteur sous 24h</p>
+      </div>
+      <p>Notre équipe va examiner votre demande et sélectionner le tuteur le plus adapté au niveau et au programme de votre enfant.</p>
+      <a href="https://brillanceacademie.com" class="btn">Voir les tuteurs disponibles →</a>
+      <p style="font-size:13px;color:#9ca3af;">Une question ? Répondez à cet email ou contactez-nous sur WhatsApp.</p>
+    `)
+  }),
+
+  candidature_tuteur: ({ prenom, nom, matieres, tarif }) => ({
+    subject: "Candidature reçue — Brillance Académie 📩",
+    html: emailBase(`
+      <p>Bonjour <strong>${prenom} ${nom}</strong>,</p>
+      <p>Votre candidature en tant que tuteur a bien été reçue. Merci de rejoindre notre réseau !</p>
+      <div class="highlight">
+        <p>📚 <strong>Matières :</strong> ${matieres}</p>
+        <p>💰 <strong>Tarif :</strong> ${Number(tarif).toLocaleString('fr-FR')} FCFA/h</p>
+        <p>⏱️ <strong>Délai d'examen :</strong> 48h maximum</p>
+      </div>
+      <p>Notre équipe va examiner votre profil. Vous recevrez un email de confirmation une fois votre profil approuvé et mis en ligne.</p>
+      <p style="font-size:13px;color:#9ca3af;">En cas de question, répondez directement à cet email.</p>
+    `)
+  }),
+
+  tuteur_approuve: ({ prenom, nom }) => ({
+    subject: "🎉 Votre profil est en ligne — Brillance Académie",
+    html: emailBase(`
+      <p>Félicitations <strong>${prenom} ${nom}</strong> !</p>
+      <p>Votre profil tuteur a été <strong style="color:#16a34a;">approuvé</strong> et est maintenant visible par toutes les familles sur Brillance Académie.</p>
+      <div class="highlight">
+        <p>✅ Profil actif et visible</p>
+        <p>📱 Les parents peuvent désormais réserver une séance avec vous</p>
+        <p>💬 Vous serez contacté par WhatsApp avant chaque séance</p>
+      </div>
+      <a href="https://brillanceacademie.com" class="btn">Voir mon profil →</a>
+      <p style="font-size:13px;color:#9ca3af;">Bienvenue dans l'équipe Brillance Académie !</p>
+    `)
+  }),
+
+  reservation_confirmee: ({ parentNom, tuteurPrenom, tuteurNom, matiere, jour, creneau, montant }) => ({
+    subject: `Séance confirmée avec ${tuteurPrenom} ${tuteurNom} ✅`,
+    html: emailBase(`
+      <p>Bonjour <strong>${parentNom}</strong>,</p>
+      <p>Votre paiement a été accepté. La séance est confirmée !</p>
+      <div class="highlight">
+        <p>👩‍🏫 <strong>Tuteur :</strong> ${tuteurPrenom} ${tuteurNom}</p>
+        <p>📚 <strong>Matière :</strong> ${matiere}</p>
+        <p>📅 <strong>Jour & heure :</strong> ${jour} à ${creneau}</p>
+        <p>💳 <strong>Montant payé :</strong> ${Number(montant).toLocaleString('fr-FR')} FCFA</p>
+      </div>
+      <p>Votre tuteur vous contactera par WhatsApp dans les 24h pour confirmer les détails.</p>
+      <p style="font-size:13px;color:#9ca3af;"><strong>Rappel :</strong> Première séance non satisfaisante ? On vous rembourse intégralement.</p>
+    `)
+  }),
 }
 
 // ─── Tuteurs (public) ─────────────────────────────────────────────────────────
