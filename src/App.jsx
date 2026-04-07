@@ -686,7 +686,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
   const essaiPrice = Math.round(tuteur.price * 0.8);
 
   return (
-    <div style={{minHeight:"100vh",background:"#f5f0e8",backgroundImage:"repeating-linear-gradient(transparent,transparent 27px,rgba(148,163,184,0.25) 27px,rgba(148,163,184,0.25) 28px)",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+    <div style={{minHeight:"100vh",background:"#e8ddd0",backgroundImage:"repeating-linear-gradient(transparent,transparent 27px,rgba(180,160,130,0.18) 27px,rgba(180,160,130,0.18) 28px)",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
 
       {/* Navbar */}
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
@@ -833,15 +833,15 @@ function SitePublic({ goAdmin, goPayment }) {
   const hasFilters = activeM || activeQ || activeN || search;
 
   const S = { // shared styles
-    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#f5f0e8", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(148,163,184,0.25) 27px, rgba(148,163,184,0.25) 28px)", margin:0 },
-    nav:     { position:"sticky", top:0, zIndex:100, background:"#ebebE2", borderBottom:"1px solid #d4d4c8", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 },
+    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#e8ddd0", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(180,160,130,0.18) 27px, rgba(180,160,130,0.18) 28px)", margin:0 },
+    nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #e8ddd0", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64, boxShadow:"0 2px 12px rgba(0,0,0,0.06)" },
     navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Comic Sans MS','Comic Sans',cursive" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
     section: { padding:"80px 40px", maxWidth:1100, margin:"0 auto" },
     label:   { fontSize:11, fontWeight:700, color:"#6366f1", textTransform:"uppercase", letterSpacing:2, display:"block", marginBottom:10 },
     h2:      { fontSize:36, fontWeight:800, color:"#111827", margin:"0 0 14px", lineHeight:1.2 },
     sub:     { fontSize:16, color:"#6b7280", lineHeight:1.6, maxWidth:560 },
-    card:    { background:"#f9fafb", border:"1.5px solid #f3f4f6", borderRadius:20, padding:24, display:"flex", flexDirection:"column", gap:10 },
+    card:    { background:"#fff", border:"none", borderRadius:20, padding:24, display:"flex", flexDirection:"column", gap:10, boxShadow:"0 2px 16px rgba(0,0,0,0.07)" },
   };
 
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
@@ -867,7 +867,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </nav>
 
       {/* HERO */}
-      <div style={{textAlign:"center",padding:"90px 40px 60px",background:"#fafafa"}}>
+      <div style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
         <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
           Tuteurs spécialisés élémentaire · CP au CM2
         </span>
@@ -896,7 +896,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* FILTRES — dropdowns compacts */}
-      <div id="matieres" style={{borderTop:"1px solid #d4d4c8",borderBottom:"1px solid #d4d4c8",padding:"16px 40px",background:"rgba(255,255,255,0.45)"}}>
+      <div id="matieres" style={{borderTop:"1px solid #d4d4c8",borderBottom:"1px solid #d4d4c8",padding:"16px 40px",background:"rgba(255,255,255,0.65)"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
 
           {/* Matières */}
@@ -1003,7 +1003,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* ÉCOLES PARTENAIRES (marketing) */}
-      <div style={{background:"#fafafa",borderTop:"1px solid #f3f4f6",padding:"48px 40px"}}>
+      <div style={{background:"rgba(255,255,255,0.55)",borderTop:"1px solid rgba(0,0,0,0.06)",padding:"48px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto",textAlign:"center"}}>
           <p style={{fontSize:12,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:2,marginBottom:24}}>
             Nos tuteurs maîtrisent les programmes de ces établissements
@@ -1018,7 +1018,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* COMMENT ÇA MARCHE */}
-      <div id="how" style={{background:"rgba(255,255,255,0.35)",padding:"80px 40px"}}>
+      <div id="how" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div style={{textAlign:"center",marginBottom:56}}>
             <span style={S.label}>Comment ça marche</span>
@@ -1067,7 +1067,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* AVIS */}
-      <div id="avis" style={{...S.section,background:"rgba(255,255,255,0.35)",maxWidth:"none",padding:"80px 40px"}}>
+      <div id="avis" style={{...S.section,background:"rgba(255,255,255,0.6)",maxWidth:"none",padding:"80px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:40,flexWrap:"wrap",gap:16}}>
             <div><span style={S.label}>Témoignages</span><h2 style={{...S.h2,marginBottom:0}}>Ce que disent les familles</h2></div>
