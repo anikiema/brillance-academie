@@ -473,9 +473,6 @@ function InscriptionTuteur({ onClose }) {
   const [step, setStep]           = useState(0);
   const [d, setD]                 = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000 });
   const [saving, setSaving]       = useState(false);
-  const [paying, setPaying]       = useState(false);
-  const [payPhone, setPayPhone]   = useState("");
-  const [payMethod, setPayMethod] = useState("orange");
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
 
@@ -492,7 +489,6 @@ function InscriptionTuteur({ onClose }) {
     d.matieres.length>0&&d.niveaux.length>0&&d.experience,
     d.jours.length>0&&(d.tousQuartiers||d.quartiersCouVerts.length>0),
     true,
-    payMethod==="visa" || payPhone.replace(/[\s+]/g,"").length>=8,
   ];
 
   const envoyer = async () => {
@@ -525,32 +521,6 @@ function InscriptionTuteur({ onClose }) {
     setSaving(false);
   };
 
-  const payer = () => {
-    if (paying) return;
-    setPaying(true);
-    const CP = window.CinetPay;
-    if (!CP) { alert("SDK CinetPay non chargé. Réessayez dans quelques secondes."); setPaying(false); return; }
-    CP.setConfig({ apikey:CP_API_KEY, site_id:CP_SITE_ID, notify_url:"https://brillanceacademie.com/api/notify", mode:"PRODUCTION", lang:"fr" });
-    CP.getCheckout({
-      transaction_id:        "TUT" + Date.now(),
-      amount:                2000,
-      currency:              "XOF",
-      channels:              payMethod==="visa" ? "CREDIT_CARD" : "MOBILE_MONEY",
-      description:           "Frais d'inscription tuteur — Brillance Académie",
-      customer_name:         d.prenom,
-      customer_surname:      d.nom,
-      customer_email:        d.email,
-      customer_phone_number: payPhone,
-      customer_address:      "Ouagadougou",
-      customer_city:         "Ouagadougou",
-      customer_country:      "BF",
-      customer_state:        "BF",
-      customer_zip_code:     "00000",
-      metadata:              "tuteur-inscription",
-    });
-    CP.waitResponse((data) => { setPaying(false); if (data.status==="ACCEPTED") envoyer(); });
-    CP.onError((data)     => { setPaying(false); console.error("CinetPay:", data); });
-  };
 
   if (step===5) return (
     <Modal title="Candidature envoyée !" onClose={onClose}>
@@ -640,50 +610,38 @@ function InscriptionTuteur({ onClose }) {
       <p style={{fontSize:11,color:"#9ca3af"}}>Réponse sous 48h après examen de votre profil.</p>
     </div>,
 
-    /* ── STEP 4 : PAIEMENT FRAIS INSCRIPTION ── */
+    /* ── STEP 4 : CONFIRMATION ENVOI LIEN ── */
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
-      <div style={{background:"#f5f3ff",borderRadius:16,padding:20,textAlign:"center"}}>
-        <p style={{fontSize:12,fontWeight:700,color:"#7c3aed",textTransform:"uppercase",letterSpacing:1,margin:"0 0 8px"}}>Frais d'inscription</p>
-        <p style={{fontSize:40,fontWeight:900,color:"#4f46e5",margin:"0 0 4px"}}>2 000 <span style={{fontSize:18}}>FCFA</span></p>
-        <p style={{fontSize:12,color:"#6b7280",margin:0}}>Paiement unique · Accès à vie à la plateforme</p>
+      <div style={{background:"#f5f3ff",borderRadius:16,padding:24,textAlign:"center"}}>
+        <p style={{fontSize:40,margin:"0 0 12px"}}>📩</p>
+        <p style={{fontSize:16,fontWeight:800,color:"#4f46e5",margin:"0 0 8px"}}>Presque terminé !</p>
+        <p style={{fontSize:13,color:"#6b7280",margin:0,lineHeight:1.7}}>
+          Cliquez sur <strong>"Soumettre ma candidature"</strong>. Votre dossier sera examiné sous <strong>48h</strong>. Un lien de paiement des frais d'inscription vous sera envoyé directement sur votre WhatsApp et par e-mail.
+        </p>
       </div>
-
-      <p style={{fontSize:13,fontWeight:600,color:"#374151",margin:0}}>Moyen de paiement</p>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
-        {[{id:"orange",label:"Orange Money",color:"#f97316"},{id:"moov",label:"Moov Money",color:"#0ea5e9"},{id:"coris",label:"Coris Money",color:"#16a34a"}].map(m=>(
-          <button key={m.id} type="button" onClick={()=>setPayMethod(m.id)}
-            style={{padding:"12px 8px",borderRadius:12,border:`2px solid ${payMethod===m.id?"#4f46e5":"#e5e7eb"}`,background:payMethod===m.id?"#f5f3ff":"#fff",cursor:"pointer",textAlign:"center"}}>
-            <p style={{fontWeight:800,fontSize:13,color:payMethod===m.id?"#4f46e5":m.color,margin:"0 0 2px"}}>{m.id==="orange"?"OM":m.id==="moov"?"Moov":"Coris"}</p>
-            <p style={{fontSize:10,color:payMethod===m.id?"#4f46e5":"#6b7280",margin:0,lineHeight:1.3}}>{m.label}</p>
-          </button>
+      <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {[
+          "📋 Votre profil est complet et prêt à être soumis",
+          "💳 Frais d'inscription : 2 000 FCFA (lien envoyé après validation)",
+          "✅ Accès à vie à la plateforme après paiement",
+        ].map((s,i)=>(
+          <div key={i} style={{display:"flex",gap:10,alignItems:"center",background:"#f9fafb",borderRadius:10,padding:"10px 14px"}}>
+            <span style={{fontSize:13,color:"#374151"}}>{s}</span>
+          </div>
         ))}
-      </div>
-
-      {payMethod !== "visa" && (
-        <div style={{display:"flex",flexDirection:"column",gap:6}}>
-          <label style={{fontSize:13,fontWeight:600,color:"#374151"}}>Numéro {{orange:"+226 70 XX XX XX",moov:"+226 65 XX XX XX",coris:"+226 XX XX XX XX"}[payMethod]}</label>
-          <input value={payPhone} onChange={e=>setPayPhone(e.target.value)} type="tel"
-            placeholder={{orange:"+226 70 XX XX XX",moov:"+226 65 XX XX XX",coris:"+226 XX XX XX XX"}[payMethod]}
-            style={{padding:"13px 16px",borderRadius:12,border:"1.5px solid #e5e7eb",fontSize:14,outline:"none"}}/>
-        </div>
-      )}
-
-      <div style={{display:"flex",alignItems:"center",gap:8,background:"#f0fdf4",borderRadius:10,padding:"10px 14px"}}>
-        <span style={{color:"#16a34a",fontSize:16}}>✓</span>
-        <p style={{fontSize:12,color:"#166534",margin:0}}>Paiement sécurisé via CinetPay · Aucun abonnement</p>
       </div>
     </div>,
   ];
 
   return (
     <Modal title="Devenir tuteur" sub="Rejoignez notre réseau et aidez des enfants à progresser." onClose={onClose}>
-      <Steps labels={["Profil","Compétences","Dispo.","Récap.","Paiement"]} current={step}/>
+      <Steps labels={["Profil","Compétences","Dispo.","Récap.","Envoi"]} current={step}/>
       {screens[step]}
       <div style={{display:"flex",gap:10,marginTop:20}}>
         {step>0 && step<5 && <button onClick={()=>setStep(s=>s-1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>}
-        <button disabled={!ok[step]||saving||paying} onClick={step===4 ? payer : ()=>setStep(s=>s+1)}
-          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving&&!paying?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving&&!paying?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving&&!paying?"pointer":"not-allowed"}}>
-          {paying?"Traitement…":saving?"Enregistrement…":step===4?"💳 Payer 2 000 FCFA →":step===3?"Procéder au paiement →":"Continuer →"}
+        <button disabled={!ok[step]||saving} onClick={step===4 ? envoyer : ()=>setStep(s=>s+1)}
+          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed"}}>
+          {saving?"Enregistrement…":step===4?"✅ Soumettre ma candidature":step===3?"Étape suivante →":"Continuer →"}
         </button>
       </div>
     </Modal>
