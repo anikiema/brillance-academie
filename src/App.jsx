@@ -83,11 +83,20 @@ function Pill({ children, active, onClick }) {
   );
 }
 
-function Inp({ label, value, onChange, placeholder, type="text" }) {
+function Inp({ label, value, onChange, placeholder, type="text", min, max, filter }) {
+  const handleChange = (e) => {
+    let v = e.target.value;
+    if (filter === "tel")    v = v.replace(/[^0-9+\s\-]/g, "");
+    if (filter === "number") v = v.replace(/[^0-9]/g, "");
+    if (min !== undefined && v !== "" && Number(v) < min) v = String(min);
+    if (max !== undefined && v !== "" && Number(v) > max) v = String(max);
+    onChange(v);
+  };
   return (
     <div style={{display:"flex",flexDirection:"column",gap:6}}>
       <label style={{fontSize:13,fontWeight:600,color:"#374151"}}>{label}</label>
-      <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder}
+      <input type={type} value={value} onChange={handleChange} placeholder={placeholder}
+        min={min} max={max} inputMode={filter==="tel"||filter==="number"?"numeric":undefined}
         style={{border:"1.5px solid #e5e7eb",borderRadius:12,padding:"11px 16px",fontSize:14,outline:"none",background:"#fafafa"}}
         onFocus={e=>e.target.style.borderColor="#4f46e5"}
         onBlur={e=>e.target.style.borderColor="#e5e7eb"}
@@ -395,7 +404,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
         <Inp label="Votre nom complet" value={d.nom} onChange={v=>set("nom",v)} placeholder=""/>
         <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="" type="email"/>
-        <Inp label="Téléphone (WhatsApp)" value={d.tel} onChange={v=>set("tel",v)} placeholder="" type="tel"/>
+        <Inp label="Téléphone (WhatsApp)" value={d.tel} onChange={v=>set("tel",v)} placeholder="+226 70 00 00 00" type="tel" filter="tel"/>
         <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder=""/>
       </div>
     </>,
@@ -403,7 +412,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
       <p style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:16}}>Votre enfant</p>
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
         <Inp label="Prénom de l'enfant" value={d.enfant} onChange={v=>set("enfant",v)} placeholder=""/>
-        <Inp label="Âge" value={d.age} onChange={v=>set("age",v)} placeholder="" type="number"/>
+        <Inp label="Âge de l'enfant (4–18 ans)" value={d.age} onChange={v=>set("age",v)} placeholder="Ex : 9" type="number" filter="number" min={4} max={18}/>
         <Sel label="Niveau scolaire" value={d.niveau} onChange={v=>set("niveau",v)} options={NIVEAUX}/>
         <div>
           <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>École fréquentée (optionnel)</label>
@@ -561,7 +570,7 @@ function InscriptionTuteur({ onClose }) {
         <Inp label="Nom" value={d.nom} onChange={v=>set("nom",v)} placeholder=""/>
       </div>
       <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="" type="email"/>
-      <Inp label="Téléphone" value={d.tel} onChange={v=>set("tel",v)} placeholder="" type="tel"/>
+      <Inp label="Téléphone" value={d.tel} onChange={v=>set("tel",v)} placeholder="+226 70 00 00 00" type="tel" filter="tel"/>
       <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder=""/>
     </div>,
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
@@ -574,7 +583,7 @@ function InscriptionTuteur({ onClose }) {
         <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Niveaux enseignés</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{NIVEAUX.map(n=><Pill key={n} active={d.niveaux.includes(n)} onClick={()=>tog("niveaux",n)}>{n}</Pill>)}</div>
       </div>
-      <Inp label="Années d'expérience" value={d.experience} onChange={v=>set("experience",v)} placeholder="Ex. : 3 ans"/>
+      <Inp label="Années d'expérience (0–50)" value={d.experience} onChange={v=>set("experience",v)} placeholder="Ex : 3" type="number" filter="number" min={0} max={50}/>
       <Inp label="Diplôme le plus élevé" value={d.diplome} onChange={v=>set("diplome",v)} placeholder="Master Sciences de l'éducation"/>
       <div>
         <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:12}}>💰 Tarif horaire souhaité</label>
@@ -1960,7 +1969,7 @@ function Admin({ goHome }) {
                   <div style={{display:"flex",flexDirection:"column",gap:14}}>
                     <Inp label="Nom complet" value={form.nom||""} onChange={v=>setF("nom",v)} placeholder="Aminata Diallo"/>
                     <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="aminata@gmail.com" type="email"/>
-                    <Inp label="Téléphone" value={form.telephone||""} onChange={v=>setF("telephone",v)} placeholder="77 XXX XX XX" type="tel"/>
+                    <Inp label="Téléphone" value={form.telephone||""} onChange={v=>setF("telephone",v)} placeholder="+226 77 00 00 00" type="tel" filter="tel"/>
                     <Inp label="Enfant (prénom, niveau)" value={form.enfant||""} onChange={v=>setF("enfant",v)} placeholder="Moussa, CM1"/>
                     <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif"]}/>
                     <button disabled={!form.nom||!form.email} onClick={()=>{
@@ -2190,7 +2199,7 @@ function Admin({ goHome }) {
                     <Sel label="Matière" value={form.subject||""} onChange={v=>setF("subject",v)} options={["", ...MATIERES.map(m=>m.label)]}/>
                     <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="Ex: aminata@gmail.com" type="email"/>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-                      <Inp label="Tarif (FCFA/h)" value={form.price||""} onChange={v=>setF("price",+v)} placeholder="Ex: 25000" type="number"/>
+                      <Inp label="Tarif (FCFA/h)" value={form.price||""} onChange={v=>setF("price",+v)} placeholder="Ex: 25000" type="number" filter="number" min={1000} max={200000}/>
                       <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif"]}/>
                     </div>
                     <div>
