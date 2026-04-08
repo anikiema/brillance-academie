@@ -1,6 +1,6 @@
 // Brillance Académie v1.1 — admin protégé
 import { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -162,171 +162,114 @@ function FaqItem({ q, r }) {
   );
 }
 
-// ─── PAGE PAIEMENT SÉCURISÉ ───────────────────────────────────────────────────
+// ─── PAGE CONFIRMATION + PAIEMENT MOBILE MONEY ───────────────────────────────
+
+const WA_ADMIN = "22677166565"; // ← numéro WhatsApp Brillance Académie
 
 function PagePaiement({ booking, onSuccess, onBack }) {
-  const { tuteur, jour, creneau, enfant, niveau, duree = "1h" } = booking;
-  const [method, setMethod] = useState("orange");
-  const [phone,  setPhone]  = useState("");
-  const [loading, setLoading] = useState(false);
+  const { tuteur, jour, creneau, enfant, niveau } = booking;
+  const [method,  setMethod]  = useState("orange");
   const [done,    setDone]    = useState(false);
-  const [txRef,   setTxRef]   = useState("");
+  const [loading, setLoading] = useState(false);
 
   const essaiAmount = Math.round((tuteur?.price || 27500) * 0.8);
+  const refNum = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
 
   const METHODS = [
-    { id:"orange", abbr:"OM",    label:"Orange Money",  abbColor:"#f97316", bg:"#fff7ed", border:"#fed7aa", selBorder:"#f97316" },
-    { id:"moov",   abbr:"Moov",  label:"Moov Money",    abbColor:"#0ea5e9", bg:"#e0f2fe", border:"#bae6fd", selBorder:"#0ea5e9" },
-    { id:"coris",  abbr:"Coris", label:"Coris Money",   abbColor:"#16a34a", bg:"#f0fdf4", border:"#bbf7d0", selBorder:"#16a34a" },
-    { id:"visa",   abbr:"VISA",  label:"Carte bancaire", abbColor:"#374151", bg:"#f9fafb", border:"#e5e7eb", selBorder:"#374151" },
+    { id:"orange", label:"Orange Money", num:"70 00 00 00", color:"#f97316", bg:"#fff7ed", border:"#fed7aa" },
+    { id:"moov",   label:"Moov Money",   num:"65 00 00 00", color:"#0ea5e9", bg:"#e0f2fe", border:"#bae6fd" },
+    { id:"coris",  label:"Coris Money",  num:"XX XX XX XX", color:"#16a34a", bg:"#f0fdf4", border:"#bbf7d0" },
   ];
+  const cur = METHODS.find(m => m.id === method) || METHODS[0];
 
-  const cur = METHODS.find(m => m.id === method);
-  const mobileMethod = ["orange","moov","coris"].includes(method);
-  const phonePlaceholder = {orange:"+226 70 XX XX XX", moov:"+226 65 XX XX XX", coris:"+226 XX XX XX XX"}[method] || "+226 XX XX XX XX";
+  const S = { fontFamily:"'Tahoma','Geneva',sans-serif", color:"#111827" };
 
-  const canPay = mobileMethod ? phone.replace(/[\s+]/g,"").length >= 8 : true;
-
-  // Charger le SDK CinetPay une seule fois
-  useEffect(() => {
-    if (document.getElementById("cp-script")) return;
-    const s = document.createElement("script");
-    s.id  = "cp-script";
-    s.src = "https://cdn.cinetpay.com/seamless/main.js";
-    s.async = true;
-    document.head.appendChild(s);
-  }, []);
-
-
-  const cpChannels = {
-    orange: "MOBILE_MONEY",
-    moov:   "MOBILE_MONEY",
-    coris:  "MOBILE_MONEY",
-    visa:   "CREDIT_CARD",
-  };
-
-  const pay = () => {
-    if (!canPay || loading) return;
+  const confirmer = async () => {
     setLoading(true);
-    const txId = "BA" + Date.now();
-    setTxRef(txId);
-
-    const CP = window.CinetPay;
-    if (!CP) { alert("SDK CinetPay non chargé. Réessayez."); setLoading(false); return; }
-
-    CP.setConfig({
-      apikey:     CP_API_KEY,
-      site_id:    CP_SITE_ID,
-      notify_url: "https://brillanceacademie.com/api/notify",
-      mode:       "PRODUCTION",
-      lang:       "fr",
-    });
-
-    CP.getCheckout({
-      transaction_id:        txId,
-      amount:                essaiAmount,
-      currency:              "XOF",
-      channels:              cpChannels[method] || "ALL",
-      description:           `Séance avec ${tuteur?.prenom||""} ${tuteur?.nom||""} — ${tuteur?.subject||""}`,
-      customer_name:         booking.parentNom   || "Parent",
-      customer_surname:      "",
-      customer_email:        booking.parentEmail || "client@brillanceacademie.com",
-      customer_phone_number: phone,
-      customer_address:      "Ouagadougou",
-      customer_city:         "Ouagadougou",
-      customer_country:      "BF",
-      customer_state:        "BF",
-      customer_zip_code:     "00000",
-      metadata:              "brillance-seance",
-    });
-
-    CP.waitResponse((data) => {
-      setLoading(false);
-      if (data.status === "ACCEPTED") {
-        // ── Email confirmation réservation ──
-        if (booking.parentEmail) {
-          const tpl = emailTemplates.reservation_confirmee({
-            parentNom:    booking.parentNom   || "Parent",
-            tuteurPrenom: tuteur?.prenom       || "",
-            tuteurNom:    tuteur?.nom          || "",
-            matiere:      tuteur?.subject      || "",
-            jour,
-            creneau,
-            montant:      essaiAmount,
-          });
-          sendEmail({ to: booking.parentEmail, ...tpl });
-        }
-        setDone(true);
-        setTimeout(onSuccess, 2000);
+    try {
+      await creerReservation({
+        tuteur_id:       tuteur?.id,
+        tuteur_nom:      `${tuteur?.prenom||""} ${tuteur?.nom||""}`.trim(),
+        parent_nom:      booking.parentNom   || "",
+        parent_email:    booking.parentEmail || "",
+        enfant, niveau, jour, creneau,
+        montant:         essaiAmount,
+        statut:          "en_attente",
+        paiement_mode:   cur.label,
+        paiement_reference: refNum,
+      });
+      if (booking.parentEmail) {
+        const tpl = emailTemplates.reservation_confirmee({
+          parentNom:    booking.parentNom   || "Parent",
+          tuteurPrenom: tuteur?.prenom       || "",
+          tuteurNom:    tuteur?.nom          || "",
+          matiere:      tuteur?.subject      || "",
+          jour, creneau, montant: essaiAmount,
+        });
+        sendEmail({ to: booking.parentEmail, ...tpl });
       }
-    });
-
-    CP.onError((data) => {
-      setLoading(false);
-      console.error("CinetPay erreur :", data);
-    });
+    } catch(e) { console.error(e); }
+    setLoading(false);
+    setDone(true);
   };
 
-  const S = { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827" };
-
-  const refNum = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
+  const ouvrirWhatsApp = () => {
+    const msg = encodeURIComponent(
+      `Bonjour Brillance Académie 👋\n\nJe souhaite confirmer ma réservation :\n• Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n• Matière : ${tuteur?.subject}\n• Jour : ${jour} à ${creneau}\n• Élève : ${enfant} · ${niveau}\n• Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n• Référence : ${refNum}\n\nJ'effectue le paiement par ${cur.label}.`
+    );
+    window.open(`https://wa.me/${WA_ADMIN}?text=${msg}`, "_blank");
+  };
 
   if (done) return (
     <div style={{...S, minHeight:"100vh", background:"#f0fdf4", display:"flex", alignItems:"center", justifyContent:"center", padding:24}}>
       <div style={{maxWidth:520, width:"100%"}}>
-
-        {/* Success header */}
         <div style={{textAlign:"center", marginBottom:32}}>
           <div style={{width:80, height:80, background:"#d1fae5", borderRadius:999, display:"flex", alignItems:"center", justifyContent:"center", fontSize:40, margin:"0 auto 20px", boxShadow:"0 0 0 12px #f0fdf4, 0 0 0 20px #dcfce7"}}>✅</div>
-          <h2 style={{fontSize:28, fontWeight:900, margin:"0 0 8px", color:"#111827"}}>Séance confirmée !</h2>
-          <p style={{color:"#6b7280", fontSize:15, margin:0}}>Paiement accepté · Référence <strong style={{color:"#4f46e5"}}>{refNum}</strong></p>
+          <h2 style={{fontSize:26, fontWeight:900, margin:"0 0 8px"}}>Réservation enregistrée !</h2>
+          <p style={{color:"#6b7280", fontSize:14, margin:0}}>Référence : <strong style={{color:"#4f46e5"}}>{refNum}</strong></p>
         </div>
 
-        {/* Booking card */}
-        <div style={{background:"#fff", borderRadius:20, padding:28, marginBottom:20, boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
-          <div style={{display:"flex", gap:14, alignItems:"center", marginBottom:24, paddingBottom:20, borderBottom:"1px solid #f3f4f6"}}>
-            <div style={{width:52, height:52, background:"#ede9fe", borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", fontSize:26}}>{tuteur?.emoji||"👩‍🏫"}</div>
-            <div>
-              <p style={{fontWeight:800, fontSize:17, margin:0}}>{tuteur?.prenom} {tuteur?.nom}</p>
-              <p style={{fontSize:13, color:"#6366f1", margin:"3px 0 0", fontWeight:600}}>{tuteur?.subject}</p>
-            </div>
-            <div style={{marginLeft:"auto", textAlign:"right"}}>
-              <p style={{fontSize:13, color:"#9ca3af", margin:0, textDecoration:"line-through"}}>{fmt(tuteur?.price||0)}</p>
-              <p style={{fontSize:20, fontWeight:900, color:"#4f46e5", margin:0}}>{fmt(essaiAmount)}</p>
-              <span style={{fontSize:11, background:"#dcfce7", color:"#065f46", padding:"2px 8px", borderRadius:999, fontWeight:700}}>−20 %</span>
-            </div>
-          </div>
-
+        <div style={{background:"#fff", borderRadius:20, padding:24, marginBottom:16, boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+          <p style={{fontWeight:700, fontSize:14, color:"#374151", margin:"0 0 16px"}}>📋 Récapitulatif</p>
           {[
-            ["📅 Jour & heure", `${jour} à ${creneau}`],
-            ["👧 Élève",        `${enfant} · ${niveau}`],
-            ["💳 Paiement",     {orange:"Orange Money",moov:"Moov Money",coris:"Coris Money",visa:"Carte bancaire"}[method] || method],
-            ["📱 Contact",      phone || "—"],
+            ["👩‍🏫 Tuteur",   `${tuteur?.prenom} ${tuteur?.nom} · ${tuteur?.subject}`],
+            ["📅 Séance",    `${jour} à ${creneau}`],
+            ["👧 Élève",     `${enfant} · ${niveau}`],
+            ["💰 Montant",   `${essaiAmount.toLocaleString("fr-FR")} FCFA (−20 % 1ère séance)`],
+            ["💳 Paiement",  cur.label],
           ].map(([k,v])=>(
-            <div key={k} style={{display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:"1px solid #f9fafb", fontSize:14}}>
+            <div key={k} style={{display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid #f9fafb", fontSize:13}}>
               <span style={{color:"#6b7280"}}>{k}</span>
-              <span style={{fontWeight:600, color:"#111827"}}>{v}</span>
+              <span style={{fontWeight:600}}>{v}</span>
             </div>
           ))}
         </div>
 
-        {/* Next steps */}
-        <div style={{background:"#ede9fe", borderRadius:16, padding:20, marginBottom:20}}>
-          <p style={{fontWeight:700, fontSize:14, color:"#5b21b6", margin:"0 0 12px"}}>📲 Prochaines étapes</p>
+        {/* Instructions paiement */}
+        <div style={{background:cur.bg, border:`1.5px solid ${cur.border}`, borderRadius:16, padding:20, marginBottom:16}}>
+          <p style={{fontWeight:700, fontSize:14, color:cur.color, margin:"0 0 10px"}}>📱 Comment payer par {cur.label}</p>
           {[
-            "Un SMS de confirmation a été envoyé sur votre numéro",
-            `${tuteur?.prenom} vous contactera par WhatsApp 24h avant la séance`,
-            "Vous recevrez un compte-rendu après chaque séance",
+            `Composez *144# (Orange) ou *555# (Moov) sur votre téléphone`,
+            `Sélectionnez "Transfert d'argent"`,
+            `Entrez le numéro Brillance et le montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA`,
+            `Mentionnez la référence ${refNum} dans le motif`,
           ].map((s,i)=>(
-            <div key={i} style={{display:"flex", gap:10, alignItems:"flex-start", marginBottom:i<2?10:0}}>
-              <span style={{width:20,height:20,background:"#fff",borderRadius:999,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"#7c3aed",flexShrink:0}}>{i+1}</span>
-              <p style={{fontSize:13, color:"#5b21b6", margin:0, lineHeight:1.5}}>{s}</p>
+            <div key={i} style={{display:"flex", gap:10, alignItems:"flex-start", marginBottom:i<3?8:0}}>
+              <span style={{width:20,height:20,background:cur.color,borderRadius:999,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"#fff",flexShrink:0}}>{i+1}</span>
+              <p style={{fontSize:13, color:"#374151", margin:0, lineHeight:1.5}}>{s}</p>
             </div>
           ))}
         </div>
 
-        <button onClick={onBack} style={{width:"100%", padding:"14px", background:"#4f46e5", color:"#fff", border:"none", borderRadius:14, fontWeight:700, fontSize:15, cursor:"pointer"}}>
-          Retour à l'accueil →
+        {/* Bouton WhatsApp */}
+        <button onClick={ouvrirWhatsApp}
+          style={{width:"100%", padding:"14px", background:"#25d366", color:"#fff", border:"none", borderRadius:14, fontWeight:700, fontSize:15, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:10, marginBottom:12}}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Confirmer sur WhatsApp
+        </button>
+
+        <button onClick={onBack} style={{width:"100%", padding:"12px", background:"none", border:"1.5px solid #e5e7eb", borderRadius:14, fontWeight:600, fontSize:14, cursor:"pointer", color:"#6b7280"}}>
+          Retour à l'accueil
         </button>
       </div>
     </div>
@@ -337,109 +280,68 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
       {/* Header */}
       <div style={{background:"#fff", borderBottom:"1px solid #f3f4f6", padding:"0 40px", height:60, display:"flex", alignItems:"center", justifyContent:"space-between"}}>
-        <span style={{fontWeight:900, fontSize:20, color:"#4f46e5", letterSpacing:"-0.5px"}}>Brillance</span>
-        <div style={{display:"flex", alignItems:"center", gap:8, color:"#6b7280", fontSize:14}}>
-          <span style={{width:18, height:18, border:"2px solid #10b981", borderRadius:4, display:"inline-flex", alignItems:"center", justifyContent:"center", color:"#10b981", fontSize:11}}>✓</span>
-          <span style={{fontWeight:600, color:"#374151"}}>Paiement sécurisé</span>
-        </div>
+        <span style={{fontWeight:900, fontSize:20, color:"#4f46e5"}}>🎓 Brillance Académie</span>
+        <span style={{fontSize:13, color:"#6b7280", fontWeight:600}}>Réservation sécurisée</span>
       </div>
 
-      <div style={{maxWidth:640, margin:"0 auto", padding:"40px 24px"}}>
+      <div style={{maxWidth:600, margin:"0 auto", padding:"40px 24px"}}>
 
-        {/* Résumé de séance */}
-        <div style={{background:"#f0ebe3", borderRadius:16, padding:"20px 24px", display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:36}}>
-          <div>
-            <p style={{fontWeight:700, fontSize:16, margin:"0 0 4px"}}>Séance de tutorat</p>
-            <p style={{fontSize:14, color:"#6b7280", margin:0}}>
-              {tuteur?.prenom} {tuteur?.nom} · {tuteur?.subject} · {duree} · {jour} {creneau}
-            </p>
+        {/* Résumé */}
+        <div style={{background:"#fff", borderRadius:20, padding:24, marginBottom:24, boxShadow:"0 4px 20px rgba(0,0,0,.06)"}}>
+          <div style={{display:"flex", gap:14, alignItems:"center", marginBottom:20, paddingBottom:20, borderBottom:"1px solid #f3f4f6"}}>
+            <div style={{width:52, height:52, background:"#ede9fe", borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28}}>{tuteur?.emoji||"👩‍🏫"}</div>
+            <div style={{flex:1}}>
+              <p style={{fontWeight:800, fontSize:16, margin:0}}>{tuteur?.prenom} {tuteur?.nom}</p>
+              <p style={{fontSize:13, color:"#6366f1", margin:"3px 0 0", fontWeight:600}}>{tuteur?.subject}</p>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <p style={{fontSize:12, color:"#9ca3af", margin:0, textDecoration:"line-through"}}>{fmt(tuteur?.price||0)}</p>
+              <p style={{fontSize:22, fontWeight:900, color:"#4f46e5", margin:0}}>{fmt(essaiAmount)}</p>
+              <span style={{fontSize:11, background:"#dcfce7", color:"#065f46", padding:"2px 8px", borderRadius:999, fontWeight:700}}>−20 % 1ère séance</span>
+            </div>
           </div>
-          <div style={{textAlign:"right"}}>
-            <p style={{fontSize:28, fontWeight:900, margin:0, letterSpacing:"-0.5px"}}>{(essaiAmount).toLocaleString("fr-FR")}</p>
-            <p style={{fontSize:13, color:"#6b7280", margin:0, fontWeight:600}}>FCFA</p>
-          </div>
+          {[["📅 Jour & heure",`${jour} à ${creneau}`],["👧 Élève",`${enfant} · ${niveau}`]].map(([k,v])=>(
+            <div key={k} style={{display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid #f9fafb", fontSize:14}}>
+              <span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600}}>{v}</span>
+            </div>
+          ))}
         </div>
 
-        {/* Choix du mode de paiement */}
-        <p style={{fontWeight:700, fontSize:16, marginBottom:16}}>Choisissez votre moyen de paiement</p>
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:10, marginBottom:10}}>
-          {METHODS.slice(0,4).map(m => (
+        {/* Choix mode de paiement */}
+        <p style={{fontWeight:700, fontSize:15, marginBottom:12}}>Choisissez votre moyen de paiement</p>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:24}}>
+          {METHODS.map(m=>(
             <button key={m.id} onClick={()=>setMethod(m.id)}
-              style={{padding:"16px 10px", borderRadius:14, border:`2px solid ${method===m.id?"#4f46e5":m.border}`,
-                background: method===m.id?"#f5f3ff":"#fff", cursor:"pointer", display:"flex", flexDirection:"column",
-                alignItems:"center", justifyContent:"center", gap:6, transition:"all .15s", minHeight:90}}>
-              <span style={{fontWeight:900, fontSize:17, color: method===m.id?"#4f46e5":m.abbColor}}>{m.abbr}</span>
-              <span style={{fontSize:12, color: method===m.id?"#4f46e5":"#6b7280", fontWeight:500}}>{m.label}</span>
+              style={{padding:"16px 10px", borderRadius:14, border:`2px solid ${method===m.id?m.color:m.border}`,
+                background:method===m.id?m.bg:"#fff", cursor:"pointer", display:"flex", flexDirection:"column",
+                alignItems:"center", gap:6, transition:"all .15s"}}>
+              <span style={{fontWeight:900, fontSize:15, color:method===m.id?m.color:"#374151"}}>{m.label.split(" ")[0]}</span>
+              <span style={{fontSize:11, color:method===m.id?m.color:"#9ca3af", fontWeight:500}}>{m.label.split(" ").slice(1).join(" ")}</span>
             </button>
           ))}
         </div>
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:10, marginBottom:32}}>
-          <button onClick={()=>setMethod("visa")}
-            style={{padding:"16px 10px", borderRadius:14, border:`2px solid ${method==="visa"?"#4f46e5":"#e5e7eb"}`,
-              background:method==="visa"?"#f5f3ff":"#fff", cursor:"pointer", display:"flex", flexDirection:"column",
-              alignItems:"center", justifyContent:"center", gap:6, minHeight:90}}>
-            <span style={{fontWeight:900, fontSize:13, color:method==="visa"?"#4f46e5":"#374151"}}>VISA / MC</span>
-            <span style={{fontSize:12, color:method==="visa"?"#4f46e5":"#6b7280"}}>Carte bancaire</span>
-          </button>
+
+        {/* Instructions */}
+        <div style={{background:cur.bg, border:`1.5px solid ${cur.border}`, borderRadius:16, padding:20, marginBottom:24}}>
+          <p style={{fontWeight:700, fontSize:14, color:cur.color, margin:"0 0 6px"}}>Comment ça marche ?</p>
+          <p style={{fontSize:13, color:"#374151", margin:0, lineHeight:1.7}}>
+            Cliquez sur <strong>"Confirmer la réservation"</strong>. Votre réservation sera enregistrée et vous recevrez les instructions de paiement par WhatsApp. Aucune information bancaire requise ici.
+          </p>
         </div>
 
-        {/* Formulaire selon le mode */}
-        <div style={{background:"#eef2ff", borderRadius:16, padding:24, display:"flex", flexDirection:"column", gap:16}}>
+        <button onClick={confirmer} disabled={loading}
+          style={{width:"100%", padding:"15px", borderRadius:14, border:"none", cursor:"pointer",
+            fontWeight:700, fontSize:15, background:"#4f46e5", color:"#fff",
+            display:"flex", alignItems:"center", justifyContent:"center", gap:10, marginBottom:12}}>
+          {loading
+            ? <><svg style={{width:18,height:18,animation:"spin 1s linear infinite"}} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>Enregistrement…</>
+            : `✓ Confirmer la réservation — ${essaiAmount.toLocaleString("fr-FR")} FCFA`}
+        </button>
 
-          {mobileMethod && <>
-            <p style={{fontWeight:700, fontSize:16, margin:0, color:"#3730a3"}}>Paiement par {cur?.label}</p>
-            <div style={{display:"flex", flexDirection:"column", gap:6}}>
-              <label style={{fontSize:13, fontWeight:600, color:"#4f46e5"}}>Numéro de téléphone {cur?.label}</label>
-              <input value={phone} onChange={e=>setPhone(e.target.value)} placeholder={phonePlaceholder} type="tel"
-                style={{padding:"14px 18px", borderRadius:12, border:"1.5px solid #c7d2fe", fontSize:15,
-                  background:"#fff", outline:"none", color:"#111827", letterSpacing:"0.5px"}}/>
-            </div>
-          </>}
-
-          {method === "visa" && (
-            <div style={{display:"flex", alignItems:"center", gap:14, background:"#fff", borderRadius:12, padding:"16px 20px", border:"1.5px solid #e5e7eb"}}>
-              <span style={{fontSize:28}}>💳</span>
-              <div>
-                <p style={{fontWeight:700, fontSize:14, margin:"0 0 3px", color:"#374151"}}>Carte VISA / Mastercard</p>
-                <p style={{fontSize:12, color:"#6b7280", margin:0}}>Vos informations de carte seront saisies dans le formulaire sécurisé CinetPay.</p>
-              </div>
-            </div>
-          )}
-
-          {/* Total + bouton payer */}
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", background:"#fff", borderRadius:12, padding:"14px 18px", marginTop:4}}>
-            <div>
-              <p style={{margin:0, fontSize:13, color:"#6b7280"}}>Total à payer</p>
-              <div style={{display:"flex", alignItems:"baseline", gap:6}}>
-                <span style={{fontSize:22, fontWeight:900, color:"#111827"}}>{essaiAmount.toLocaleString("fr-FR")}</span>
-                <span style={{fontSize:13, fontWeight:600, color:"#6b7280"}}>FCFA</span>
-                <span style={{fontSize:12, color:"#9ca3af", textDecoration:"line-through", marginLeft:4}}>{(tuteur?.price||27500).toLocaleString("fr-FR")} FCFA</span>
-              </div>
-            </div>
-            <span style={{fontSize:12, background:"#dcfce7", color:"#065f46", padding:"4px 10px", borderRadius:999, fontWeight:700}}>-20 % essai</span>
-          </div>
-
-          <button onClick={pay} disabled={loading || !canPay}
-            style={{padding:"15px", borderRadius:12, border:"none", cursor:canPay&&!loading?"pointer":"not-allowed",
-              fontWeight:700, fontSize:15, background:canPay?"#4f46e5":"#e5e7eb", color:canPay?"#fff":"#9ca3af",
-              transition:"all .15s", display:"flex", alignItems:"center", justifyContent:"center", gap:10}}>
-            {loading
-              ? <><svg style={{width:18,height:18,animation:"spin 1s linear infinite"}} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>Traitement en cours…</>
-              : `Payer ${essaiAmount.toLocaleString("fr-FR")} FCFA →`}
-          </button>
-
-          <div style={{display:"flex", justifyContent:"center", gap:20, marginTop:4}}>
-            {["🔒 SSL sécurisé", "✓ CinetPay certifié", "✓ Aucune donnée stockée"].map(t=>(
-              <span key={t} style={{fontSize:11, color:"#6b7280"}}>{t}</span>
-            ))}
-          </div>
-        </div>
-
-        <button onClick={onBack} style={{display:"block", margin:"20px auto 0", background:"none", border:"none", color:"#9ca3af", fontSize:13, cursor:"pointer"}}>
+        <button onClick={onBack} style={{display:"block", margin:"0 auto", background:"none", border:"none", color:"#9ca3af", fontSize:13, cursor:"pointer"}}>
           ← Annuler et revenir
         </button>
       </div>
-
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
@@ -955,6 +857,7 @@ function SitePublic({ goAdmin, goPayment }) {
       .catch(() => {})
       .finally(() => setLoadingTuteurs(false));
     getEcoles().then(data => { if (data && data.length > 0) setEcolesList(data); }).catch(() => {});
+    enregistrerVisite();
   }, []);
 
   const setBI = (k,v) => setBi(p=>({...p,[k]:v}));
@@ -1732,6 +1635,7 @@ function Admin({ goHome }) {
   const [tousAvis, setTousAvis]         = useState([]);
   const [ecolesAdmin, setEcolesAdmin]   = useState([]);
   const [loadingT, setLoadingT]     = useState(true);
+  const [visites, setVisites]       = useState({ total:0, aujourd_hui:0, cette_semaine:0, ce_mois:0 });
   const [search, setSearch]   = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setET]    = useState(null);
@@ -1754,6 +1658,9 @@ function Admin({ goHome }) {
       .catch(() => {});
     getEcoles()
       .then(data => setEcolesAdmin(data))
+      .catch(() => {});
+    getVisiteStats()
+      .then(stats => setVisites(stats))
       .catch(() => {});
   }, []);
 
@@ -1869,6 +1776,29 @@ function Admin({ goHome }) {
                 </div>
               ))}
             </div>
+            {/* Visiteurs */}
+            <div style={{...S.card,marginBottom:16,background:"linear-gradient(135deg,#0f172a 0%,#1e293b 100%)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                <div>
+                  <p style={{fontSize:11,fontWeight:700,color:"#64748b",textTransform:"uppercase",letterSpacing:2,margin:0}}>Trafic du site</p>
+                  <p style={{fontSize:22,fontWeight:900,color:"#fff",margin:"4px 0 0"}}>{visites.total.toLocaleString("fr-FR")} visiteurs</p>
+                </div>
+                <span style={{fontSize:32}}>📊</span>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
+                {[
+                  {l:"Aujourd'hui",   v:visites.aujourd_hui,  c:"#22d3ee"},
+                  {l:"Cette semaine", v:visites.cette_semaine, c:"#a78bfa"},
+                  {l:"Ce mois",       v:visites.ce_mois,       c:"#34d399"},
+                ].map(({l,v,c})=>(
+                  <div key={l} style={{background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"12px 16px"}}>
+                    <p style={{fontSize:24,fontWeight:900,color:c,margin:0}}>{v}</p>
+                    <p style={{fontSize:12,color:"#94a3b8",margin:"4px 0 0"}}>{l}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Revenue chart */}
             <div style={{...S.card,marginBottom:16}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>

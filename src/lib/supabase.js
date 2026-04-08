@@ -438,3 +438,34 @@ export async function supprimerEcole(id) {
     .eq('id', id)
   if (error) throw error
 }
+
+// ─── COMPTEUR DE VISITEURS ────────────────────────────────────────────────────
+// Enregistre une visite (une fois par jour par navigateur via localStorage)
+export async function enregistrerVisite() {
+  const cle = 'ba_visite_' + new Date().toISOString().slice(0, 10); // ex: ba_visite_2026-04-07
+  if (localStorage.getItem(cle)) return; // déjà compté aujourd'hui
+  localStorage.setItem(cle, '1');
+  await supabase.from('page_views').insert([{
+    page: 'accueil',
+    user_agent: navigator.userAgent.slice(0, 200),
+  }]).catch(() => {});
+}
+
+// Récupère les stats de visites pour l'admin
+export async function getVisiteStats() {
+  const { data, error } = await supabase
+    .from('page_views')
+    .select('id, created_at')
+    .order('created_at', { ascending: false });
+  if (error) return { total: 0, aujourd_hui: 0, cette_semaine: 0, ce_mois: 0 };
+  const now = new Date();
+  const today      = now.toISOString().slice(0, 10);
+  const weekAgo    = new Date(now - 7  * 86400000).toISOString();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  return {
+    total:          data.length,
+    aujourd_hui:    data.filter(r => r.created_at?.slice(0,10) === today).length,
+    cette_semaine:  data.filter(r => r.created_at >= weekAgo).length,
+    ce_mois:        data.filter(r => r.created_at >= monthStart).length,
+  };
+}
