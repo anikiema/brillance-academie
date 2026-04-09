@@ -176,7 +176,7 @@ function FaqItem({ q, r }) {
 const WA_ADMIN = "22677166565"; // ← numéro WhatsApp Brillance Académie
 
 function PagePaiement({ booking, onSuccess, onBack }) {
-  const { tuteur, jour, creneau, enfant, niveau } = booking;
+  const { tuteur, jour, creneau, enfant, niveau, modeSeance="domicile", jitsiLink } = booking;
   const [method,  setMethod]  = useState("orange");
   const [done,    setDone]    = useState(false);
   const [loading, setLoading] = useState(false);
@@ -224,7 +224,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
   const ouvrirWhatsApp = () => {
     const msg = encodeURIComponent(
-      `Bonjour Brillance Academie,\n\nJe souhaite confirmer ma reservation :\n- Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n- Matiere : ${tuteur?.subject}\n- Jour : ${jour} a ${creneau}\n- Eleve : ${enfant} - ${niveau}\n- Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n- Reference : ${refNum}\n\nJ'effectue le paiement par ${cur.label}.`
+      `Bonjour Brillance Academie,\n\nJe souhaite confirmer ma reservation :\n- Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n- Matiere : ${tuteur?.subject}\n- Jour : ${jour} a ${creneau}\n- Eleve : ${enfant} - ${niveau}\n- Mode : ${modeSeance==="enligne"?"En ligne (Jitsi)":"A domicile"}\n- Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n- Reference : ${refNum}${jitsiLink?"\n- Lien Jitsi : "+jitsiLink:""}\n\nJ'effectue le paiement par ${cur.label}.`
     );
     window.open(`https://wa.me/${WA_ADMIN}?text=${msg}`, "_blank");
   };
@@ -243,6 +243,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
           {[
             ["👩‍🏫 Tuteur",   `${tuteur?.prenom} ${tuteur?.nom} · ${tuteur?.subject}`],
             ["📅 Séance",    `${jour} à ${creneau}`],
+            ["📍 Mode",      modeSeance==="enligne"?"🌐 En ligne":"🏠 À domicile"],
             ["👧 Élève",     `${enfant} · ${niveau}`],
             ["💰 Montant",   `${essaiAmount.toLocaleString("fr-FR")} FCFA (−20 % 1ère séance)`],
             ["💳 Paiement",  cur.label],
@@ -269,6 +270,14 @@ function PagePaiement({ booking, onSuccess, onBack }) {
             </div>
           ))}
         </div>
+
+        {/* Lien Jitsi si séance en ligne */}
+        {jitsiLink && (
+          <a href={jitsiLink} target="_blank" rel="noopener noreferrer"
+            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,width:"100%",padding:"14px",background:"#0ea5e9",color:"#fff",borderRadius:14,fontWeight:700,fontSize:15,textDecoration:"none",marginBottom:12,boxSizing:"border-box"}}>
+            🌐 Rejoindre la salle Jitsi Meet
+          </a>
+        )}
 
         {/* Bouton WhatsApp */}
         <button onClick={ouvrirWhatsApp}
@@ -471,7 +480,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
 
 function InscriptionTuteur({ onClose }) {
   const [step, setStep]           = useState(0);
-  const [d, setD]                 = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000 });
+  const [d, setD]                 = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000, enLigne:false });
   const [saving, setSaving]       = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
@@ -508,6 +517,7 @@ function InscriptionTuteur({ onClose }) {
         quartier:          d.ville || "",
         emoji:             "👩‍🏫",
         quartiersCouVerts: d.tousQuartiers ? QUARTIERS : d.quartiersCouVerts,
+        en_ligne:          d.enLigne,
       });
       // ── Email confirmation candidature tuteur ──
       if (d.email) {
@@ -585,10 +595,16 @@ function InscriptionTuteur({ onClose }) {
       </div>
       <div>
         <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
-        <button onClick={()=>set("tousQuartiers",!d.tousQuartiers)}
-          style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.tousQuartiers?"#4f46e5":"#e5e7eb"}`,background:d.tousQuartiers?"#ede9fe":"#f9fafb",color:d.tousQuartiers?"#4f46e5":"#374151",fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:10}}>
-          {d.tousQuartiers?"✓ Tous les quartiers de Ouagadougou":"Tous les quartiers"}
-        </button>
+        <div style={{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}}>
+          <button onClick={()=>set("tousQuartiers",!d.tousQuartiers)}
+            style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.tousQuartiers?"#4f46e5":"#e5e7eb"}`,background:d.tousQuartiers?"#ede9fe":"#f9fafb",color:d.tousQuartiers?"#4f46e5":"#374151",fontWeight:700,fontSize:13,cursor:"pointer"}}>
+            {d.tousQuartiers?"✓ Tous les quartiers de Ouaga":"Tous les quartiers"}
+          </button>
+          <button onClick={()=>set("enLigne",!d.enLigne)}
+            style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.enLigne?"#0ea5e9":"#e5e7eb"}`,background:d.enLigne?"#e0f2fe":"#f9fafb",color:d.enLigne?"#0284c7":"#374151",fontWeight:700,fontSize:13,cursor:"pointer"}}>
+            {d.enLigne?"🌐 En ligne activé":"🌐 Disponible en ligne"}
+          </button>
+        </div>
         {!d.tousQuartiers && (
           <div style={{display:"flex",flexWrap:"wrap",gap:6,maxHeight:160,overflowY:"auto",padding:4}}>
             {QUARTIERS.map(q=>(
@@ -796,11 +812,13 @@ function SitePublic({ goAdmin, goPayment }) {
   const [activeM, setActiveM] = useState(null);
   const [activeQ, setActiveQ] = useState(null);
   const [activeN, setActiveN] = useState(null);
+  const [activeOnline, setActiveOnline] = useState(false);
   const [tab, setTab]       = useState("parents");
   const [bookStep, setBook] = useState(0);
   const [tuteur, setTuteur] = useState(null);
   const [jour, setJour]     = useState(null);
   const [creneau, setCreneau] = useState(null);
+  const [modeSeance, setModeSeance] = useState("domicile"); // "domicile" | "enligne"
   const [bi, setBi]         = useState({nom:"",email:"",enfant:"",niveau:""});
   const [bookDone, setBookDone] = useState(false);
   // identification parent
@@ -839,11 +857,12 @@ function SitePublic({ goAdmin, goPayment }) {
       if (qc.length === 0 && t.quartier && t.quartier !== activeQ) return false;
     }
     if (activeN && !(t.niveaux||[]).includes(activeN)) return false;
+    if (activeOnline && !t.en_ligne) return false;
     if (search && !t.prenom.toLowerCase().includes(search.toLowerCase()) && !t.subject.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
-  const hasFilters = activeM || activeQ || activeN || search;
+  const hasFilters = activeM || activeQ || activeN || activeOnline || search;
 
   const S = { // shared styles
     page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#e8ddd0", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(180,160,130,0.18) 27px, rgba(180,160,130,0.18) 28px)", margin:0 },
@@ -963,13 +982,20 @@ function SitePublic({ goAdmin, goPayment }) {
             <span style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",pointerEvents:"none",fontSize:11,color:activeN?"#4f46e5":"#9ca3af"}}>▼</span>
           </div>
 
+          {/* Filtre En ligne */}
+          <button onClick={()=>setActiveOnline(!activeOnline)}
+            style={{padding:"10px 18px",borderRadius:10,border:`1.5px solid ${activeOnline?"#0ea5e9":"#e5e7eb"}`,background:activeOnline?"#e0f2fe":"#fff",color:activeOnline?"#0284c7":"#374151",fontWeight:700,fontSize:13,cursor:"pointer",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:6}}>
+            🌐 {activeOnline?"En ligne ✓":"En ligne"}
+          </button>
+
           {/* Badges filtres actifs + reset */}
           {hasFilters && (
             <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
               {activeM && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeM}</span>}
               {activeQ && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeQ}</span>}
               {activeN && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeN}</span>}
-              <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setSearch("");}}
+              {activeOnline && <span style={{background:"#e0f2fe",color:"#0284c7",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>🌐 En ligne</span>}
+              <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setActiveOnline(false);setSearch("");}}
                 style={{background:"none",border:"none",color:"#ef4444",fontWeight:700,fontSize:12,cursor:"pointer",padding:"4px 8px"}}>
                 ✕ Effacer
               </button>
@@ -1084,7 +1110,7 @@ function SitePublic({ goAdmin, goPayment }) {
             <p style={{fontSize:40}}>🔍</p>
             <p style={{fontSize:16,fontWeight:600,marginTop:12}}>Aucun tuteur trouvé</p>
             <p style={{fontSize:14,marginTop:4}}>Essayez un autre terme ou matière.</p>
-            <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setSearch("");}}
+            <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setActiveOnline(false);setSearch("");}}
               style={{marginTop:16,padding:"10px 24px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>
               Effacer les filtres
             </button>
@@ -1098,7 +1124,10 @@ function SitePublic({ goAdmin, goPayment }) {
             <div key={t.id} style={{...S.card,transition:"box-shadow .2s",position:"relative"}}
               onMouseOver={e=>e.currentTarget.style.boxShadow="0 8px 30px rgba(0,0,0,.1)"}
               onMouseOut={e=>e.currentTarget.style.boxShadow="none"}>
-              {isNew && <span style={{position:"absolute",top:14,right:14,background:"#16a34a",color:"#fff",fontSize:10,fontWeight:800,padding:"3px 10px",borderRadius:999,letterSpacing:0.5}}>✨ NOUVEAU</span>}
+              <div style={{position:"absolute",top:14,right:14,display:"flex",gap:6}}>
+                {t.en_ligne && <span style={{background:"#0ea5e9",color:"#fff",fontSize:10,fontWeight:800,padding:"3px 10px",borderRadius:999}}>🌐 En ligne</span>}
+                {isNew && <span style={{background:"#16a34a",color:"#fff",fontSize:10,fontWeight:800,padding:"3px 10px",borderRadius:999}}>✨ NOUVEAU</span>}
+              </div>
               <div style={{display:"flex",alignItems:"center",gap:14}}>
                 <div style={{width:52,height:52,borderRadius:999,background:"#ede9fe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>{t.emoji}</div>
                 <div>
@@ -1356,6 +1385,20 @@ function SitePublic({ goAdmin, goPayment }) {
                 <div><p style={{fontWeight:700,margin:0,color:"#111827"}}>{tuteur.prenom} {tuteur.nom}</p><p style={{fontSize:13,color:"#6366f1",margin:"2px 0 0"}}>{tuteur.subject} · {fmt(tuteur.price)}/h</p></div>
                 {premiereSeance && <span style={{marginLeft:"auto",background:"#dcfce7",color:"#065f46",fontSize:11,fontWeight:800,padding:"4px 10px",borderRadius:999,whiteSpace:"nowrap"}}>🌟 −20 %</span>}
               </div>
+              {/* Mode séance */}
+              <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:10}}>Mode de la séance</p>
+              <div style={{display:"flex",gap:10,marginBottom:20}}>
+                <button onClick={()=>setModeSeance("domicile")}
+                  style={{flex:1,padding:"12px",borderRadius:12,border:`2px solid ${modeSeance==="domicile"?"#4f46e5":"#e5e7eb"}`,background:modeSeance==="domicile"?"#eef2ff":"#fff",fontWeight:700,fontSize:13,cursor:"pointer",color:modeSeance==="domicile"?"#4f46e5":"#374151"}}>
+                  🏠 À domicile
+                </button>
+                {tuteur?.en_ligne && (
+                  <button onClick={()=>setModeSeance("enligne")}
+                    style={{flex:1,padding:"12px",borderRadius:12,border:`2px solid ${modeSeance==="enligne"?"#0ea5e9":"#e5e7eb"}`,background:modeSeance==="enligne"?"#e0f2fe":"#fff",fontWeight:700,fontSize:13,cursor:"pointer",color:modeSeance==="enligne"?"#0284c7":"#374151"}}>
+                    🌐 En ligne (Jitsi)
+                  </button>
+                )}
+              </div>
               <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:10}}>Choisissez un jour</p>
               <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:20}}>
                 {(tuteur.availableDays||[]).map(d=><Pill key={d} active={jour===d} onClick={()=>setJour(d)}>{d}</Pill>)}
@@ -1421,7 +1464,11 @@ function SitePublic({ goAdmin, goPayment }) {
                 </div>
               </div>
               <button
-                onClick={()=> goPayment({ tuteur, jour, creneau, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentEmail:bi.email })}
+                onClick={()=> {
+                  const ref = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
+                  const jitsiLink = modeSeance==="enligne" ? `https://meet.jit.si/Brillance-${ref}` : null;
+                  goPayment({ tuteur, jour, creneau, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentEmail:bi.email, modeSeance, jitsiLink, ref });
+                }}
                 style={{padding:"14px 0",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:16,cursor:"pointer"}}>
                 Procéder au paiement →
               </button>
