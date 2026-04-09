@@ -1117,45 +1117,50 @@ function SitePublic({ goAdmin, goPayment }) {
           </div>
         )}
 
-        <div className="ba-tutor-cards" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:20}}>
+        <div className="ba-tutor-cards" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))",gap:12}}>
           {!loadingTuteurs && filteredTuteurs.map(t=>{
             const isNew = t.created_at && (Date.now() - new Date(t.created_at).getTime()) < 30*24*60*60*1000;
             return (
-            <div key={t.id} style={{...S.card,transition:"box-shadow .2s",position:"relative"}}
-              onMouseOver={e=>e.currentTarget.style.boxShadow="0 8px 30px rgba(0,0,0,.1)"}
+            <div key={t.id} style={{...S.card,padding:"14px 16px",transition:"box-shadow .2s",position:"relative",display:"flex",flexDirection:"column",gap:10}}
+              onMouseOver={e=>e.currentTarget.style.boxShadow="0 6px 24px rgba(0,0,0,.09)"}
               onMouseOut={e=>e.currentTarget.style.boxShadow="none"}>
-              <div style={{position:"absolute",top:14,right:14,display:"flex",gap:6}}>
-                {t.en_ligne && <span style={{background:"#0ea5e9",color:"#fff",fontSize:10,fontWeight:800,padding:"3px 10px",borderRadius:999}}>🌐 En ligne</span>}
-                {isNew && <span style={{background:"#16a34a",color:"#fff",fontSize:10,fontWeight:800,padding:"3px 10px",borderRadius:999}}>✨ NOUVEAU</span>}
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:14}}>
-                <div style={{width:52,height:52,borderRadius:999,background:"#ede9fe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>{t.emoji}</div>
-                <div>
-                  <p style={{fontWeight:800,fontSize:16,margin:0,color:"#111827"}}>{t.prenom} {t.nom}</p>
-                  <p style={{fontSize:13,color:"#6366f1",fontWeight:600,margin:"2px 0 0"}}>{t.subject}</p>
+
+              {/* Ligne 1 : avatar + nom/matière + badges + prix */}
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <div style={{width:44,height:44,borderRadius:999,background:"#ede9fe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{t.emoji}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                    <p style={{fontWeight:800,fontSize:15,margin:0,color:"#111827"}}>{t.prenom} {t.nom}</p>
+                    {t.en_ligne && <span style={{background:"#0ea5e9",color:"#fff",fontSize:9,fontWeight:800,padding:"2px 7px",borderRadius:999}}>🌐 En ligne</span>}
+                    {isNew && <span style={{background:"#16a34a",color:"#fff",fontSize:9,fontWeight:800,padding:"2px 7px",borderRadius:999}}>✨ Nouveau</span>}
+                  </div>
+                  <p style={{fontSize:12,color:"#6366f1",fontWeight:600,margin:"2px 0 0"}}>{t.subject}</p>
                 </div>
-                <div style={{marginLeft:"auto",textAlign:"right"}}>
-                  <p style={{fontWeight:800,fontSize:18,margin:0,color:"#111827"}}>{fmt(t.price)}</p>
-                  <p style={{fontSize:11,color:"#9ca3af",margin:0}}>par heure</p>
-                </div>
-              </div>
-              <p style={{fontSize:13,color:"#6b7280",margin:0,lineHeight:1.6}}>{t.bio}</p>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                <div style={{display:"flex",alignItems:"center",gap:6}}>
-                  <Stars n={t.rating}/>
-                  <span style={{fontSize:12,color:"#9ca3af"}}>{t.sessions} séances</span>
-                </div>
-                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                  {t.availableDays.slice(0,2).map(j=><span key={j} style={{fontSize:11,background:"#f3f4f6",padding:"3px 8px",borderRadius:999,color:"#6b7280"}}>{j}</span>)}
+                <div style={{textAlign:"right",flexShrink:0}}>
+                  <p style={{fontWeight:900,fontSize:15,margin:0,color:"#111827"}}>{fmt(t.price)}</p>
+                  <p style={{fontSize:10,color:"#9ca3af",margin:0}}>/heure</p>
                 </div>
               </div>
-              <div style={{display:"flex",gap:8,marginTop:4}}>
+
+              {/* Ligne 2 : bio condensée */}
+              <p style={{fontSize:12,color:"#6b7280",margin:0,lineHeight:1.5,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{t.bio}</p>
+
+              {/* Ligne 3 : étoiles + séances + jours + boutons */}
+              <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                <Stars n={t.rating}/>
+                <span style={{fontSize:11,color:"#9ca3af"}}>{t.sessions} séances</span>
+                <span style={{flex:1}}/>
+                {t.availableDays.slice(0,2).map(j=><span key={j} style={{fontSize:10,background:"#f3f4f6",padding:"2px 7px",borderRadius:999,color:"#6b7280"}}>{j}</span>)}
+              </div>
+
+              {/* Ligne 4 : boutons compacts */}
+              <div style={{display:"flex",gap:6}}>
                 <button onClick={()=>{ setHash("tuteur/"+t.id); setHashState("tuteur/"+t.id); }}
-                  style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #e5e7eb",background:"#f8fafc",fontWeight:700,fontSize:13,cursor:"pointer",color:"#374151"}}>
-                  👤 Voir le profil
+                  style={{flex:1,padding:"8px",borderRadius:10,border:"1.5px solid #e5e7eb",background:"#f8fafc",fontWeight:700,fontSize:12,cursor:"pointer",color:"#374151"}}>
+                  👤 Profil
                 </button>
                 <button onClick={()=>{setTuteur(t);setBook(parentConnu!==null?2:0);scrollTo("book");}}
-                  style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #4f46e5",background:"#4f46e5",fontWeight:700,fontSize:13,cursor:"pointer",color:"#fff"}}
+                  style={{flex:2,padding:"8px",borderRadius:10,border:"none",background:"#4f46e5",fontWeight:700,fontSize:12,cursor:"pointer",color:"#fff"}}
                   onMouseOver={e=>e.currentTarget.style.background="#3730a3"}
                   onMouseOut={e=>e.currentTarget.style.background="#4f46e5"}>
                   📅 Réserver →
