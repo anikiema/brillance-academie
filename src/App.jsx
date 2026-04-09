@@ -224,7 +224,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
   const ouvrirWhatsApp = () => {
     const msg = encodeURIComponent(
-      `Bonjour Brillance Académie 👋\n\nJe souhaite confirmer ma réservation :\n• Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n• Matière : ${tuteur?.subject}\n• Jour : ${jour} à ${creneau}\n• Élève : ${enfant} · ${niveau}\n• Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n• Référence : ${refNum}\n\nJ'effectue le paiement par ${cur.label}.`
+      `Bonjour Brillance Academie,\n\nJe souhaite confirmer ma reservation :\n- Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n- Matiere : ${tuteur?.subject}\n- Jour : ${jour} a ${creneau}\n- Eleve : ${enfant} - ${niveau}\n- Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n- Reference : ${refNum}\n\nJ'effectue le paiement par ${cur.label}.`
     );
     window.open(`https://wa.me/${WA_ADMIN}?text=${msg}`, "_blank");
   };
