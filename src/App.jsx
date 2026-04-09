@@ -1026,10 +1026,15 @@ function SitePublic({ goAdmin, goPayment }) {
               {n:"04",icon:"💳",bg:"#fef3c7",color:"#d97706",t:"Paiement sécurisé à la séance",d:"Orange Money, Moov Money, Coris Money ou carte bancaire. Aucun abonnement, aucun engagement. La première séance d'essai est à −20 %.",tag:"Sans engagement"},
               {n:"05",icon:"📊",bg:"#fce7f3",color:"#db2777",t:"Suivi & compte-rendu",d:"Après chaque séance, vous recevez un compte-rendu par WhatsApp : points travaillés, progrès, exercices recommandés.",tag:"Après chaque séance"},
               {n:"06",icon:"🏆",bg:"#f0fdf4",color:"#15803d",t:"Résultats garantis",d:"Si vous n'êtes pas satisfait après la première séance, nous vous remboursons intégralement. Zéro risque, satisfaction garantie.",tag:"Garantie 100 %"},
-            ].map(({n,icon,bg,color,t,d,tag})=>(
-              <div key={n} style={{background:"#fff",borderRadius:20,padding:28,display:"flex",gap:20,alignItems:"flex-start",border:"1.5px solid #f3f4f6",transition:"box-shadow .2s"}}
-                onMouseOver={e=>e.currentTarget.style.boxShadow="0 8px 28px rgba(0,0,0,.09)"}
-                onMouseOut={e=>e.currentTarget.style.boxShadow="none"}>
+            ].map(({n,icon,bg,color,t,d,tag})=>{
+              const isFirst = n==="01";
+              return (
+              <div key={n}
+                onClick={isFirst ? ()=>setModal("parent") : undefined}
+                style={{background:"#fff",borderRadius:20,padding:28,display:"flex",gap:20,alignItems:"flex-start",border:`1.5px solid ${isFirst?"#c4b5fd":"#f3f4f6"}`,transition:"box-shadow .2s, transform .2s",cursor:isFirst?"pointer":"default",position:"relative"}}
+                onMouseOver={e=>{e.currentTarget.style.boxShadow="0 8px 28px rgba(0,0,0,.09)"; if(isFirst) e.currentTarget.style.transform="translateY(-2px)";}}
+                onMouseOut={e=>{e.currentTarget.style.boxShadow="none"; e.currentTarget.style.transform="none";}}>
+                {isFirst && <span style={{position:"absolute",top:14,right:14,fontSize:11,fontWeight:700,background:"#4f46e5",color:"#fff",padding:"3px 10px",borderRadius:999}}>→ Commencer ici</span>}
                 <div style={{width:52,height:52,borderRadius:16,background:bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{icon}</div>
                 <div style={{flex:1}}>
                   <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
@@ -1040,7 +1045,8 @@ function SitePublic({ goAdmin, goPayment }) {
                   <p style={{fontSize:13,color:"#6b7280",lineHeight:1.7,margin:0}}>{d}</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Guarantee banner */}
