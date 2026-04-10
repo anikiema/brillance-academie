@@ -1,6 +1,6 @@
 // Brillance Académie v1.2 — design gris harmonisé
 import React, { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -806,7 +806,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
   );
 }
 
-function SitePublic({ goAdmin, goPayment }) {
+function SitePublic({ goAdmin, goPayment, goEspaceParent }) {
   const [modal, setModal]   = useState(null);
   const [search, setSearch] = useState("");
   const [activeM, setActiveM] = useState(null);
@@ -925,6 +925,7 @@ function SitePublic({ goAdmin, goPayment }) {
         <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
           <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#f3f4f6",color:"#374151"}}>Devenir tuteur</button>
           <button onClick={()=>setModal("parent")} style={{...S.btn,background:"#dc2626",color:"#fff"}}>Chercher un tuteur</button>
+          <button onClick={goEspaceParent} style={{...S.btn,background:"#ede9fe",color:"#4f46e5",fontWeight:700}}>👤 Mon espace</button>
           <button onClick={goAdmin} style={{...S.btn,background:"#111827",color:"#fff",fontSize:12,padding:"9px 16px"}}>⚙</button>
         </div>
       </nav>
@@ -2336,6 +2337,137 @@ function Admin({ goHome }) {
 
 // ─── LOGIN ADMIN ──────────────────────────────────────────────────────────────
 
+// ─── ESPACE PARENT ────────────────────────────────────────────────────────────
+function PageEspaceParent({ goHome }) {
+  const [email, setEmail]       = useState("");
+  const [loading, setLoading]   = useState(false);
+  const [parent, setParent]     = useState(null);
+  const [reservations, setReservations] = useState([]);
+  const [error, setError]       = useState("");
+
+  const login = async () => {
+    if (!email.trim()) return;
+    setLoading(true); setError(""); setParent(null); setReservations([]);
+    try {
+      const p = await getParentByEmail(email.trim());
+      if (!p) { setError("Aucun compte trouvé avec cet email."); setLoading(false); return; }
+      const resa = await getReservationsByParentEmail(email.trim());
+      setParent(p);
+      setReservations(resa);
+    } catch(e) { setError("Erreur de connexion. Réessayez."); }
+    setLoading(false);
+  };
+
+  const statutStyle = (s) => ({
+    padding:"3px 10px", borderRadius:999, fontSize:11, fontWeight:700,
+    background: s==="confirmée"?"#dcfce7":s==="en_attente"?"#fef3c7":"#fee2e2",
+    color:      s==="confirmée"?"#065f46":s==="en_attente"?"#92400e":"#991b1b",
+  });
+
+  return (
+    <div style={{minHeight:"100vh",background:"#e8ddd0",fontFamily:"'Comic Sans MS','Comic Sans',cursive",display:"flex",flexDirection:"column"}}>
+      {/* Nav */}
+      <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
+        <button onClick={goHome} style={{padding:"8px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Retour</button>
+      </nav>
+
+      <div style={{flex:1,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"48px 20px"}}>
+        <div style={{width:"100%",maxWidth:640}}>
+
+          {!parent ? (
+            /* ── FORMULAIRE LOGIN ── */
+            <div style={{background:"#fff",borderRadius:24,padding:40,boxShadow:"0 8px 40px rgba(0,0,0,.1)"}}>
+              <p style={{fontSize:12,fontWeight:700,color:"#4f46e5",textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px"}}>🎓 Brillance Académie</p>
+              <h2 style={{fontSize:24,fontWeight:900,color:"#111827",margin:"0 0 8px"}}>Mon espace parent</h2>
+              <p style={{fontSize:14,color:"#6b7280",margin:"0 0 32px"}}>Entrez l'email utilisé lors de votre inscription pour accéder à vos réservations.</p>
+
+              <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:6}}>Votre adresse email</label>
+              <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&login()}
+                placeholder="votre@email.com"
+                style={{width:"100%",padding:"14px 16px",border:"1.5px solid #e5e7eb",borderRadius:12,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:16,fontFamily:"inherit"}}/>
+
+              {error && <p style={{fontSize:13,color:"#ef4444",margin:"0 0 12px"}}>{error}</p>}
+
+              <button onClick={login} disabled={loading}
+                style={{width:"100%",padding:14,background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+                {loading ? "Vérification…" : "Accéder à mon espace →"}
+              </button>
+
+              <p style={{fontSize:12,color:"#9ca3af",textAlign:"center",marginTop:20}}>
+                Pas encore de compte ? <button onClick={goHome} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:700,cursor:"pointer",fontSize:12,fontFamily:"inherit"}}>Réserver une séance</button>
+              </p>
+            </div>
+
+          ) : (
+            /* ── TABLEAU DE BORD PARENT ── */
+            <div>
+              {/* Header */}
+              <div style={{background:"#fff",borderRadius:20,padding:24,marginBottom:16,boxShadow:"0 4px 20px rgba(0,0,0,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+                <div>
+                  <p style={{fontSize:11,fontWeight:700,color:"#4f46e5",textTransform:"uppercase",letterSpacing:2,margin:"0 0 2px"}}>Bienvenue</p>
+                  <h2 style={{fontSize:20,fontWeight:900,color:"#111827",margin:"0 0 2px"}}>{parent.nom}</h2>
+                  <p style={{fontSize:13,color:"#6b7280",margin:0}}>{parent.email}</p>
+                </div>
+                <div style={{display:"flex",gap:12}}>
+                  <div style={{textAlign:"center",background:"#ede9fe",borderRadius:12,padding:"10px 20px"}}>
+                    <p style={{fontSize:22,fontWeight:900,color:"#4f46e5",margin:0}}>{reservations.length}</p>
+                    <p style={{fontSize:11,color:"#7c3aed",margin:0}}>Réservations</p>
+                  </div>
+                  <div style={{textAlign:"center",background:"#dcfce7",borderRadius:12,padding:"10px 20px"}}>
+                    <p style={{fontSize:22,fontWeight:900,color:"#16a34a",margin:0}}>{reservations.filter(r=>r.statut==="confirmée").length}</p>
+                    <p style={{fontSize:11,color:"#16a34a",margin:0}}>Confirmées</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Liste réservations */}
+              <div style={{background:"#fff",borderRadius:20,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+                <h3 style={{fontSize:16,fontWeight:800,color:"#111827",margin:"0 0 20px"}}>📅 Historique de vos réservations</h3>
+
+                {reservations.length === 0 ? (
+                  <p style={{textAlign:"center",color:"#9ca3af",fontSize:14,padding:"32px 0"}}>Aucune réservation trouvée.</p>
+                ) : (
+                  <div style={{display:"flex",flexDirection:"column",gap:12}}>
+                    {reservations.map((r,i)=>(
+                      <div key={i} style={{border:"1.5px solid #f3f4f6",borderRadius:14,padding:16,display:"flex",flexDirection:"column",gap:8}}>
+                        {/* Ligne 1 : référence + statut */}
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+                          <span style={{fontFamily:"monospace",fontSize:12,background:"#f1f5f9",padding:"3px 10px",borderRadius:6,color:"#374151",fontWeight:700}}>
+                            {r.paiement_reference||"—"}
+                          </span>
+                          <span style={statutStyle(r.statut)}>{r.statut}</span>
+                        </div>
+                        {/* Ligne 2 : tuteur + matière */}
+                        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                          <span style={{fontSize:13,fontWeight:700,color:"#111827"}}>👩‍🏫 {r.tuteur_nom||"Tuteur"}</span>
+                          {r.niveau && <span style={{fontSize:12,background:"#ede9fe",color:"#4f46e5",padding:"2px 8px",borderRadius:999,fontWeight:600}}>{r.niveau}</span>}
+                          {r.enfant && <span style={{fontSize:12,color:"#6b7280"}}>• {r.enfant}</span>}
+                        </div>
+                        {/* Ligne 3 : date + montant */}
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+                          <span style={{fontSize:12,color:"#6b7280"}}>📅 {r.jour}{r.creneau ? ` à ${r.creneau}` : ""} · {r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : ""}</span>
+                          <span style={{fontSize:14,fontWeight:800,color:"#111827"}}>{r.montant ? r.montant.toLocaleString("fr-FR")+" FCFA" : "—"}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <button onClick={()=>{setParent(null);setEmail("");setReservations([]);}}
+                style={{marginTop:16,width:"100%",padding:12,background:"none",border:"1.5px solid #e5e7eb",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer",color:"#6b7280"}}>
+                Se déconnecter
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LoginAdmin({ onSuccess, onBack }) {
   const [pwd, setPwd]     = useState("");
   const [error, setError] = useState(false);
@@ -2420,6 +2552,7 @@ function App() {
 
   const page = hash.startsWith("paiement") ? "payment"
              : hash === "admin"            ? "admin"
+             : hash === "espace-parent"    ? "espace-parent"
              : hash.startsWith("tuteur/")  ? "tuteur"
              : "site";
 
@@ -2433,6 +2566,9 @@ function App() {
 
   if (page === "admin" && adminAuth)
     return <Admin goHome={() => { goTo("accueil"); setAdminAuth(false); }} />;
+
+  if (page === "espace-parent")
+    return <PageEspaceParent goHome={() => goTo("accueil")} />;
 
   if (page === "tuteur" && tuteurId)
     return <PageTuteur
@@ -2454,6 +2590,7 @@ function App() {
     <SitePublic
       goAdmin={()  => goTo("admin")}
       goPayment={b => { setBooking(b); goTo("paiement"); }}
+      goEspaceParent={() => goTo("espace-parent")}
     />
   );
 }

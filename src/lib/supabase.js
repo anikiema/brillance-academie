@@ -200,6 +200,16 @@ export async function getReservationCountByEmail(email) {
   return count || 0
 }
 
+export async function getReservationsByParentEmail(email) {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*')
+    .eq('parent_email', email.toLowerCase().trim())
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
 // ─── Réservations ─────────────────────────────────────────────────────────────
 export async function getReservations() {
   const { data, error } = await supabase
