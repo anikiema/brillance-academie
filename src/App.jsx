@@ -1005,7 +1005,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* HERO */}
-      <div className="ba-hero" style={{textAlign:"center",padding:"90px 40px 60px",background:"rgba(255,255,255,0.55)"}}>
+      <div className="ba-hero" style={{textAlign:"center",padding:"90px 40px 32px",background:"rgba(255,255,255,0.55)"}}>
         <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
           Tuteurs spécialisés · CP au 3ème
         </span>
@@ -1033,9 +1033,8 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
-
       {/* COMMENT ÇA MARCHE */}
-      <div id="how" className="ba-section" style={{background:"rgba(255,255,255,0.6)",padding:"80px 40px"}}>
+      <div id="how" className="ba-section" style={{background:"rgba(255,255,255,0.6)",padding:"40px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div style={{textAlign:"center",marginBottom:56}}>
             <span style={S.label}>Comment ça marche</span>
