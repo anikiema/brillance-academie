@@ -1,5 +1,5 @@
-// Brillance Académie v1.4 — fix réduction −20 % uniquement à la 1ère séance
-import React, { useState, useEffect } from "react";
+// Brillance Académie v1.5 — SLA 24h timestamps + parents type (demande vs réservation)
+import React, { useState, useEffect, useMemo } from "react";
 import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, upsertParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef, hashPassword, loginParent, loginTuteur, changerMotDePasseParent, changerMotDePasseTuteur } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -1704,7 +1704,16 @@ function Admin({ goHome }) {
   const [refRes, setRefRes]    = useState(null);
   const [refErr, setRefErr]    = useState("");
   const [refLoading, setRefLoading] = useState(false);
+  const [parentFilter, setParentFilter] = useState("all"); // "all" | "demande" | "reservation"
   const setF = (k,v) => setForm(p=>({...p,[k]:v}));
+
+  // Emails de parents qui ont au moins une réservation directe
+  const reservedEmails = useMemo(() => {
+    const s = new Set();
+    reservations.forEach(r => { if (r.parent_email) s.add(r.parent_email.toLowerCase().trim()); });
+    return s;
+  }, [reservations]);
+  const parentType = (p) => (p.email && reservedEmails.has(p.email.toLowerCase().trim())) ? "reservation" : "demande";
 
   // Charger tuteurs, parents et réservations depuis Supabase
   useEffect(() => {
@@ -1952,7 +1961,12 @@ function Admin({ goHome }) {
           <div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:28}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Réservations ({reservations.length})</h1>
-              <button onClick={()=>exportCSV(reservations,[{label:"Référence",key:"paiement_reference"},{label:"Parent",key:"parent_nom"},{label:"Email",key:"parent_email"},{label:"Enfant",key:"enfant"},{label:"Niveau",key:"niveau"},{label:"Tuteur",key:"tuteur_nom"},{label:"Jour",key:"jour"},{label:"Créneau",key:"creneau"},{label:"Montant",key:"montant"},{label:"Statut",key:"statut"},{label:"Date",key:"created_at"}],"reservations.csv")}
+              <button onClick={()=>exportCSV(reservations.map(r=>({
+                ...r,
+                date_recue: r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : "",
+                heure_recue: r.created_at ? new Date(r.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "",
+                heures_ecoulees: r.created_at ? Math.round((Date.now()-new Date(r.created_at).getTime())/3600000) : "",
+              })),[{label:"Référence",key:"paiement_reference"},{label:"Parent",key:"parent_nom"},{label:"Email",key:"parent_email"},{label:"Enfant",key:"enfant"},{label:"Niveau",key:"niveau"},{label:"Tuteur",key:"tuteur_nom"},{label:"Jour",key:"jour"},{label:"Créneau",key:"creneau"},{label:"Montant",key:"montant"},{label:"Statut",key:"statut"},{label:"Date reçue",key:"date_recue"},{label:"Heure reçue",key:"heure_recue"},{label:"Heures écoulées",key:"heures_ecoulees"}],"reservations.csv")}
                 style={{padding:"10px 20px",background:"#f1f5f9",color:"#374151",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 ⬇ Exporter CSV
               </button>
@@ -1964,7 +1978,7 @@ function Admin({ goHome }) {
                 <table style={{width:"100%",borderCollapse:"collapse"}}>
                   <thead>
                     <tr>
-                      {["Référence","Parent","Enfant","Jour · Créneau","Montant","Statut","Date","Action"].map(h=>(
+                      {["Référence","Parent","Enfant","Jour · Créneau","Montant","Statut","Reçue · SLA 24h","Action"].map(h=>(
                         <th key={h} style={S.th}>{h}</th>
                       ))}
                     </tr>
@@ -1984,7 +1998,23 @@ function Admin({ goHome }) {
                             color:      r.statut==="confirmée"?"#065f46":r.statut==="en_attente"?"#92400e":"#991b1b",
                           }}>{r.statut}</span>
                         </td>
-                        <td style={{...S.td,fontSize:12,color:"#9ca3af"}}>{r.created_at ? new Date(r.created_at).toLocaleDateString("fr-FR") : "—"}</td>
+                        <td style={{...S.td,fontSize:12}}>
+                          {r.created_at ? (() => {
+                            const d = new Date(r.created_at);
+                            const h = (Date.now() - d.getTime()) / 3600000;
+                            const pending = r.statut === "en_attente";
+                            const bg = !pending ? "#f1f5f9" : h < 12 ? "#dcfce7" : h < 24 ? "#fef3c7" : "#fee2e2";
+                            const fg = !pending ? "#64748b" : h < 12 ? "#065f46" : h < 24 ? "#92400e" : "#991b1b";
+                            const label = !pending ? "✓ traitée" : h < 1 ? `il y a ${Math.round(h*60)} min` : h < 24 ? `il y a ${Math.floor(h)}h` : `⚠ ${Math.floor(h)}h (SLA dépassé)`;
+                            return (
+                              <div>
+                                <div style={{color:"#111827",fontWeight:600}}>{d.toLocaleDateString("fr-FR")}</div>
+                                <div style={{color:"#6b7280",fontSize:11}}>{d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+                                <div style={{display:"inline-block",marginTop:4,padding:"2px 8px",borderRadius:999,fontSize:10,fontWeight:700,background:bg,color:fg}}>{label}</div>
+                              </div>
+                            );
+                          })() : <span style={{color:"#9ca3af"}}>—</span>}
+                        </td>
                         <td style={S.td}>
                           {r.statut==="en_attente" && (
                             <button onClick={async()=>{
@@ -2019,24 +2049,54 @@ function Admin({ goHome }) {
         )}
 
         {/* PARENTS */}
-        {page==="parents" && (
+        {page==="parents" && (() => {
+          const nbDemandes = parents.filter(p=>parentType(p)==="demande").length;
+          const nbReservations = parents.filter(p=>parentType(p)==="reservation").length;
+          const filtered = parents
+            .filter(p => parentFilter==="all" || parentType(p)===parentFilter)
+            .filter(p => !search || (p.nom||"").toLowerCase().includes(search.toLowerCase()) || (p.email||"").toLowerCase().includes(search.toLowerCase()));
+          return (
           <div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Parents ({parents.length})</h1>
               <button onClick={()=>openAdd({nom:"",email:"",telephone:"",enfant:"",statut:"En attente"})}
                 style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 + Ajouter
               </button>
             </div>
+            <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
+              {[
+                {k:"all",label:`Tous (${parents.length})`,bg:"#ede9fe",fg:"#4f46e5"},
+                {k:"demande",label:`🔍 Demandes — à trouver un tuteur (${nbDemandes})`,bg:"#fef3c7",fg:"#92400e"},
+                {k:"reservation",label:`📅 Réservations directes (${nbReservations})`,bg:"#dcfce7",fg:"#065f46"},
+              ].map(b=>(
+                <button key={b.k} onClick={()=>setParentFilter(b.k)}
+                  style={{
+                    padding:"8px 16px",borderRadius:999,fontSize:13,fontWeight:700,cursor:"pointer",
+                    border: parentFilter===b.k ? `2px solid ${b.fg}` : "1.5px solid #e5e7eb",
+                    background: parentFilter===b.k ? b.bg : "#fff",
+                    color: parentFilter===b.k ? b.fg : "#6b7280",
+                  }}>{b.label}</button>
+              ))}
+            </div>
             <div style={S.card}>
-              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher…"
+              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher par nom ou email…"
                 style={{width:"100%",padding:"10px 16px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,marginBottom:16,boxSizing:"border-box",outline:"none"}}/>
               <table style={{width:"100%",borderCollapse:"collapse"}}>
-                <thead><tr>{["Parent","Enfant","Téléphone","Séances","Statut",""].map(h=><th key={h} style={S.th}>{h}</th>)}</tr></thead>
+                <thead><tr>{["Parent","Type","Enfant","Téléphone","Séances","Statut",""].map(h=><th key={h} style={S.th}>{h}</th>)}</tr></thead>
                 <tbody>
-                  {parents.filter(p=>!search||p.nom.toLowerCase().includes(search.toLowerCase())).map(p=>(
+                  {filtered.map(p=>{
+                    const t = parentType(p);
+                    return (
                     <tr key={p.id}>
                       <td style={S.td}><p style={{fontWeight:600,margin:0}}>{p.nom}</p><p style={{fontSize:12,color:"#9ca3af",margin:0}}>{p.email}</p></td>
+                      <td style={S.td}>
+                        {t==="reservation" ? (
+                          <span style={{padding:"3px 10px",borderRadius:999,fontSize:11,fontWeight:700,background:"#dcfce7",color:"#065f46",whiteSpace:"nowrap"}}>📅 Réservation</span>
+                        ) : (
+                          <span style={{padding:"3px 10px",borderRadius:999,fontSize:11,fontWeight:700,background:"#fef3c7",color:"#92400e",whiteSpace:"nowrap"}}>🔍 Demande</span>
+                        )}
+                      </td>
                       <td style={S.td}>{p.enfant}</td>
                       <td style={S.td}>{p.telephone}</td>
                       <td style={{...S.td,fontWeight:700,color:"#4f46e5"}}>{p.sessions}</td>
@@ -2064,7 +2124,7 @@ function Admin({ goHome }) {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  );})}
                 </tbody>
               </table>
             </div>
@@ -2092,7 +2152,8 @@ function Admin({ goHome }) {
               </div>
             )}
           </div>
-        )}
+          );
+        })()}
 
         {/* AVIS */}
         {page==="avis" && (

@@ -346,7 +346,7 @@ export async function creerReservation(params) {
       tuteur_id,
       tuteur_nom,
       parent_nom,
-      parent_email,
+      parent_email: parent_email ? parent_email.toLowerCase().trim() : "",
       enfant,
       niveau,
       jour,
