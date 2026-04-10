@@ -1,6 +1,6 @@
 // Brillance Académie v1.2 — design gris harmonisé
 import React, { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, upsertParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef, hashPassword, loginParent, loginTuteur, changerMotDePasseParent, changerMotDePasseTuteur } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -198,11 +198,13 @@ function PagePaiement({ booking, onSuccess, onBack }) {
   const confirmer = async () => {
     setLoading(true);
     try {
+      const pwdHash = booking.parentPassword ? await hashPassword(booking.parentPassword) : null;
       await creerReservation({
         tuteur_id:       tuteur?.id,
         tuteur_nom:      `${tuteur?.prenom||""} ${tuteur?.nom||""}`.trim(),
         parent_nom:      booking.parentNom   || "",
         parent_email:    booking.parentEmail || "",
+        parent_password_hash: pwdHash,
         enfant, niveau, jour, creneau,
         montant:         essaiAmount,
         statut:          "en_attente",
@@ -482,7 +484,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
 
 function InscriptionTuteur({ onClose }) {
   const [step, setStep]           = useState(0);
-  const [d, setD]                 = useState({ prenom:"", nom:"", email:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000, enLigne:false });
+  const [d, setD]                 = useState({ prenom:"", nom:"", email:"", password:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000, enLigne:false });
   const [saving, setSaving]       = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
@@ -496,7 +498,7 @@ function InscriptionTuteur({ onClose }) {
   }, []);
 
   const ok = [
-    d.prenom&&d.nom&&d.email&&d.tel&&d.ville,
+    d.prenom&&d.nom&&d.email&&d.password&&d.password.length>=6&&d.tel&&d.ville,
     d.matieres.length>0&&d.niveaux.length>0&&d.experience,
     d.jours.length>0&&(d.tousQuartiers||d.quartiersCouVerts.length>0),
     true,
@@ -505,11 +507,13 @@ function InscriptionTuteur({ onClose }) {
   const envoyer = async () => {
     setSaving(true);
     try {
+      const pwdHash = d.password ? await hashPassword(d.password) : null;
       await ajouterTuteur({
         prenom:            d.prenom,
         nom:               d.nom,
         email:             d.email,
         tel:               d.tel,
+        password_hash:     pwdHash,
         subject:           d.matieres.join(", ") || "Non spécifié",
         price:             d.tarif,
         statut:            "En attente",
@@ -552,6 +556,7 @@ function InscriptionTuteur({ onClose }) {
         <Inp label="Nom" value={d.nom} onChange={v=>set("nom",v)} placeholder=""/>
       </div>
       <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="" type="email"/>
+      <Inp label="Mot de passe (min. 6 caractères)" value={d.password} onChange={v=>set("password",v)} placeholder="••••••••" type="password"/>
       <Inp label="Téléphone" value={d.tel} onChange={v=>set("tel",v)} placeholder="+226 70 00 00 00" type="tel" filter="tel"/>
       <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder=""/>
     </div>,
@@ -821,7 +826,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
   const [jour, setJour]     = useState(null);
   const [creneau, setCreneau] = useState(null);
   const [modeSeance, setModeSeance] = useState("domicile"); // "domicile" | "enligne"
-  const [bi, setBi]         = useState({nom:"",email:"",enfant:"",niveau:""});
+  const [bi, setBi]         = useState({nom:"",email:"",password:"",enfant:"",niveau:""});
   const [bookDone, setBookDone] = useState(false);
   // identification parent
   const [emailQ, setEmailQ]       = useState("");
@@ -1435,12 +1440,14 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               </div>
               <Inp label="Votre nom (parent)" value={bi.nom} onChange={v=>setBI("nom",v)} placeholder=""/>
               <Inp label="E-mail" value={bi.email} onChange={v=>setBI("email",v)} placeholder="" type="email"/>
+              <Inp label="Mot de passe (min. 6 caractères)" value={bi.password} onChange={v=>setBI("password",v)} placeholder="••••••••" type="password"/>
+              <p style={{fontSize:11,color:"#9ca3af",margin:"-8px 0 0"}}>Permet d'accéder à votre espace parent pour suivre vos réservations.</p>
               <Inp label="Prénom de l'enfant" value={bi.enfant} onChange={v=>setBI("enfant",v)} placeholder=""/>
               <Sel label="Niveau de l'enfant" value={bi.niveau} onChange={v=>setBI("niveau",v)} options={NIVEAUX}/>
               <div style={{display:"flex",gap:10,marginTop:4}}>
                 <button onClick={()=>setBook(2)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
-                <button disabled={!bi.nom||!bi.email||!bi.enfant} onClick={()=>setBook(4)}
-                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:bi.nom&&bi.email&&bi.enfant?"#4f46e5":"#e5e7eb",color:bi.nom&&bi.email&&bi.enfant?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:bi.nom&&bi.email&&bi.enfant?"pointer":"not-allowed"}}>
+                <button disabled={!bi.nom||!bi.email||!bi.password||bi.password.length<6||!bi.enfant} onClick={()=>setBook(4)}
+                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:bi.nom&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#4f46e5":"#e5e7eb",color:bi.nom&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:bi.nom&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"pointer":"not-allowed"}}>
                   Confirmer →
                 </button>
               </div>
@@ -1475,7 +1482,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 onClick={()=> {
                   const ref = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
                   const jitsiLink = modeSeance==="enligne" ? `https://meet.jit.si/Brillance-${ref}` : null;
-                  goPayment({ tuteur, jour, creneau, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentEmail:bi.email, modeSeance, jitsiLink, ref });
+                  goPayment({ tuteur, jour, creneau, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentEmail:bi.email, parentPassword:bi.password, modeSeance, jitsiLink, ref });
                 }}
                 style={{padding:"14px 0",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:16,cursor:"pointer"}}>
                 Procéder au paiement →
@@ -2344,6 +2351,7 @@ function Admin({ goHome }) {
 
 function PageEspaceTuteur({ goHome }) {
   const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading]   = useState(false);
   const [tuteur, setTuteur]     = useState(null);
   const [seances, setSeances]   = useState([]);
@@ -2352,13 +2360,18 @@ function PageEspaceTuteur({ goHome }) {
   const [form, setForm]         = useState({});
   const [saving, setSaving]     = useState(false);
   const [saved, setSaved]       = useState(false);
+  const [showChangePwd, setShowChangePwd] = useState(false);
+  const [newPwd, setNewPwd]     = useState("");
+  const [newPwd2, setNewPwd2]   = useState("");
+  const [pwdMsg, setPwdMsg]     = useState("");
+  const [pwdLoading, setPwdLoading] = useState(false);
 
   const login = async () => {
-    if (!email.trim()) return;
+    if (!email.trim() || !password) return;
     setLoading(true); setError("");
     try {
-      const t = await getTuteurByEmail(email.trim());
-      if (!t) { setError("Aucun compte tuteur trouvé avec cet email."); setLoading(false); return; }
+      const t = await loginTuteur(email.trim(), password);
+      if (!t) { setError("Email ou mot de passe incorrect."); setLoading(false); return; }
       const s = await getReservationsByTuteurId(t.id);
       setTuteur(t);
       setSeances(s);
@@ -2376,6 +2389,19 @@ function PageEspaceTuteur({ goHome }) {
       });
     } catch(e) { setError("Erreur de connexion. Réessayez."); }
     setLoading(false);
+  };
+
+  const changerPwd = async () => {
+    if (!newPwd || newPwd !== newPwd2) { setPwdMsg("Les mots de passe ne correspondent pas."); return; }
+    if (newPwd.length < 6) { setPwdMsg("Le mot de passe doit faire au moins 6 caractères."); return; }
+    setPwdLoading(true); setPwdMsg("");
+    try {
+      await changerMotDePasseTuteur(tuteur.id, newPwd);
+      setPwdMsg("✅ Mot de passe modifié avec succès !");
+      setNewPwd(""); setNewPwd2("");
+      setTimeout(() => { setShowChangePwd(false); setPwdMsg(""); }, 2500);
+    } catch(e) { setPwdMsg("Erreur : " + e.message); }
+    setPwdLoading(false);
   };
 
   const sauvegarder = async () => {
@@ -2430,9 +2456,13 @@ function PageEspaceTuteur({ goHome }) {
               <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
                 onKeyDown={e=>e.key==="Enter"&&login()} placeholder="votre@email.com"
                 style={{width:"100%",padding:"14px 16px",border:"1.5px solid #e5e7eb",borderRadius:12,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:16,fontFamily:"inherit"}}/>
+              <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:6}}>Mot de passe</label>
+              <input type="password" value={password} onChange={e=>setPassword(e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&login()} placeholder="••••••••"
+                style={{width:"100%",padding:"14px 16px",border:"1.5px solid #e5e7eb",borderRadius:12,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:16,fontFamily:"inherit"}}/>
               {error && <p style={{fontSize:13,color:"#ef4444",margin:"0 0 12px"}}>{error}</p>}
-              <button onClick={login} disabled={loading}
-                style={{width:"100%",padding:14,background:"#16a34a",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+              <button onClick={login} disabled={loading||!email.trim()||!password}
+                style={{width:"100%",padding:14,background:"#16a34a",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer",opacity:(loading||!email.trim()||!password)?0.6:1}}>
                 {loading?"Vérification…":"Accéder à mon espace →"}
               </button>
             </div>
@@ -2587,7 +2617,36 @@ function PageEspaceTuteur({ goHome }) {
                 </div>
               )}
 
-              <button onClick={()=>{setTuteur(null);setEmail("");setSeances([]);setTab("profil");}}
+              {/* Changer mot de passe */}
+              <div style={{background:"#fff",borderRadius:20,padding:24,marginTop:16,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+                <button onClick={()=>setShowChangePwd(v=>!v)}
+                  style={{background:"none",border:"none",fontWeight:700,fontSize:14,color:"#16a34a",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:8}}>
+                  🔒 {showChangePwd ? "Masquer" : "Changer mon mot de passe"}
+                </button>
+                {showChangePwd && (
+                  <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:12}}>
+                    <div>
+                      <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Nouveau mot de passe</label>
+                      <input type="password" value={newPwd} onChange={e=>setNewPwd(e.target.value)}
+                        placeholder="Minimum 6 caractères"
+                        style={{width:"100%",padding:"10px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+                    </div>
+                    <div>
+                      <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Confirmer le mot de passe</label>
+                      <input type="password" value={newPwd2} onChange={e=>setNewPwd2(e.target.value)}
+                        placeholder="Répétez le mot de passe"
+                        style={{width:"100%",padding:"10px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+                    </div>
+                    {pwdMsg && <p style={{fontSize:13,color:pwdMsg.startsWith("✅")?"#16a34a":"#ef4444",margin:0}}>{pwdMsg}</p>}
+                    <button onClick={changerPwd} disabled={pwdLoading}
+                      style={{padding:"11px 20px",background:"#16a34a",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer",opacity:pwdLoading?0.6:1}}>
+                      {pwdLoading ? "Enregistrement…" : "Enregistrer le mot de passe"}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button onClick={()=>{setTuteur(null);setEmail("");setPassword("");setSeances([]);setTab("profil");setShowChangePwd(false);}}
                 style={{marginTop:16,width:"100%",padding:12,background:"none",border:"1.5px solid #e5e7eb",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer",color:"#6b7280"}}>
                 Se déconnecter
               </button>
@@ -2602,22 +2661,41 @@ function PageEspaceTuteur({ goHome }) {
 // ─── ESPACE PARENT ────────────────────────────────────────────────────────────
 function PageEspaceParent({ goHome }) {
   const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading]   = useState(false);
   const [parent, setParent]     = useState(null);
   const [reservations, setReservations] = useState([]);
   const [error, setError]       = useState("");
+  const [showChangePwd, setShowChangePwd] = useState(false);
+  const [newPwd, setNewPwd]     = useState("");
+  const [newPwd2, setNewPwd2]   = useState("");
+  const [pwdMsg, setPwdMsg]     = useState("");
+  const [pwdLoading, setPwdLoading] = useState(false);
 
   const login = async () => {
-    if (!email.trim()) return;
+    if (!email.trim() || !password) return;
     setLoading(true); setError(""); setParent(null); setReservations([]);
     try {
-      const p = await getParentByEmail(email.trim());
-      if (!p) { setError("Aucun compte trouvé avec cet email."); setLoading(false); return; }
+      const p = await loginParent(email.trim(), password);
+      if (!p) { setError("Email ou mot de passe incorrect."); setLoading(false); return; }
       const resa = await getReservationsByParentEmail(email.trim());
       setParent(p);
       setReservations(resa);
     } catch(e) { setError("Erreur de connexion. Réessayez."); }
     setLoading(false);
+  };
+
+  const changerPwd = async () => {
+    if (!newPwd || newPwd !== newPwd2) { setPwdMsg("Les mots de passe ne correspondent pas."); return; }
+    if (newPwd.length < 6) { setPwdMsg("Le mot de passe doit faire au moins 6 caractères."); return; }
+    setPwdLoading(true); setPwdMsg("");
+    try {
+      await changerMotDePasseParent(parent.id, newPwd);
+      setPwdMsg("✅ Mot de passe modifié avec succès !");
+      setNewPwd(""); setNewPwd2("");
+      setTimeout(() => { setShowChangePwd(false); setPwdMsg(""); }, 2500);
+    } catch(e) { setPwdMsg("Erreur : " + e.message); }
+    setPwdLoading(false);
   };
 
   const statutStyle = (s) => ({
@@ -2650,10 +2728,16 @@ function PageEspaceParent({ goHome }) {
                 placeholder="votre@email.com"
                 style={{width:"100%",padding:"14px 16px",border:"1.5px solid #e5e7eb",borderRadius:12,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:16,fontFamily:"inherit"}}/>
 
+              <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:6}}>Mot de passe</label>
+              <input type="password" value={password} onChange={e=>setPassword(e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&login()}
+                placeholder="••••••••"
+                style={{width:"100%",padding:"14px 16px",border:"1.5px solid #e5e7eb",borderRadius:12,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:16,fontFamily:"inherit"}}/>
+
               {error && <p style={{fontSize:13,color:"#ef4444",margin:"0 0 12px"}}>{error}</p>}
 
-              <button onClick={login} disabled={loading}
-                style={{width:"100%",padding:14,background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+              <button onClick={login} disabled={loading||!email.trim()||!password}
+                style={{width:"100%",padding:14,background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer",opacity:(loading||!email.trim()||!password)?0.6:1}}>
                 {loading ? "Vérification…" : "Accéder à mon espace →"}
               </button>
 
@@ -2718,7 +2802,36 @@ function PageEspaceParent({ goHome }) {
                 )}
               </div>
 
-              <button onClick={()=>{setParent(null);setEmail("");setReservations([]);}}
+              {/* Changer mot de passe */}
+              <div style={{background:"#fff",borderRadius:20,padding:24,marginTop:16,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+                <button onClick={()=>setShowChangePwd(v=>!v)}
+                  style={{background:"none",border:"none",fontWeight:700,fontSize:14,color:"#4f46e5",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:8}}>
+                  🔒 {showChangePwd ? "Masquer" : "Changer mon mot de passe"}
+                </button>
+                {showChangePwd && (
+                  <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:12}}>
+                    <div>
+                      <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Nouveau mot de passe</label>
+                      <input type="password" value={newPwd} onChange={e=>setNewPwd(e.target.value)}
+                        placeholder="Minimum 6 caractères"
+                        style={{width:"100%",padding:"10px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+                    </div>
+                    <div>
+                      <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Confirmer le mot de passe</label>
+                      <input type="password" value={newPwd2} onChange={e=>setNewPwd2(e.target.value)}
+                        placeholder="Répétez le mot de passe"
+                        style={{width:"100%",padding:"10px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+                    </div>
+                    {pwdMsg && <p style={{fontSize:13,color:pwdMsg.startsWith("✅")?"#16a34a":"#ef4444",margin:0}}>{pwdMsg}</p>}
+                    <button onClick={changerPwd} disabled={pwdLoading}
+                      style={{padding:"11px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer",opacity:pwdLoading?0.6:1}}>
+                      {pwdLoading ? "Enregistrement…" : "Enregistrer le mot de passe"}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button onClick={()=>{setParent(null);setEmail("");setPassword("");setReservations([]);}}
                 style={{marginTop:16,width:"100%",padding:12,background:"none",border:"1.5px solid #e5e7eb",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer",color:"#6b7280"}}>
                 Se déconnecter
               </button>

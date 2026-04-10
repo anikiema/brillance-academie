@@ -5,6 +5,56 @@ const supabaseKey  = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient(supabaseUrl || '', supabaseKey || '')
 
+// ─── Auth helpers ─────────────────────────────────────────────────────────────
+export async function hashPassword(password) {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(password + "brillance_salt_2025")
+  const hash = await crypto.subtle.digest('SHA-256', data)
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('')
+}
+
+export async function loginParent(email, password) {
+  const hash = await hashPassword(password)
+  const { data, error } = await supabase
+    .from('parents')
+    .select('*')
+    .eq('email', email.toLowerCase().trim())
+    .eq('password_hash', hash)
+    .maybeSingle()
+  if (error) throw error
+  return data // null si mauvais mot de passe
+}
+
+export async function loginTuteur(email, password) {
+  const hash = await hashPassword(password)
+  const { data, error } = await supabase
+    .from('tuteurs')
+    .select('*')
+    .eq('email', email.toLowerCase().trim())
+    .eq('password_hash', hash)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+export async function changerMotDePasseParent(id, newPassword) {
+  const hash = await hashPassword(newPassword)
+  const { error } = await supabase
+    .from('parents')
+    .update({ password_hash: hash })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function changerMotDePasseTuteur(id, newPassword) {
+  const hash = await hashPassword(newPassword)
+  const { error } = await supabase
+    .from('tuteurs')
+    .update({ password_hash: hash })
+    .eq('id', id)
+  if (error) throw error
+}
+
 // ─── WhatsApp notification (via /api/notify — serverless Vercel) ──────────────
 function notifWA(message) {
   fetch('/api/notify', {
@@ -160,6 +210,31 @@ export async function ajouterParent(parent) {
   return data
 }
 
+export async function upsertParent({ nom, email, enfant, niveau, password_hash }) {
+  if (!email) return null
+  const emailClean = email.toLowerCase().trim()
+  // Check if parent already exists
+  const { data: existing } = await supabase.from('parents').select('*').eq('email', emailClean).maybeSingle()
+  if (existing) {
+    // Update only if new fields provided; don't overwrite password if already set
+    const updates = {}
+    if (nom && !existing.nom) updates.nom = nom
+    if (enfant && !existing.enfant) updates.enfant = enfant
+    if (niveau && !existing.niveau) updates.niveau = niveau
+    if (password_hash && !existing.password_hash) updates.password_hash = password_hash
+    if (Object.keys(updates).length > 0) {
+      await supabase.from('parents').update(updates).eq('id', existing.id)
+    }
+    return existing
+  }
+  // Create new parent
+  const { data, error } = await supabase.from('parents').insert({
+    nom, email: emailClean, enfant, niveau, password_hash
+  }).select().single()
+  if (error) throw error
+  return data
+}
+
 export async function modifierParent(id, changes) {
   const { error } = await supabase
     .from('parents')
@@ -220,34 +295,59 @@ export async function getReservations() {
   return data
 }
 
-export async function creerReservation({ tuteurId, parentNom, parentEmail, enfant, niveau, jour, creneau, montant }) {
-  const ref = 'BA-' + Date.now()
+export async function creerReservation(params) {
+  // Accept both camelCase (legacy) and snake_case (current) param styles
+  const tuteur_id   = params.tuteur_id   || params.tuteurId
+  const parent_nom  = params.parent_nom  || params.parentNom   || ""
+  const parent_email= params.parent_email|| params.parentEmail  || ""
+  const parent_password_hash = params.parent_password_hash || null
+  const { enfant, niveau, jour, creneau, montant } = params
+  const paiement_mode      = params.paiement_mode || params.paiementMode || ""
+  const paiement_reference = params.paiement_reference || params.paiementReference || ('BA-' + Date.now())
+  const statut             = params.statut || 'en_attente'
+  const tuteur_nom         = params.tuteur_nom || params.tuteurNom || ""
+
+  // Upsert parent record (create if new, update if needed)
+  if (parent_email) {
+    try {
+      await upsertParent({
+        nom: parent_nom,
+        email: parent_email,
+        enfant,
+        niveau,
+        password_hash: parent_password_hash,
+      })
+    } catch(e) { console.warn('upsertParent error:', e) }
+  }
+
   const { data, error } = await supabase
     .from('reservations')
     .insert({
-      tuteur_id:           tuteurId,
-      parent_nom:          parentNom,
-      parent_email:        parentEmail,
+      tuteur_id,
+      tuteur_nom,
+      parent_nom,
+      parent_email,
       enfant,
       niveau,
       jour,
       creneau,
       montant,
-      statut:              'en_attente',
-      paiement_reference:  ref,
+      statut,
+      paiement_mode,
+      paiement_reference,
     })
     .select()
     .single()
   if (error) throw error
   notifWA(
     `📅 Nouvelle réservation !\n` +
-    `Parent : ${parentNom} (${parentEmail})\n` +
+    `Parent : ${parent_nom} (${parent_email})\n` +
     `Enfant : ${enfant} · ${niveau}\n` +
     `Créneau : ${jour} à ${creneau}\n` +
     `Montant : ${montant ? montant.toLocaleString('fr-FR') + ' FCFA' : '—'}\n` +
-    `Réf : ${ref}`
+    `Réf : ${paiement_reference}`
   )
-  return { reservation: data, ref }
+  return { reservation: data, ref: paiement_reference }
 }
 
 export async function confirmerReservation(ref) {
