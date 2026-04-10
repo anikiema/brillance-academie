@@ -957,33 +957,33 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
         <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",gap:12,flexWrap:"wrap"}}>
 
           {/* Matières */}
-          <div style={{position:"relative",display:"flex",alignItems:"stretch",borderRadius:10,border:`1.5px solid ${activeM?"#4f46e5":"#e5e7eb"}`,background:activeM?"#eef2ff":"#fff"}}>
+          <div style={{position:"relative"}}>
             <select value={activeM||""} onChange={e=>setActiveM(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 14px",background:"transparent",color:activeM?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",border:"none",borderRadius:"10px 0 0 10px",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:150}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeM?"#4f46e5":"#e5e7eb"}`,background:activeM?"#eef2ff":"#fff",color:activeM?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:150}}>
               <option value="">📚 Toutes les matières</option>
               {MATIERES.map(({label,emoji})=><option key={label} value={label}>{emoji} {label}</option>)}
             </select>
-            <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,minWidth:32,background:activeM?"#4f46e5":"#f3f4f6",color:activeM?"#fff":"#6b7280",fontSize:11,pointerEvents:"none",borderLeft:`1px solid ${activeM?"#6366f1":"#e5e7eb"}`,borderRadius:"0 8px 8px 0",flexShrink:0}}>▼</span>
+            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeM?"#4f46e5":"#f0f0f0",borderLeft:`1px solid ${activeM?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeM?"#fff":"#6b7280"}}>▼</span>
           </div>
 
           {/* Quartiers */}
-          <div style={{position:"relative",display:"flex",alignItems:"stretch",borderRadius:10,border:`1.5px solid ${activeQ?"#4f46e5":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff"}}>
+          <div style={{position:"relative"}}>
             <select value={activeQ||""} onChange={e=>setActiveQ(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 14px",background:"transparent",color:activeQ?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",border:"none",borderRadius:"10px 0 0 10px",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:160}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeQ?"#4f46e5":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff",color:activeQ?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:160}}>
               <option value="">📍 Tous les quartiers</option>
               {QUARTIERS.map(q=><option key={q} value={q}>{q}</option>)}
             </select>
-            <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,minWidth:32,background:activeQ?"#4f46e5":"#f3f4f6",color:activeQ?"#fff":"#6b7280",fontSize:11,pointerEvents:"none",borderLeft:`1px solid ${activeQ?"#6366f1":"#e5e7eb"}`,borderRadius:"0 8px 8px 0",flexShrink:0}}>▼</span>
+            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeQ?"#4f46e5":"#f0f0f0",borderLeft:`1px solid ${activeQ?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeQ?"#fff":"#6b7280"}}>▼</span>
           </div>
 
           {/* Niveaux */}
-          <div style={{position:"relative",display:"flex",alignItems:"stretch",borderRadius:10,border:`1.5px solid ${activeN?"#4f46e5":"#e5e7eb"}`,background:activeN?"#eef2ff":"#fff"}}>
+          <div style={{position:"relative"}}>
             <select value={activeN||""} onChange={e=>setActiveN(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 14px",background:"transparent",color:activeN?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",border:"none",borderRadius:"10px 0 0 10px",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:140}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeN?"#4f46e5":"#e5e7eb"}`,background:activeN?"#eef2ff":"#fff",color:activeN?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:140}}>
               <option value="">🎓 Tous les niveaux</option>
               {NIVEAUX.map(n=><option key={n} value={n}>{n}</option>)}
             </select>
-            <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,minWidth:32,background:activeN?"#4f46e5":"#f3f4f6",color:activeN?"#fff":"#6b7280",fontSize:11,pointerEvents:"none",borderLeft:`1px solid ${activeN?"#6366f1":"#e5e7eb"}`,borderRadius:"0 8px 8px 0",flexShrink:0}}>▼</span>
+            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeN?"#4f46e5":"#f0f0f0",borderLeft:`1px solid ${activeN?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeN?"#fff":"#6b7280"}}>▼</span>
           </div>
 
           {/* Filtre En ligne */}
