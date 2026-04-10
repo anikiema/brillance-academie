@@ -1014,12 +1014,8 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
       {/* NAV */}
       <nav style={S.nav}>
         <span style={{fontSize:18,fontWeight:800,color:T.primary,letterSpacing:"-0.5px"}}>Brillance Académie</span>
-        <div className="ba-nav-links" style={{display:"flex",gap:28}}>
-          {[["Nos tuteurs","tutors"],["Comment ça marche","how"]].map(([l,id])=>(
-            <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color=T.primaryDark} onMouseOut={e=>e.target.style.color=T.body}>{l}</button>
-          ))}
-        </div>
         <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
+          <button onClick={()=>scrollTo("how")} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>À Propos</button>
           <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>Devenir tuteur</button>
           <button onClick={goEspaceParent} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>👤 Parents</button>
           <button onClick={goEspaceTuteur} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>👨‍🏫 Tuteurs</button>
