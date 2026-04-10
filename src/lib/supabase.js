@@ -403,6 +403,26 @@ export async function modifierTuteur(id, changes) {
   }
 }
 
+export async function getTuteurByEmail(email) {
+  const { data, error } = await supabase
+    .from('tuteurs')
+    .select('*')
+    .eq('email', email.toLowerCase().trim())
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+export async function getReservationsByTuteurId(tuteurId) {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*')
+    .eq('tuteur_id', tuteurId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
 export async function supprimerTuteur(id) {
   const { error } = await supabase
     .from('tuteurs')

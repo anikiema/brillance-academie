@@ -1,6 +1,6 @@
 // Brillance Académie v1.2 — design gris harmonisé
 import React, { useState, useEffect } from "react";
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -806,7 +806,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
   );
 }
 
-function SitePublic({ goAdmin, goPayment, goEspaceParent }) {
+function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
   const [modal, setModal]   = useState(null);
   const [search, setSearch] = useState("");
   const [activeM, setActiveM] = useState(null);
@@ -925,7 +925,8 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent }) {
         <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
           <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#f3f4f6",color:"#374151"}}>Devenir tuteur</button>
           <button onClick={()=>setModal("parent")} style={{...S.btn,background:"#dc2626",color:"#fff"}}>Chercher un tuteur</button>
-          <button onClick={goEspaceParent} style={{...S.btn,background:"#ede9fe",color:"#4f46e5",fontWeight:700}}>👤 Mon espace</button>
+          <button onClick={goEspaceParent} style={{...S.btn,background:"#ede9fe",color:"#4f46e5",fontWeight:700}}>👤 Parents</button>
+          <button onClick={goEspaceTuteur} style={{...S.btn,background:"#dcfce7",color:"#16a34a",fontWeight:700}}>👨‍🏫 Tuteurs</button>
           <button onClick={goAdmin} style={{...S.btn,background:"#111827",color:"#fff",fontSize:12,padding:"9px 16px"}}>⚙</button>
         </div>
       </nav>
@@ -2337,6 +2338,268 @@ function Admin({ goHome }) {
 
 // ─── LOGIN ADMIN ──────────────────────────────────────────────────────────────
 
+// ─── ESPACE TUTEUR ────────────────────────────────────────────────────────────
+const JOURS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+const NIVEAUX_LIST = ["CP","CE1","CE2","CM1","CM2","6ème","5ème","4ème","3ème"];
+const QUARTIERS_LIST = ["Ouaga 2000","Hamdalaye","Gounghin","Pissy","Patte d'Oie","Wemtenga","Karpala","Tampouy","Secteur 30","Zone du Bois"];
+
+function PageEspaceTuteur({ goHome }) {
+  const [email, setEmail]       = useState("");
+  const [loading, setLoading]   = useState(false);
+  const [tuteur, setTuteur]     = useState(null);
+  const [seances, setSeances]   = useState([]);
+  const [error, setError]       = useState("");
+  const [tab, setTab]           = useState("profil"); // profil | seances
+  const [form, setForm]         = useState({});
+  const [saving, setSaving]     = useState(false);
+  const [saved, setSaved]       = useState(false);
+
+  const login = async () => {
+    if (!email.trim()) return;
+    setLoading(true); setError("");
+    try {
+      const t = await getTuteurByEmail(email.trim());
+      if (!t) { setError("Aucun compte tuteur trouvé avec cet email."); setLoading(false); return; }
+      const s = await getReservationsByTuteurId(t.id);
+      setTuteur(t);
+      setSeances(s);
+      setForm({
+        prenom:    t.prenom || t.name || "",
+        nom:       t.nom || "",
+        telephone: t.telephone || t.tel || "",
+        bio:       t.bio || "",
+        subject:   t.subject || "",
+        price:     t.price || "",
+        niveaux:   t.niveaux || [],
+        availableDays: t.available_days || t.availableDays || [],
+        quartiersCouVerts: t.quartiers_couverts || t.quartiersCouVerts || [],
+        modeSeance: t.mode_seance || "domicile",
+      });
+    } catch(e) { setError("Erreur de connexion. Réessayez."); }
+    setLoading(false);
+  };
+
+  const sauvegarder = async () => {
+    setSaving(true); setSaved(false);
+    try {
+      await modifierTuteur(tuteur.id, form);
+      setTuteur(t => ({ ...t, ...form }));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch(e) { alert("Erreur lors de la sauvegarde : " + e.message); }
+    setSaving(false);
+  };
+
+  const toggleItem = (key, val) =>
+    setForm(f => ({
+      ...f,
+      [key]: f[key].includes(val) ? f[key].filter(x=>x!==val) : [...f[key], val]
+    }));
+
+  const statutStyle = s => ({
+    padding:"3px 10px", borderRadius:999, fontSize:11, fontWeight:700,
+    background: s==="confirmée"?"#dcfce7":s==="en_attente"?"#fef3c7":"#fee2e2",
+    color:      s==="confirmée"?"#065f46":s==="en_attente"?"#92400e":"#991b1b",
+  });
+
+  const inp = (label, key, type="text", placeholder="") => (
+    <div style={{marginBottom:14}}>
+      <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>{label}</label>
+      <input type={type} value={form[key]||""} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))}
+        placeholder={placeholder}
+        style={{width:"100%",padding:"10px 12px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+    </div>
+  );
+
+  return (
+    <div style={{minHeight:"100vh",background:"#e8ddd0",fontFamily:"'Comic Sans MS','Comic Sans',cursive",display:"flex",flexDirection:"column"}}>
+      <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
+        <button onClick={goHome} style={{padding:"8px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Retour</button>
+      </nav>
+
+      <div style={{flex:1,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"48px 20px"}}>
+        <div style={{width:"100%",maxWidth:680}}>
+
+          {!tuteur ? (
+            /* ── LOGIN ── */
+            <div style={{background:"#fff",borderRadius:24,padding:40,boxShadow:"0 8px 40px rgba(0,0,0,.1)"}}>
+              <p style={{fontSize:12,fontWeight:700,color:"#16a34a",textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px"}}>🎓 Espace tuteur</p>
+              <h2 style={{fontSize:24,fontWeight:900,color:"#111827",margin:"0 0 8px"}}>Accédez à votre profil</h2>
+              <p style={{fontSize:14,color:"#6b7280",margin:"0 0 32px"}}>Entrez l'email utilisé lors de votre inscription pour modifier votre profil et voir vos séances.</p>
+              <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:6}}>Votre adresse email</label>
+              <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&login()} placeholder="votre@email.com"
+                style={{width:"100%",padding:"14px 16px",border:"1.5px solid #e5e7eb",borderRadius:12,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:16,fontFamily:"inherit"}}/>
+              {error && <p style={{fontSize:13,color:"#ef4444",margin:"0 0 12px"}}>{error}</p>}
+              <button onClick={login} disabled={loading}
+                style={{width:"100%",padding:14,background:"#16a34a",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+                {loading?"Vérification…":"Accéder à mon espace →"}
+              </button>
+            </div>
+
+          ) : (
+            /* ── DASHBOARD TUTEUR ── */
+            <div>
+              {/* Header */}
+              <div style={{background:"#fff",borderRadius:20,padding:24,marginBottom:16,boxShadow:"0 4px 20px rgba(0,0,0,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+                <div style={{display:"flex",alignItems:"center",gap:14}}>
+                  <div style={{width:52,height:52,borderRadius:16,background:"#dcfce7",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>
+                    {tuteur.emoji||"👨‍🏫"}
+                  </div>
+                  <div>
+                    <h2 style={{fontSize:18,fontWeight:900,color:"#111827",margin:"0 0 2px"}}>{tuteur.prenom||tuteur.name} {tuteur.nom||""}</h2>
+                    <p style={{fontSize:13,color:"#6b7280",margin:0}}>{tuteur.subject} · {tuteur.email}</p>
+                    <span style={{fontSize:11,fontWeight:700,padding:"2px 8px",borderRadius:999,
+                      background:tuteur.statut==="Actif"?"#dcfce7":tuteur.statut==="En attente"?"#fef3c7":"#f3f4f6",
+                      color:tuteur.statut==="Actif"?"#065f46":tuteur.statut==="En attente"?"#92400e":"#6b7280"}}>
+                      {tuteur.statut}
+                    </span>
+                  </div>
+                </div>
+                <div style={{display:"flex",gap:10}}>
+                  <div style={{textAlign:"center",background:"#dbeafe",borderRadius:12,padding:"10px 16px"}}>
+                    <p style={{fontSize:20,fontWeight:900,color:"#2563eb",margin:0}}>{seances.length}</p>
+                    <p style={{fontSize:11,color:"#2563eb",margin:0}}>Séances</p>
+                  </div>
+                  <div style={{textAlign:"center",background:"#dcfce7",borderRadius:12,padding:"10px 16px"}}>
+                    <p style={{fontSize:20,fontWeight:900,color:"#16a34a",margin:0}}>{tuteur.rating||"—"} ★</p>
+                    <p style={{fontSize:11,color:"#16a34a",margin:0}}>Note</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div style={{display:"flex",gap:8,marginBottom:16}}>
+                {[["profil","✏️ Mon profil"],["seances","📅 Mes séances"]].map(([id,label])=>(
+                  <button key={id} onClick={()=>setTab(id)}
+                    style={{padding:"10px 20px",borderRadius:10,border:"none",fontWeight:700,fontSize:13,cursor:"pointer",
+                      background:tab===id?"#4f46e5":"#fff",color:tab===id?"#fff":"#6b7280",
+                      boxShadow:tab===id?"0 2px 8px rgba(79,70,229,.3)":"none"}}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* ── ONGLET PROFIL ── */}
+              {tab==="profil" && (
+                <div style={{background:"#fff",borderRadius:20,padding:28,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+                  <h3 style={{fontSize:15,fontWeight:800,color:"#111827",margin:"0 0 20px"}}>Informations personnelles</h3>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                    {inp("Prénom","prenom","text","Votre prénom")}
+                    {inp("Nom","nom","text","Votre nom")}
+                  </div>
+                  {inp("Téléphone","telephone","tel","ex: 77 12 34 56")}
+                  {inp("Matière principale","subject","text","ex: Mathématiques")}
+                  {inp("Tarif horaire souhaité (FCFA)","price","number","ex: 30000")}
+
+                  <div style={{marginBottom:14}}>
+                    <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Biographie</label>
+                    <textarea value={form.bio||""} onChange={e=>setForm(f=>({...f,bio:e.target.value}))}
+                      rows={3} placeholder="Décrivez votre expérience et votre approche pédagogique..."
+                      style={{width:"100%",padding:"10px 12px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:13,resize:"vertical",fontFamily:"inherit",boxSizing:"border-box",outline:"none"}}/>
+                  </div>
+
+                  <div style={{marginBottom:14}}>
+                    <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Niveaux enseignés</label>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {NIVEAUX_LIST.map(n=>(
+                        <button key={n} onClick={()=>toggleItem("niveaux",n)}
+                          style={{padding:"5px 12px",borderRadius:999,border:"1.5px solid",fontSize:12,fontWeight:600,cursor:"pointer",
+                            borderColor:form.niveaux?.includes(n)?"#4f46e5":"#e5e7eb",
+                            background:form.niveaux?.includes(n)?"#4f46e5":"#fff",
+                            color:form.niveaux?.includes(n)?"#fff":"#6b7280"}}>
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{marginBottom:14}}>
+                    <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Jours disponibles</label>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {JOURS.map(j=>(
+                        <button key={j} onClick={()=>toggleItem("availableDays",j)}
+                          style={{padding:"5px 12px",borderRadius:999,border:"1.5px solid",fontSize:12,fontWeight:600,cursor:"pointer",
+                            borderColor:form.availableDays?.includes(j)?"#16a34a":"#e5e7eb",
+                            background:form.availableDays?.includes(j)?"#16a34a":"#fff",
+                            color:form.availableDays?.includes(j)?"#fff":"#6b7280"}}>
+                          {j}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{marginBottom:20}}>
+                    <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Quartiers couverts</label>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {QUARTIERS_LIST.map(q=>(
+                        <button key={q} onClick={()=>toggleItem("quartiersCouVerts",q)}
+                          style={{padding:"5px 12px",borderRadius:999,border:"1.5px solid",fontSize:12,fontWeight:600,cursor:"pointer",
+                            borderColor:form.quartiersCouVerts?.includes(q)?"#0284c7":"#e5e7eb",
+                            background:form.quartiersCouVerts?.includes(q)?"#0284c7":"#fff",
+                            color:form.quartiersCouVerts?.includes(q)?"#fff":"#6b7280"}}>
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{display:"flex",gap:10,alignItems:"center"}}>
+                    <button onClick={sauvegarder} disabled={saving}
+                      style={{flex:1,padding:"13px",background:"#16a34a",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                      {saving?"Sauvegarde…":"💾 Enregistrer les modifications"}
+                    </button>
+                    {saved && <span style={{fontSize:13,color:"#16a34a",fontWeight:700}}>✓ Sauvegardé !</span>}
+                  </div>
+                </div>
+              )}
+
+              {/* ── ONGLET SÉANCES ── */}
+              {tab==="seances" && (
+                <div style={{background:"#fff",borderRadius:20,padding:28,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+                  <h3 style={{fontSize:15,fontWeight:800,color:"#111827",margin:"0 0 20px"}}>📅 Vos séances</h3>
+                  {seances.length===0 ? (
+                    <p style={{textAlign:"center",color:"#9ca3af",padding:"32px 0",fontSize:14}}>Aucune séance pour le moment.</p>
+                  ) : (
+                    <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                      {seances.map((s,i)=>(
+                        <div key={i} style={{border:"1.5px solid #f3f4f6",borderRadius:14,padding:16,display:"flex",flexDirection:"column",gap:6}}>
+                          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+                            <span style={{fontFamily:"monospace",fontSize:11,background:"#f1f5f9",padding:"2px 8px",borderRadius:6}}>{s.paiement_reference||"—"}</span>
+                            <span style={statutStyle(s.statut)}>{s.statut}</span>
+                          </div>
+                          <div style={{fontSize:13,fontWeight:700,color:"#111827"}}>👨‍👩‍👧 {s.parent_nom} · {s.enfant} ({s.niveau})</div>
+                          <div style={{display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+                            <span style={{fontSize:12,color:"#6b7280"}}>📅 {s.jour}{s.creneau?` à ${s.creneau}`:""}</span>
+                            <span style={{fontSize:14,fontWeight:800,color:"#111827"}}>{s.montant?s.montant.toLocaleString("fr-FR")+" FCFA":"—"}</span>
+                          </div>
+                          {s.parent_email && (
+                            <a href={`https://wa.me/${(s.parent_tel||"").replace(/\D/g,"")||"226"}?text=${encodeURIComponent(`Bonjour, je suis votre tuteur Brillance Academie. Je vous contacte pour notre seance du ${s.jour}.`)}`}
+                              target="_blank" rel="noreferrer"
+                              style={{fontSize:12,color:"#25d366",fontWeight:700,textDecoration:"none"}}>
+                              📲 Contacter le parent
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <button onClick={()=>{setTuteur(null);setEmail("");setSeances([]);setTab("profil");}}
+                style={{marginTop:16,width:"100%",padding:12,background:"none",border:"1.5px solid #e5e7eb",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer",color:"#6b7280"}}>
+                Se déconnecter
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── ESPACE PARENT ────────────────────────────────────────────────────────────
 function PageEspaceParent({ goHome }) {
   const [email, setEmail]       = useState("");
@@ -2553,6 +2816,7 @@ function App() {
   const page = hash.startsWith("paiement") ? "payment"
              : hash === "admin"            ? "admin"
              : hash === "espace-parent"    ? "espace-parent"
+             : hash === "espace-tuteur"    ? "espace-tuteur"
              : hash.startsWith("tuteur/")  ? "tuteur"
              : "site";
 
@@ -2569,6 +2833,9 @@ function App() {
 
   if (page === "espace-parent")
     return <PageEspaceParent goHome={() => goTo("accueil")} />;
+
+  if (page === "espace-tuteur")
+    return <PageEspaceTuteur goHome={() => goTo("accueil")} />;
 
   if (page === "tuteur" && tuteurId)
     return <PageTuteur
@@ -2591,6 +2858,7 @@ function App() {
       goAdmin={()  => goTo("admin")}
       goPayment={b => { setBooking(b); goTo("paiement"); }}
       goEspaceParent={() => goTo("espace-parent")}
+      goEspaceTuteur={() => goTo("espace-tuteur")}
     />
   );
 }
