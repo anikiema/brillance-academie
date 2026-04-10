@@ -925,7 +925,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
       <nav style={S.nav}>
         <span style={{fontSize:18,fontWeight:800,color:"#4f46e5",letterSpacing:"-0.5px"}}>Brillance Académie</span>
         <div className="ba-nav-links" style={{display:"flex",gap:28}}>
-          {[["Trouver un tuteur","tutors"],["Matières","matieres"],["Comment ça marche","how"],["Avis","avis"]].map(([l,id])=>(
+          {[["Trouver un tuteur","tutors"],["Comment ça marche","how"],["Avis","avis"]].map(([l,id])=>(
             <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color="#16a34a"} onMouseOut={e=>e.target.style.color="#22c55e"}>{l}</button>
           ))}
         </div>
