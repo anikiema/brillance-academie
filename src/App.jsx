@@ -1075,11 +1075,11 @@ function SitePublic({ goAdmin, goPayment }) {
           </div>
 
           {/* Guarantee banner */}
-          <div style={{background:"#111827",borderRadius:24,padding:"36px 48px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:24,flexWrap:"wrap"}}>
+          <div style={{background:"linear-gradient(135deg,#374151 0%,#4b5563 100%)",borderRadius:24,padding:"36px 48px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:24,flexWrap:"wrap"}}>
             <div>
-              <p style={{color:"#a5b4fc",fontSize:12,fontWeight:700,textTransform:"uppercase",letterSpacing:2,margin:"0 0 8px"}}>Notre engagement</p>
-              <h3 style={{fontSize:22,fontWeight:800,color:"#fff",margin:"0 0 8px"}}>Première séance non satisfaisante ? On rembourse.</h3>
-              <p style={{color:"#9ca3af",fontSize:14,margin:0}}>Aucun risque pour les familles. C'est ça, la confiance Brillance Académie.</p>
+              <p style={{color:"#c4b5fd",fontSize:12,fontWeight:700,textTransform:"uppercase",letterSpacing:2,margin:"0 0 8px"}}>Notre engagement</p>
+              <h3 style={{fontSize:22,fontWeight:800,color:"#f9fafb",margin:"0 0 8px"}}>Première séance non satisfaisante ? On rembourse.</h3>
+              <p style={{color:"#d1d5db",fontSize:14,margin:0}}>Aucun risque pour les familles. C'est ça, la confiance Brillance Académie.</p>
             </div>
             <button onClick={()=>setModal("parent")} style={{padding:"14px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
               Démarrer gratuitement →
