@@ -1483,21 +1483,18 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* CTA FINAL */}
-      <div style={{background:"linear-gradient(180deg,#111827 0%,#1e293b 60%,#2d3748 100%)",padding:"56px 40px 64px",textAlign:"center"}}>
-        <h2 style={{fontSize:40,fontWeight:900,color:"#fff",margin:"0 0 16px",letterSpacing:"-1px"}}>Prêt à commencer ?</h2>
-        <p style={{color:"#9ca3af",fontSize:16,marginBottom:36}}>Première séance gratuite. Sans engagement.</p>
-        <div style={{display:"flex",gap:14,justifyContent:"center"}}>
-          <button onClick={()=>setModal("parent")} style={{padding:"14px 36px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:16,cursor:"pointer"}}>
+      <div style={{background:"linear-gradient(180deg,#374151 0%,#4b5563 60%,#6b7280 100%)",padding:"36px 40px 40px",textAlign:"center"}}>
+        <h2 style={{fontSize:32,fontWeight:900,color:"#f9fafb",margin:"0 0 10px",letterSpacing:"-0.5px"}}>Prêt à commencer ?</h2>
+        <p style={{color:"#d1d5db",fontSize:14,marginBottom:24}}>Première séance gratuite. Sans engagement.</p>
+        <div style={{display:"flex",gap:12,justifyContent:"center"}}>
+          <button onClick={()=>setModal("parent")} style={{padding:"12px 30px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
             Trouver un tuteur
           </button>
-          <button onClick={()=>setModal("tuteur")} style={{padding:"14px 36px",background:"transparent",color:"#fff",border:"2px solid #374151",borderRadius:999,fontWeight:700,fontSize:16,cursor:"pointer"}}>
+          <button onClick={()=>setModal("tuteur")} style={{padding:"12px 30px",background:"transparent",color:"#e5e7eb",border:"2px solid #6b7280",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
             Devenir tuteur
           </button>
         </div>
       </div>
-
-      {/* TRANSITION FADE noir → gris */}
-      <div style={{height:48,background:"linear-gradient(180deg,#2d3748 0%,#374151 50%,#4b5563 100%)"}}/>
 
       {/* BOUTON WHATSAPP FLOTTANT */}
       <a href="https://wa.me/22600000000?text=Bonjour%2C%20je%20souhaite%20trouver%20un%20tuteur%20pour%20mon%20enfant."
@@ -1509,7 +1506,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </a>
 
       {/* FOOTER */}
-      <footer style={{background:"linear-gradient(180deg,#4b5563 0%,#1e293b 18%,#0f172a 100%)",padding:"56px 40px 28px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+      <footer style={{background:"linear-gradient(180deg,#6b7280 0%,#374151 40%,#1f2937 100%)",padding:"40px 40px 24px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
 
           {/* Grille principale */}
