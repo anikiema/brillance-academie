@@ -1,4 +1,4 @@
-// Brillance Académie v1.5 — SLA 24h timestamps + parents type (demande vs réservation)
+// Brillance Académie v1.6 — sexe (M/F) + accord Actif/Active
 import React, { useState, useEffect, useMemo } from "react";
 import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, upsertParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef, hashPassword, loginParent, loginTuteur, changerMotDePasseParent, changerMotDePasseTuteur } from "./lib/supabase.js";
 
@@ -120,10 +120,35 @@ function Sel({ label, value, onChange, options }) {
   );
 }
 
-function BadgeStatus({ s }) {
+function BadgeStatus({ s, sexe }) {
   const map = {"Actif":["#d1fae5","#065f46"],"Inactif":["#f3f4f6","#6b7280"],"En attente":["#fef3c7","#92400e"]};
   const [bg,fg] = map[s]||["#f3f4f6","#6b7280"];
-  return <span style={{background:bg,color:fg,padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:700}}>{s}</span>;
+  // Accord au féminin si sexe = "F"
+  const isF = sexe === "F";
+  const feminize = { "Actif":"Active", "Inactif":"Inactive" };
+  const label = isF && feminize[s] ? feminize[s] : s;
+  return <span style={{background:bg,color:fg,padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:700}}>{label}</span>;
+}
+
+function SexeToggle({ value, onChange, label="Sexe" }) {
+  return (
+    <div>
+      <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>{label}</label>
+      <div style={{display:"flex",gap:10}}>
+        {[{k:"M",emoji:"👨",text:"Homme"},{k:"F",emoji:"👩",text:"Femme"}].map(o=>(
+          <button key={o.k} type="button" onClick={()=>onChange(o.k)}
+            style={{
+              flex:1,padding:"11px 14px",borderRadius:12,fontSize:13,fontWeight:700,cursor:"pointer",
+              border: value===o.k ? "2px solid #4f46e5" : "1.5px solid #e5e7eb",
+              background: value===o.k ? "#ede9fe" : "#fafafa",
+              color: value===o.k ? "#4f46e5" : "#6b7280",
+            }}>
+            <span style={{marginRight:6}}>{o.emoji}</span>{o.text}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function Steps({ labels, current }) {
@@ -222,6 +247,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
         tuteur_price:    tuteur?.price || 0,
         duree:           duree,
         parent_nom:      booking.parentNom   || "",
+        parent_sexe:     booking.parentSexe  || "",
         parent_email:    booking.parentEmail || "",
         parent_password_hash: pwdHash,
         enfant, niveau, jour, creneau,
@@ -393,18 +419,19 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
 function InscriptionParent({ onClose, ecolesList=[] }) {
   const [step, setStep] = useState(0);
-  const [d, setD] = useState({ nom:"", email:"", tel:"", ville:"", enfant:"", age:"", niveau:"", matieres:[], objectif:"", frequence:"1 fois par semaine" });
+  const [d, setD] = useState({ nom:"", sexe:"", email:"", tel:"", ville:"", enfant:"", age:"", niveau:"", matieres:[], objectif:"", frequence:"1 fois par semaine" });
   const [saving, setSaving] = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = m => set("matieres", d.matieres.includes(m)?d.matieres.filter(x=>x!==m):[...d.matieres,m]);
 
-  const ok = [d.nom&&d.email&&d.tel&&d.ville, d.enfant&&d.niveau, d.matieres.length>0, true];
+  const ok = [d.nom&&d.sexe&&d.email&&d.tel&&d.ville, d.enfant&&d.niveau, d.matieres.length>0, true];
 
   const envoyer = async () => {
     setSaving(true);
     try {
       await ajouterParent({
         nom:       d.nom,
+        sexe:      d.sexe,
         email:     d.email,
         telephone: d.tel,
         enfant:    `${d.enfant}${d.niveau ? ", " + d.niveau : ""}`,
@@ -436,6 +463,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
       <p style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:16}}>Vos informations</p>
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
         <Inp label="Votre nom complet" value={d.nom} onChange={v=>set("nom",v)} placeholder=""/>
+        <SexeToggle value={d.sexe} onChange={v=>set("sexe",v)}/>
         <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="" type="email"/>
         <Inp label="Téléphone (WhatsApp)" value={d.tel} onChange={v=>set("tel",v)} placeholder="+226 70 00 00 00" type="tel" filter="tel"/>
         <Inp label="Ville" value={d.ville} onChange={v=>set("ville",v)} placeholder=""/>
@@ -504,7 +532,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
 
 function InscriptionTuteur({ onClose }) {
   const [step, setStep]           = useState(0);
-  const [d, setD]                 = useState({ prenom:"", nom:"", email:"", password:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000, enLigne:false });
+  const [d, setD]                 = useState({ prenom:"", nom:"", sexe:"", email:"", password:"", tel:"", ville:"", matieres:[], niveaux:[], experience:"", diplome:"", jours:[], quartiersCouVerts:[], tousQuartiers:false, tarif:5000, enLigne:false });
   const [saving, setSaving]       = useState(false);
   const set = (k,v) => setD(p=>({...p,[k]:v}));
   const tog = (k,v) => set(k, d[k].includes(v)?d[k].filter(x=>x!==v):[...d[k],v]);
@@ -518,7 +546,7 @@ function InscriptionTuteur({ onClose }) {
   }, []);
 
   const ok = [
-    d.prenom&&d.nom&&d.email&&d.password&&d.password.length>=6&&d.tel&&d.ville,
+    d.prenom&&d.nom&&d.sexe&&d.email&&d.password&&d.password.length>=6&&d.tel&&d.ville,
     d.matieres.length>0&&d.niveaux.length>0&&d.experience,
     d.jours.length>0&&(d.tousQuartiers||d.quartiersCouVerts.length>0),
     true, // récap
@@ -532,6 +560,7 @@ function InscriptionTuteur({ onClose }) {
       await ajouterTuteur({
         prenom:            d.prenom,
         nom:               d.nom,
+        sexe:              d.sexe,
         email:             d.email,
         tel:               d.tel,
         password_hash:     pwdHash,
@@ -542,7 +571,7 @@ function InscriptionTuteur({ onClose }) {
         niveaux:           d.niveaux,
         availableDays:     d.jours,
         quartier:          d.ville || "",
-        emoji:             "👩‍🏫",
+        emoji:             d.sexe === "M" ? "👨‍🏫" : "👩‍🏫",
         quartiersCouVerts: d.tousQuartiers ? QUARTIERS : d.quartiersCouVerts,
         en_ligne:          d.enLigne,
       });
@@ -576,6 +605,7 @@ function InscriptionTuteur({ onClose }) {
         <Inp label="Prénom" value={d.prenom} onChange={v=>set("prenom",v)} placeholder=""/>
         <Inp label="Nom" value={d.nom} onChange={v=>set("nom",v)} placeholder=""/>
       </div>
+      <SexeToggle value={d.sexe} onChange={v=>set("sexe",v)}/>
       <Inp label="E-mail" value={d.email} onChange={v=>set("email",v)} placeholder="" type="email"/>
       <Inp label="Mot de passe (min. 6 caractères)" value={d.password} onChange={v=>set("password",v)} placeholder="••••••••" type="password"/>
       <Inp label="Téléphone" value={d.tel} onChange={v=>set("tel",v)} placeholder="+226 70 00 00 00" type="tel" filter="tel"/>
@@ -848,7 +878,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
   const [creneau, setCreneau] = useState(null);
   const [duree, setDuree]     = useState(1); // nombre d'heures
   const [modeSeance, setModeSeance] = useState("domicile"); // "domicile" | "enligne"
-  const [bi, setBi]         = useState({nom:"",email:"",password:"",enfant:"",niveau:""});
+  const [bi, setBi]         = useState({nom:"",sexe:"",email:"",password:"",enfant:"",niveau:""});
   const [bookDone, setBookDone] = useState(false);
   // identification parent
   const [emailQ, setEmailQ]       = useState("");
@@ -1476,6 +1506,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 </div>
               )}
               <Inp label="Votre nom (parent)" value={bi.nom} onChange={v=>setBI("nom",v)} placeholder=""/>
+              <SexeToggle value={bi.sexe} onChange={v=>setBI("sexe",v)}/>
               <Inp label="E-mail" value={bi.email} onChange={v=>setBI("email",v)} placeholder="" type="email"
                 onBlur={async (val)=>{
                   if (!val || !/.+@.+\..+/.test(val)) return;
@@ -1490,8 +1521,8 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <Sel label="Niveau de l'enfant" value={bi.niveau} onChange={v=>setBI("niveau",v)} options={NIVEAUX}/>
               <div style={{display:"flex",gap:10,marginTop:4}}>
                 <button onClick={()=>setBook(2)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
-                <button disabled={!bi.nom||!bi.email||!bi.password||bi.password.length<6||!bi.enfant} onClick={()=>setBook(4)}
-                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:bi.nom&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#4f46e5":"#e5e7eb",color:bi.nom&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:bi.nom&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"pointer":"not-allowed"}}>
+                <button disabled={!bi.nom||!bi.sexe||!bi.email||!bi.password||bi.password.length<6||!bi.enfant} onClick={()=>setBook(4)}
+                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:bi.nom&&bi.sexe&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#4f46e5":"#e5e7eb",color:bi.nom&&bi.sexe&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:bi.nom&&bi.sexe&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"pointer":"not-allowed"}}>
                   Confirmer →
                 </button>
               </div>
@@ -1526,7 +1557,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 onClick={()=> {
                   const ref = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
                   const jitsiLink = modeSeance==="enligne" ? `https://meet.jit.si/Brillance-${ref}` : null;
-                  goPayment({ tuteur, jour, creneau, duree, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentEmail:bi.email, parentPassword:bi.password, modeSeance, jitsiLink, ref });
+                  goPayment({ tuteur, jour, creneau, duree, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentSexe:bi.sexe, parentEmail:bi.email, parentPassword:bi.password, modeSeance, jitsiLink, ref });
                 }}
                 style={{padding:"14px 0",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:16,cursor:"pointer"}}>
                 Procéder au paiement →
@@ -2059,7 +2090,7 @@ function Admin({ goHome }) {
           <div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Parents ({parents.length})</h1>
-              <button onClick={()=>openAdd({nom:"",email:"",telephone:"",enfant:"",statut:"En attente"})}
+              <button onClick={()=>openAdd({nom:"",sexe:"",email:"",telephone:"",enfant:"",statut:"En attente"})}
                 style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 + Ajouter
               </button>
@@ -2100,7 +2131,7 @@ function Admin({ goHome }) {
                       <td style={S.td}>{p.enfant}</td>
                       <td style={S.td}>{p.telephone}</td>
                       <td style={{...S.td,fontWeight:700,color:"#4f46e5"}}>{p.sessions}</td>
-                      <td style={S.td}><BadgeStatus s={p.statut}/></td>
+                      <td style={S.td}><BadgeStatus s={p.statut} sexe={p.sexe}/></td>
                       <td style={S.td}>
                         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                           {p.statut==="En attente" && (
@@ -2136,6 +2167,7 @@ function Admin({ goHome }) {
                   <h2 style={{fontSize:18,fontWeight:800,margin:"0 0 20px",color:"#111827"}}>{editTarget?"Modifier":"Ajouter"} un parent</h2>
                   <div style={{display:"flex",flexDirection:"column",gap:14}}>
                     <Inp label="Nom complet" value={form.nom||""} onChange={v=>setF("nom",v)} placeholder="Aminata Diallo"/>
+                    <SexeToggle value={form.sexe||""} onChange={v=>setF("sexe",v)}/>
                     <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="aminata@gmail.com" type="email"/>
                     <Inp label="Téléphone" value={form.telephone||""} onChange={v=>setF("telephone",v)} placeholder="+226 77 00 00 00" type="tel" filter="tel"/>
                     <Inp label="Enfant (prénom, niveau)" value={form.enfant||""} onChange={v=>setF("enfant",v)} placeholder="Moussa, CM1"/>
@@ -2330,7 +2362,7 @@ function Admin({ goHome }) {
                       <td style={{...S.td,fontWeight:700,color:"#4f46e5"}}>{fmt(t.price)}/h</td>
                       <td style={{...S.td,fontWeight:700}}>{t.sessions}</td>
                       <td style={S.td}><Stars n={t.rating}/></td>
-                      <td style={S.td}><BadgeStatus s={t.statut}/></td>
+                      <td style={S.td}><BadgeStatus s={t.statut} sexe={t.sexe}/></td>
                       <td style={S.td}>
                         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                           {t.statut==="En attente" && (
@@ -2365,6 +2397,7 @@ function Admin({ goHome }) {
                   <h2 style={{fontSize:18,fontWeight:800,margin:"0 0 20px",color:"#111827"}}>{editTarget?"Modifier":"Ajouter"} un tuteur</h2>
                   <div style={{display:"flex",flexDirection:"column",gap:14}}>
                     <Inp label="Nom complet" value={form.name||form.prenom||""} onChange={v=>setF("name",v)} placeholder="Ex: Aminata Traoré"/>
+                    <SexeToggle value={form.sexe||""} onChange={v=>setF("sexe",v)}/>
                     <Sel label="Matière" value={form.subject||""} onChange={v=>setF("subject",v)} options={["", ...MATIERES.map(m=>m.label)]}/>
                     <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="Ex: aminata@gmail.com" type="email"/>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>

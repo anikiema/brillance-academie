@@ -210,7 +210,7 @@ export async function ajouterParent(parent) {
   return data
 }
 
-export async function upsertParent({ nom, email, enfant, niveau, password_hash }) {
+export async function upsertParent({ nom, sexe, email, enfant, niveau, password_hash }) {
   if (!email) return null
   const emailClean = email.toLowerCase().trim()
   // Check if parent already exists
@@ -219,6 +219,7 @@ export async function upsertParent({ nom, email, enfant, niveau, password_hash }
     // Update only if new fields provided; don't overwrite password if already set
     const updates = {}
     if (nom && !existing.nom) updates.nom = nom
+    if (sexe && !existing.sexe) updates.sexe = sexe
     if (enfant && !existing.enfant) updates.enfant = enfant
     if (niveau && !existing.niveau) updates.niveau = niveau
     if (password_hash && !existing.password_hash) updates.password_hash = password_hash
@@ -229,7 +230,7 @@ export async function upsertParent({ nom, email, enfant, niveau, password_hash }
   }
   // Create new parent
   const { data, error } = await supabase.from('parents').insert({
-    nom, email: emailClean, enfant, niveau, password_hash
+    nom, sexe, email: emailClean, enfant, niveau, password_hash
   }).select().single()
   if (error) throw error
   return data
@@ -299,6 +300,7 @@ export async function creerReservation(params) {
   // Accept both camelCase (legacy) and snake_case (current) param styles
   const tuteur_id   = params.tuteur_id   || params.tuteurId
   const parent_nom  = params.parent_nom  || params.parentNom   || ""
+  const parent_sexe = params.parent_sexe || params.parentSexe  || ""
   const parent_email= params.parent_email|| params.parentEmail  || ""
   const parent_password_hash = params.parent_password_hash || null
   const { enfant, niveau, jour, creneau } = params
@@ -332,6 +334,7 @@ export async function creerReservation(params) {
     try {
       await upsertParent({
         nom: parent_nom,
+        sexe: parent_sexe,
         email: parent_email,
         enfant,
         niveau,
@@ -461,6 +464,7 @@ export async function ajouterTuteur(tuteur) {
     .insert({
       prenom:             tuteur.prenom || tuteur.name || "",
       nom:                tuteur.nom   || "",
+      sexe:               tuteur.sexe  || "",
       email:              tuteur.email || "",
       tel:                tuteur.tel   || "",
       subject:            tuteur.subject,
@@ -501,6 +505,7 @@ export async function modifierTuteur(id, changes) {
     price:   changes.price,
     statut:  changes.statut,
   };
+  if (changes.sexe          !== undefined) update.sexe              = changes.sexe;
   if (changes.email         !== undefined) update.email             = changes.email;
   if (changes.tel           !== undefined) update.tel               = changes.tel;
   if (changes.bio           !== undefined) update.bio               = changes.bio;
