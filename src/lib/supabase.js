@@ -301,11 +301,31 @@ export async function creerReservation(params) {
   const parent_nom  = params.parent_nom  || params.parentNom   || ""
   const parent_email= params.parent_email|| params.parentEmail  || ""
   const parent_password_hash = params.parent_password_hash || null
-  const { enfant, niveau, jour, creneau, montant } = params
+  const { enfant, niveau, jour, creneau } = params
+  let montant = params.montant
+  const tuteur_price = params.tuteur_price || params.tuteurPrice || 0
+  const duree = params.duree || 1
   const paiement_mode      = params.paiement_mode || params.paiementMode || ""
   const paiement_reference = params.paiement_reference || params.paiementReference || ('BA-' + Date.now())
   const statut             = params.statut || 'en_attente'
   const tuteur_nom         = params.tuteur_nom || params.tuteurNom || ""
+
+  // ── Server-side first-session enforcement ──
+  // Recompute montant if the email already has prior reservations: no discount.
+  let isFirstSession = true
+  if (parent_email) {
+    try {
+      const { count } = await supabase
+        .from('reservations')
+        .select('*', { count: 'exact', head: true })
+        .eq('parent_email', parent_email.toLowerCase().trim())
+      if ((count || 0) > 0) isFirstSession = false
+    } catch(e) { console.warn('first-session check failed:', e) }
+  }
+  if (!isFirstSession && tuteur_price > 0) {
+    // Returning customer: full price, no 20% discount.
+    montant = Math.round(tuteur_price * duree)
+  }
 
   // Upsert parent record (create if new, update if needed)
   if (parent_email) {

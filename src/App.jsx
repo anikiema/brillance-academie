@@ -1,4 +1,4 @@
-// Brillance Académie v1.2 — design gris harmonisé
+// Brillance Académie v1.4 — fix réduction −20 % uniquement à la 1ère séance
 import React, { useState, useEffect } from "react";
 import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, upsertParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef, hashPassword, loginParent, loginTuteur, changerMotDePasseParent, changerMotDePasseTuteur } from "./lib/supabase.js";
 
@@ -85,7 +85,7 @@ function Pill({ children, active, onClick }) {
   );
 }
 
-function Inp({ label, value, onChange, placeholder, type="text", min, max, filter }) {
+function Inp({ label, value, onChange, placeholder, type="text", min, max, filter, onBlur }) {
   const handleChange = (e) => {
     let v = e.target.value;
     if (filter === "tel")    v = v.replace(/[^0-9+\s\-]/g, "");
@@ -101,7 +101,7 @@ function Inp({ label, value, onChange, placeholder, type="text", min, max, filte
         min={min} max={max} inputMode={filter==="tel"||filter==="number"?"numeric":undefined}
         style={{border:"1.5px solid #e5e7eb",borderRadius:12,padding:"11px 16px",fontSize:14,outline:"none",background:"#fafafa"}}
         onFocus={e=>e.target.style.borderColor="#4f46e5"}
-        onBlur={e=>e.target.style.borderColor="#e5e7eb"}
+        onBlur={e=>{ e.target.style.borderColor="#e5e7eb"; if (onBlur) onBlur(e.target.value); }}
       />
     </div>
   );
@@ -182,8 +182,25 @@ function PagePaiement({ booking, onSuccess, onBack }) {
   const [method,  setMethod]  = useState("orange");
   const [done,    setDone]    = useState(false);
   const [loading, setLoading] = useState(false);
+  // Server-checked first-session flag (null = checking, true/false = checked)
+  const [isFirstSession, setIsFirstSession] = useState(booking.premiereSeance !== false);
 
-  const essaiAmount = Math.round((tuteur?.price || 27500) * duree * 0.8);
+  // Recheck first-session against the DB on mount, regardless of what the booking flow set,
+  // so the same email can NEVER get the −20 % twice.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!booking.parentEmail) return;
+      try {
+        const nb = await getReservationCountByEmail(booking.parentEmail);
+        if (!cancelled) setIsFirstSession(nb === 0);
+      } catch { /* keep current value */ }
+    })();
+    return () => { cancelled = true; };
+  }, [booking.parentEmail]);
+
+  const fullAmount  = Math.round((tuteur?.price || 27500) * duree);
+  const essaiAmount = isFirstSession ? Math.round(fullAmount * 0.8) : fullAmount;
   const refNum = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
 
   const METHODS = [
@@ -202,6 +219,8 @@ function PagePaiement({ booking, onSuccess, onBack }) {
       await creerReservation({
         tuteur_id:       tuteur?.id,
         tuteur_nom:      `${tuteur?.prenom||""} ${tuteur?.nom||""}`.trim(),
+        tuteur_price:    tuteur?.price || 0,
+        duree:           duree,
         parent_nom:      booking.parentNom   || "",
         parent_email:    booking.parentEmail || "",
         parent_password_hash: pwdHash,
@@ -250,7 +269,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
             ["⏱ Durée",     `${duree}h`],
             ["📍 Mode",      modeSeance==="enligne"?"🌐 En ligne":"🏠 À domicile"],
             ["👧 Élève",     `${enfant} · ${niveau}`],
-            ["💰 Montant",   `${essaiAmount.toLocaleString("fr-FR")} FCFA (−20 % 1ère séance)`],
+            ["💰 Montant",   `${essaiAmount.toLocaleString("fr-FR")} FCFA${isFirstSession?" (−20 % 1ère séance)":""}`],
             ["💳 Paiement",  cur.label],
           ].map(([k,v])=>(
             <div key={k} style={{display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid #f9fafb", fontSize:13}}>
@@ -318,9 +337,9 @@ function PagePaiement({ booking, onSuccess, onBack }) {
               <p style={{fontSize:13, color:"#6366f1", margin:"3px 0 0", fontWeight:600}}>{tuteur?.subject}</p>
             </div>
             <div style={{textAlign:"right"}}>
-              <p style={{fontSize:12, color:"#9ca3af", margin:0, textDecoration:"line-through"}}>{fmt((tuteur?.price||0)*duree)}</p>
+              {isFirstSession && <p style={{fontSize:12, color:"#9ca3af", margin:0, textDecoration:"line-through"}}>{fmt((tuteur?.price||0)*duree)}</p>}
               <p style={{fontSize:22, fontWeight:900, color:"#4f46e5", margin:0}}>{fmt(essaiAmount)}</p>
-              <span style={{fontSize:11, background:"#dcfce7", color:"#065f46", padding:"2px 8px", borderRadius:999, fontWeight:700}}>−20 % 1ère séance</span>
+              {isFirstSession && <span style={{fontSize:11, background:"#dcfce7", color:"#065f46", padding:"2px 8px", borderRadius:999, fontWeight:700}}>−20 % 1ère séance</span>}
             </div>
           </div>
           {[["📅 Jour & heure",`${jour} à ${creneau}`],["⏱ Durée",`${duree}h`],["👧 Élève",`${enfant} · ${niveau}`]].map(([k,v])=>(
@@ -1446,11 +1465,24 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           {/* ÉTAPE 3 — Infos parent (uniquement si NOUVEAU) */}
           {!bookDone && bookStep===3 && !parentConnu && (
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
-              <div style={{background:"#fef3c7",borderRadius:12,padding:"10px 16px",fontSize:13,color:"#92400e",fontWeight:600}}>
-                🌟 Première séance — réduction −20 % appliquée automatiquement !
-              </div>
+              {premiereSeance ? (
+                <div style={{background:"#fef3c7",borderRadius:12,padding:"10px 16px",fontSize:13,color:"#92400e",fontWeight:600}}>
+                  🌟 Première séance — réduction −20 % appliquée automatiquement !
+                </div>
+              ) : (
+                <div style={{background:"#e0e7ff",borderRadius:12,padding:"10px 16px",fontSize:13,color:"#3730a3",fontWeight:600}}>
+                  👋 Bon retour ! Tarif standard appliqué (la réduction −20 % est réservée à la 1ère séance).
+                </div>
+              )}
               <Inp label="Votre nom (parent)" value={bi.nom} onChange={v=>setBI("nom",v)} placeholder=""/>
-              <Inp label="E-mail" value={bi.email} onChange={v=>setBI("email",v)} placeholder="" type="email"/>
+              <Inp label="E-mail" value={bi.email} onChange={v=>setBI("email",v)} placeholder="" type="email"
+                onBlur={async (val)=>{
+                  if (!val || !/.+@.+\..+/.test(val)) return;
+                  try {
+                    const nb = await getReservationCountByEmail(val);
+                    setPremiereSeance(nb === 0);
+                  } catch { /* keep current */ }
+                }}/>
               <Inp label="Mot de passe (min. 6 caractères)" value={bi.password} onChange={v=>setBI("password",v)} placeholder="••••••••" type="password"/>
               <p style={{fontSize:11,color:"#9ca3af",margin:"-8px 0 0"}}>Permet d'accéder à votre espace parent pour suivre vos réservations.</p>
               <Inp label="Prénom de l'enfant" value={bi.enfant} onChange={v=>setBI("enfant",v)} placeholder=""/>
