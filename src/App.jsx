@@ -1483,7 +1483,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* CTA FINAL */}
-      <div style={{background:"#111827",padding:"48px 40px",textAlign:"center"}}>
+      <div style={{background:"linear-gradient(180deg,#111827 0%,#1e293b 60%,#2d3748 100%)",padding:"56px 40px 64px",textAlign:"center"}}>
         <h2 style={{fontSize:40,fontWeight:900,color:"#fff",margin:"0 0 16px",letterSpacing:"-1px"}}>Prêt à commencer ?</h2>
         <p style={{color:"#9ca3af",fontSize:16,marginBottom:36}}>Première séance gratuite. Sans engagement.</p>
         <div style={{display:"flex",gap:14,justifyContent:"center"}}>
@@ -1496,6 +1496,8 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
+      {/* TRANSITION FADE noir → gris */}
+      <div style={{height:48,background:"linear-gradient(180deg,#2d3748 0%,#374151 50%,#4b5563 100%)"}}/>
 
       {/* BOUTON WHATSAPP FLOTTANT */}
       <a href="https://wa.me/22600000000?text=Bonjour%2C%20je%20souhaite%20trouver%20un%20tuteur%20pour%20mon%20enfant."
@@ -1507,7 +1509,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </a>
 
       {/* FOOTER */}
-      <footer style={{background:"#0f172a",padding:"56px 40px 28px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+      <footer style={{background:"linear-gradient(180deg,#4b5563 0%,#1e293b 18%,#0f172a 100%)",padding:"56px 40px 28px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
 
           {/* Grille principale */}
