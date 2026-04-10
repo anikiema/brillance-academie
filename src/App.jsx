@@ -1,5 +1,31 @@
-// Brillance Académie v1.6 — sexe (M/F) + accord Actif/Active
+// Brillance Académie v1.7 — thème centralisé, conversion parent, UX tuteur
 import React, { useState, useEffect, useMemo } from "react";
+
+// ─── THEME (source unique de vérité couleurs) ─────────────────────────────────
+const T = {
+  primary:       "#4f46e5",  // indigo — CTA principaux
+  primaryDark:   "#4338ca",  // hover primary
+  primarySoft:   "#ede9fe",  // fond léger primary
+  primarySofter: "#f5f3ff",  // fond très léger primary
+  primaryText:   "#4f46e5",  // texte sur soft
+  ink:           "#111827",  // titres
+  body:          "#374151",  // texte courant
+  muted:         "#6b7280",  // texte secondaire
+  subtle:        "#9ca3af",  // texte très discret
+  border:        "#e5e7eb",  // bordures neutres
+  borderSoft:    "#f1f5f9",  // bordures très discrètes
+  bg:            "#fafafa",  // fond général
+  cardBg:        "#ffffff",  // fond cartes
+  success:       "#10b981",  // vert : confirmations uniquement
+  successSoft:   "#d1fae5",  // badge vert
+  successInk:    "#065f46",  // texte sur vert
+  warning:       "#f59e0b",  // jaune : étoiles, attente
+  warningSoft:   "#fef3c7",  // fond attente
+  warningInk:    "#92400e",  // texte attente
+  danger:        "#ef4444",  // rouge : erreurs/suppression
+  dangerSoft:    "#fee2e2",  // fond erreur
+  dangerInk:     "#991b1b",  // texte erreur
+};
 import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, upsertParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef, hashPassword, loginParent, loginTuteur, changerMotDePasseParent, changerMotDePasseTuteur } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -121,11 +147,16 @@ function Sel({ label, value, onChange, options }) {
 }
 
 function BadgeStatus({ s, sexe }) {
-  const map = {"Actif":["#d1fae5","#065f46"],"Inactif":["#f3f4f6","#6b7280"],"En attente":["#fef3c7","#92400e"]};
+  const map = {
+    "Actif":      ["#d1fae5","#065f46"],
+    "Inactif":    ["#f3f4f6","#6b7280"],
+    "En attente": ["#fef3c7","#92400e"],
+    "Refusé":     ["#fee2e2","#991b1b"],
+  };
   const [bg,fg] = map[s]||["#f3f4f6","#6b7280"];
   // Accord au féminin si sexe = "F"
   const isF = sexe === "F";
-  const feminize = { "Actif":"Active", "Inactif":"Inactive" };
+  const feminize = { "Actif":"Active", "Inactif":"Inactive", "Refusé":"Refusée" };
   const label = isF && feminize[s] ? feminize[s] : s;
   return <span style={{background:bg,color:fg,padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:700}}>{label}</span>;
 }
@@ -642,6 +673,10 @@ function InscriptionTuteur({ onClose }) {
               </button>
             ))}
           </div>
+          {/* Indication tarif moyen */}
+          <div style={{marginTop:14,padding:"10px 12px",background:"#fff",borderRadius:10,border:"1px dashed #ddd6fe",fontSize:12,color:"#4f46e5",lineHeight:1.6}}>
+            <strong>💡 Bon à savoir :</strong> la majorité des tuteurs sur Brillance Académie facturent entre <strong>3 000 et 8 000 FCFA/h</strong> selon leur niveau. Les débutants commencent souvent à 2 500–4 000 FCFA. Un tarif juste = plus de réservations.
+          </div>
         </div>
       </div>
     </div>,
@@ -696,8 +731,10 @@ function InscriptionTuteur({ onClose }) {
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
         {[
           "📋 Votre profil est complet et prêt à être soumis",
-          "💳 Frais d'inscription : 2 000 FCFA (lien envoyé après validation)",
-          "✅ Accès à vie à la plateforme après paiement",
+          "⏱️ Examen de votre dossier sous 48h par notre équipe",
+          "💳 Frais d'inscription : 2 000 FCFA (à régler UNIQUEMENT après validation de votre profil)",
+          "✅ Une fois payés, ces frais vous donnent un accès à vie à la plateforme",
+          "🔒 Aucun prélèvement automatique — rien ne vous sera débité tant que vous ne payez pas manuellement",
         ].map((s,i)=>(
           <div key={i} style={{display:"flex",gap:10,alignItems:"center",background:"#f9fafb",borderRadius:10,padding:"10px 14px"}}>
             <span style={{fontSize:13,color:"#374151"}}>{s}</span>
@@ -926,7 +963,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
   const S = { // shared styles
     page:    { fontFamily:"'Inter',sans-serif", color:"#111827", background:"#e8ddd0", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(180,160,130,0.18) 27px, rgba(180,160,130,0.18) 28px)", margin:0 },
     nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #e8ddd0", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64, boxShadow:"0 2px 12px rgba(0,0,0,0.06)" },
-    navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Inter',sans-serif" },
+    navLink: { background:"none", border:"none", color:T.body, fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Inter',sans-serif" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
     section: { padding:"48px 40px", maxWidth:1100, margin:"0 auto" },
     label:   { fontSize:11, fontWeight:700, color:"#6366f1", textTransform:"uppercase", letterSpacing:2, display:"block", marginBottom:10 },
@@ -975,18 +1012,18 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
       {/* NAV */}
       <nav style={S.nav}>
-        <span style={{fontSize:18,fontWeight:800,color:"#4f46e5",letterSpacing:"-0.5px"}}>Brillance Académie</span>
+        <span style={{fontSize:18,fontWeight:800,color:T.primary,letterSpacing:"-0.5px"}}>Brillance Académie</span>
         <div className="ba-nav-links" style={{display:"flex",gap:28}}>
           {[["Trouver un tuteur","tutors"],["Comment ça marche","how"],["Avis","avis"]].map(([l,id])=>(
-            <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color="#16a34a"} onMouseOut={e=>e.target.style.color="#22c55e"}>{l}</button>
+            <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color=T.primaryDark} onMouseOut={e=>e.target.style.color=T.body}>{l}</button>
           ))}
         </div>
         <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
-          <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#f3f4f6",color:"#374151"}}>Devenir tuteur</button>
-          <button onClick={()=>setModal("parent")} style={{...S.btn,background:"#374151",color:"#fff"}}>Chercher un tuteur</button>
-          <button onClick={goEspaceParent} style={{...S.btn,background:"#ede9fe",color:"#4f46e5",fontWeight:700}}>👤 Parents</button>
-          <button onClick={goEspaceTuteur} style={{...S.btn,background:"#dcfce7",color:"#16a34a",fontWeight:700}}>👨‍🏫 Tuteurs</button>
-          <button onClick={goAdmin} style={{...S.btn,background:"#111827",color:"#fff",fontSize:12,padding:"9px 16px"}}>⚙</button>
+          <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"transparent",color:T.body,border:`1.5px solid ${T.border}`}}>Devenir tuteur</button>
+          <button onClick={goEspaceParent} style={{...S.btn,background:"transparent",color:T.body,border:`1.5px solid ${T.border}`}}>👤 Parents</button>
+          <button onClick={goEspaceTuteur} style={{...S.btn,background:"transparent",color:T.body,border:`1.5px solid ${T.border}`}}>👨‍🏫 Tuteurs</button>
+          <button onClick={()=>setModal("parent")} style={{...S.btn,background:T.primary,color:"#fff",fontWeight:700}}>Chercher un tuteur</button>
+          <button onClick={goAdmin} style={{...S.btn,background:T.ink,color:"#fff",fontSize:12,padding:"9px 16px"}}>⚙</button>
         </div>
       </nav>
 
@@ -1045,17 +1082,17 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
           {/* Filtre En ligne */}
           <button onClick={()=>setActiveOnline(!activeOnline)}
-            style={{padding:"10px 18px",borderRadius:10,border:`1.5px solid ${activeOnline?"#0ea5e9":"#e5e7eb"}`,background:activeOnline?"#e0f2fe":"#fff",color:activeOnline?"#0284c7":"#374151",fontWeight:700,fontSize:13,cursor:"pointer",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:6}}>
+            style={{padding:"10px 18px",borderRadius:10,border:`1.5px solid ${activeOnline?T.primary:T.border}`,background:activeOnline?T.primarySoft:"#fff",color:activeOnline?T.primary:T.body,fontWeight:700,fontSize:13,cursor:"pointer",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:6}}>
             🌐 {activeOnline?"En ligne ✓":"En ligne"}
           </button>
 
           {/* Badges filtres actifs + reset */}
           {hasFilters && (
             <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-              {activeM && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeM}</span>}
-              {activeQ && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeQ}</span>}
-              {activeN && <span style={{background:"#eef2ff",color:"#4f46e5",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeN}</span>}
-              {activeOnline && <span style={{background:"#e0f2fe",color:"#0284c7",padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>🌐 En ligne</span>}
+              {activeM && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeM}</span>}
+              {activeQ && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeQ}</span>}
+              {activeN && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeN}</span>}
+              {activeOnline && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>🌐 En ligne</span>}
               <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setActiveOnline(false);setSearch("");}}
                 style={{background:"none",border:"none",color:"#ef4444",fontWeight:700,fontSize:12,cursor:"pointer",padding:"4px 8px"}}>
                 ✕ Effacer
@@ -1067,13 +1104,13 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
       {/* HERO */}
       <div className="ba-hero" style={{textAlign:"center",padding:"90px 40px 32px",background:"rgba(255,255,255,0.55)"}}>
-        <span style={{display:"inline-block",background:"#ede9fe",color:"#5b21b6",fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
+        <span style={{display:"inline-block",background:T.primarySoft,color:T.primary,fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
           Tuteurs spécialisés · CP au 3ème
         </span>
-        <h1 style={{fontSize:54,fontWeight:900,color:"#111827",lineHeight:1.1,maxWidth:640,margin:"0 auto 18px",letterSpacing:"-1.5px"}}>
+        <h1 style={{fontSize:54,fontWeight:900,color:T.ink,lineHeight:1.1,maxWidth:640,margin:"0 auto 18px",letterSpacing:"-1.5px"}}>
           Trouvez le bon tuteur<br/>pour votre enfant
         </h1>
-        <p style={{fontSize:17,color:"#6b7280",maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
+        <p style={{fontSize:17,color:T.muted,maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
           Chaque tuteur sur Brillance Académie est sélectionné pour son expérience avec les jeunes élèves — phonics, maths de base, lecture, et plus encore.
         </p>
         {/* Search bar */}
@@ -1085,12 +1122,17 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           </button>
         </div>
         {/* Trust pills */}
-        <div style={{display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap"}}>
-          {[["✓","Tuteurs vérifiés"],["✓","Certifiés élémentaire"],["✓","Première séance gratuite"]].map(([icon,txt])=>(
-            <span key={txt} style={{fontSize:14,color:"#374151",display:"flex",alignItems:"center",gap:6}}>
-              <span style={{color:"#10b981",fontWeight:700}}>{icon}</span>{txt}
+        <div style={{display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap",marginBottom:18}}>
+          {[["✓","Tuteurs vérifiés"],["✓","Certifiés élémentaire"],["✓","-20 % sur la 1ʳᵉ séance"]].map(([icon,txt])=>(
+            <span key={txt} style={{fontSize:14,color:T.body,display:"flex",alignItems:"center",gap:6}}>
+              <span style={{color:T.success,fontWeight:700}}>{icon}</span>{txt}
             </span>
           ))}
+        </div>
+        {/* Price indicator — transparence dès l'accueil */}
+        <div style={{display:"inline-flex",alignItems:"center",gap:10,background:T.primarySoft,border:`1px solid ${T.primary}22`,borderRadius:999,padding:"8px 18px",fontSize:13,color:T.primary,fontWeight:600}}>
+          <span style={{fontSize:15}}>💰</span>
+          À partir de <strong style={{fontSize:15}}>2 500 F CFA</strong> la séance · Payez uniquement ce que vous utilisez
         </div>
       </div>
 
@@ -1103,32 +1145,32 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
             <p style={{...S.sub,margin:"0 auto"}}>Un processus simple, transparent, sans surprise.</p>
           </div>
 
-          {/* Steps timeline */}
+          {/* Steps timeline — un seul accent indigo, icônes pour différencier */}
           <div className="ba-how-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:24,marginBottom:56}}>
             {[
-              {n:"01",icon:"📝",bg:"#ede9fe",color:"#7c3aed",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Ouagadougou, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
-              {n:"02",icon:"🔍",bg:"#dbeafe",color:"#2563eb",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés au niveau et au programme de votre école. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
-              {n:"03",icon:"📅",bg:"#dcfce7",color:"#16a34a",t:"Vous choisissez le créneau",d:"On vous propose des créneaux disponibles selon votre quartier. Séances à domicile ou en ligne, selon votre préférence.",tag:"Flexible"},
-              {n:"04",icon:"💳",bg:"#fef3c7",color:"#d97706",t:"Paiement sécurisé à la séance",d:"Orange Money, Moov Money, Coris Money ou carte bancaire. Aucun abonnement, aucun engagement. La première séance d'essai est à −20 %.",tag:"Sans engagement"},
-              {n:"05",icon:"📊",bg:"#fce7f3",color:"#db2777",t:"Suivi & compte-rendu",d:"Après chaque séance, vous recevez un compte-rendu par WhatsApp : points travaillés, progrès, exercices recommandés.",tag:"Après chaque séance"},
-              {n:"06",icon:"🏆",bg:"#f0fdf4",color:"#15803d",t:"Résultats garantis",d:"Si vous n'êtes pas satisfait après la première séance, nous vous remboursons intégralement. Zéro risque, satisfaction garantie.",tag:"Garantie 100 %"},
-            ].map(({n,icon,bg,color,t,d,tag})=>{
+              {n:"01",icon:"📝",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Ouagadougou, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
+              {n:"02",icon:"🔍",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés au niveau et au programme de votre école. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
+              {n:"03",icon:"📅",t:"Vous choisissez le créneau",d:"On vous propose des créneaux disponibles selon votre quartier. Séances à domicile ou en ligne, selon votre préférence.",tag:"Flexible"},
+              {n:"04",icon:"💳",t:"Paiement sécurisé à la séance",d:"Orange Money, Moov Money, Coris Money ou carte bancaire. Aucun abonnement, aucun engagement. La première séance d'essai est à −20 %.",tag:"Sans engagement"},
+              {n:"05",icon:"📊",t:"Suivi & compte-rendu",d:"Après chaque séance, vous recevez un compte-rendu par WhatsApp : points travaillés, progrès, exercices recommandés.",tag:"Après chaque séance"},
+              {n:"06",icon:"🏆",t:"Résultats garantis",d:"Si vous n'êtes pas satisfait après la première séance, nous vous remboursons intégralement. Zéro risque, satisfaction garantie.",tag:"Garantie 100 %"},
+            ].map(({n,icon,t,d,tag})=>{
               const isFirst = n==="01";
               return (
               <div key={n}
                 onClick={isFirst ? ()=>setModal("parent") : undefined}
-                style={{background:"#fff",borderRadius:20,padding:28,display:"flex",gap:20,alignItems:"flex-start",border:`1.5px solid ${isFirst?"#c4b5fd":"#f3f4f6"}`,transition:"box-shadow .2s, transform .2s",cursor:isFirst?"pointer":"default",position:"relative"}}
+                style={{background:T.cardBg,borderRadius:20,padding:28,display:"flex",gap:20,alignItems:"flex-start",border:`1.5px solid ${isFirst?T.primary:T.borderSoft}`,transition:"box-shadow .2s, transform .2s",cursor:isFirst?"pointer":"default",position:"relative"}}
                 onMouseOver={e=>{e.currentTarget.style.boxShadow="0 8px 28px rgba(0,0,0,.09)"; if(isFirst) e.currentTarget.style.transform="translateY(-2px)";}}
                 onMouseOut={e=>{e.currentTarget.style.boxShadow="none"; e.currentTarget.style.transform="none";}}>
-                {isFirst && <span style={{position:"absolute",top:14,right:14,fontSize:11,fontWeight:700,background:"#4f46e5",color:"#fff",padding:"3px 10px",borderRadius:999}}>→ Commencer ici</span>}
-                <div style={{width:52,height:52,borderRadius:16,background:bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{icon}</div>
+                {isFirst && <span style={{position:"absolute",top:14,right:14,fontSize:11,fontWeight:700,background:T.primary,color:"#fff",padding:"3px 10px",borderRadius:999}}>→ Commencer ici</span>}
+                <div style={{width:52,height:52,borderRadius:16,background:T.primarySoft,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{icon}</div>
                 <div style={{flex:1}}>
                   <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-                    <span style={{fontSize:10,fontWeight:800,color:"#d1d5db",letterSpacing:2}}>{n}</span>
-                    <span style={{fontSize:11,fontWeight:700,background:bg,color,padding:"2px 10px",borderRadius:999}}>{tag}</span>
+                    <span style={{fontSize:10,fontWeight:800,color:T.subtle,letterSpacing:2}}>{n}</span>
+                    <span style={{fontSize:11,fontWeight:700,background:T.primarySoft,color:T.primary,padding:"2px 10px",borderRadius:999}}>{tag}</span>
                   </div>
-                  <h3 style={{fontSize:16,fontWeight:800,color:"#111827",margin:"0 0 8px"}}>{t}</h3>
-                  <p style={{fontSize:13,color:"#6b7280",lineHeight:1.7,margin:0}}>{d}</p>
+                  <h3 style={{fontSize:16,fontWeight:800,color:T.ink,margin:"0 0 8px"}}>{t}</h3>
+                  <p style={{fontSize:13,color:T.muted,lineHeight:1.7,margin:0}}>{d}</p>
                 </div>
               </div>
               );
@@ -1515,17 +1557,23 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                     setPremiereSeance(nb === 0);
                   } catch { /* keep current */ }
                 }}/>
-              <Inp label="Mot de passe (min. 6 caractères)" value={bi.password} onChange={v=>setBI("password",v)} placeholder="••••••••" type="password"/>
-              <p style={{fontSize:11,color:"#9ca3af",margin:"-8px 0 0"}}>Permet d'accéder à votre espace parent pour suivre vos réservations.</p>
+              <Inp label="Mot de passe (optionnel — min. 6 caractères)" value={bi.password} onChange={v=>setBI("password",v)} placeholder="Laissez vide pour passer" type="password"/>
+              <p style={{fontSize:11,color:T.subtle,margin:"-8px 0 0"}}>💡 Optionnel. Si renseigné, vous pourrez suivre vos réservations dans votre espace parent. Sinon, vous recevrez tout par WhatsApp.</p>
               <Inp label="Prénom de l'enfant" value={bi.enfant} onChange={v=>setBI("enfant",v)} placeholder=""/>
               <Sel label="Niveau de l'enfant" value={bi.niveau} onChange={v=>setBI("niveau",v)} options={NIVEAUX}/>
-              <div style={{display:"flex",gap:10,marginTop:4}}>
-                <button onClick={()=>setBook(2)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
-                <button disabled={!bi.nom||!bi.sexe||!bi.email||!bi.password||bi.password.length<6||!bi.enfant} onClick={()=>setBook(4)}
-                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:bi.nom&&bi.sexe&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#4f46e5":"#e5e7eb",color:bi.nom&&bi.sexe&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:bi.nom&&bi.sexe&&bi.email&&bi.password&&bi.password.length>=6&&bi.enfant?"pointer":"not-allowed"}}>
-                  Confirmer →
-                </button>
-              </div>
+              {(() => {
+                const pwdOk = !bi.password || bi.password.length >= 6;
+                const canGo = bi.nom && bi.sexe && bi.email && bi.enfant && pwdOk;
+                return (
+                  <div style={{display:"flex",gap:10,marginTop:4}}>
+                    <button onClick={()=>setBook(2)} style={{flex:1,padding:13,border:`1.5px solid ${T.border}`,borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:T.muted}}>← Retour</button>
+                    <button disabled={!canGo} onClick={()=>setBook(4)}
+                      style={{flex:1,padding:13,border:"none",borderRadius:12,background:canGo?T.primary:T.border,color:canGo?"#fff":T.subtle,fontWeight:700,fontSize:14,cursor:canGo?"pointer":"not-allowed"}}>
+                      Confirmer →
+                    </button>
+                  </div>
+                );
+              })()}
             </div>
           )}
 
@@ -2171,7 +2219,7 @@ function Admin({ goHome }) {
                     <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="aminata@gmail.com" type="email"/>
                     <Inp label="Téléphone" value={form.telephone||""} onChange={v=>setF("telephone",v)} placeholder="+226 77 00 00 00" type="tel" filter="tel"/>
                     <Inp label="Enfant (prénom, niveau)" value={form.enfant||""} onChange={v=>setF("enfant",v)} placeholder="Moussa, CM1"/>
-                    <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif"]}/>
+                    <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif","Refusé"]}/>
                     <button disabled={!form.nom||!form.email} onClick={()=>{
                       if(editTarget) setParents(p=>p.map(x=>x.id===editTarget.id?{...x,...form}:x));
                       else setParents(p=>[...p,{...form,id:Date.now(),sessions:0}]);
@@ -2402,7 +2450,7 @@ function Admin({ goHome }) {
                     <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="Ex: aminata@gmail.com" type="email"/>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                       <Inp label="Tarif (FCFA/h)" value={form.price||""} onChange={v=>setF("price",+v)} placeholder="Ex: 25000" type="number" filter="number" min={1000} max={200000}/>
-                      <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif"]}/>
+                      <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif","Refusé"]}/>
                     </div>
                     <div>
                       <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
