@@ -962,7 +962,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
   const S = { // shared styles
     page:    { fontFamily:"'Inter',sans-serif", color:"#111827", background:"#e8ddd0", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(180,160,130,0.18) 27px, rgba(180,160,130,0.18) 28px)", margin:0 },
-    nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #e8ddd0", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64, boxShadow:"0 2px 12px rgba(0,0,0,0.06)" },
+    nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #e8ddd0", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"center", gap:16, height:64, boxShadow:"0 2px 12px rgba(0,0,0,0.06)" },
     navLink: { background:"none", border:"none", color:T.body, fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Inter',sans-serif" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
     section: { padding:"48px 40px", maxWidth:1100, margin:"0 auto" },
