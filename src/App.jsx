@@ -1764,6 +1764,9 @@ function Admin({ goHome }) {
         <div style={{marginBottom:28,paddingLeft:14}}>
           <p style={{fontWeight:800,fontSize:16,color:"#fff",margin:0}}>🎓 Brillance</p>
           <p style={{fontSize:11,color:"#475569",marginTop:2}}>Administration</p>
+          <button onClick={goHome} style={{marginTop:8,fontSize:11,color:"#94a3b8",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:6,padding:"4px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>
+            🌐 Voir le site
+          </button>
         </div>
         {MENU.map(({id,icon,label})=>(
           <button key={id} onClick={()=>setPage(id)} style={S.sLink(page===id)}>
@@ -1771,9 +1774,6 @@ function Admin({ goHome }) {
           </button>
         ))}
         <div style={{flex:1}}/>
-        <button onClick={goHome} style={{...S.sLink(false),color:"#475569"}}>
-          <span>🌐</span>Voir le site
-        </button>
       </div>
 
       {/* Main */}
