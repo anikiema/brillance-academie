@@ -869,7 +869,7 @@ function SitePublic({ goAdmin, goPayment }) {
     nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #e8ddd0", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64, boxShadow:"0 2px 12px rgba(0,0,0,0.06)" },
     navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Comic Sans MS','Comic Sans',cursive" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
-    section: { padding:"80px 40px", maxWidth:1100, margin:"0 auto" },
+    section: { padding:"48px 40px", maxWidth:1100, margin:"0 auto" },
     label:   { fontSize:11, fontWeight:700, color:"#6366f1", textTransform:"uppercase", letterSpacing:2, display:"block", marginBottom:10 },
     h2:      { fontSize:36, fontWeight:800, color:"#111827", margin:"0 0 14px", lineHeight:1.2 },
     sub:     { fontSize:16, color:"#6b7280", lineHeight:1.6, maxWidth:560 },
@@ -1483,7 +1483,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* CTA FINAL */}
-      <div style={{background:"#111827",padding:"80px 40px",textAlign:"center"}}>
+      <div style={{background:"#111827",padding:"48px 40px",textAlign:"center"}}>
         <h2 style={{fontSize:40,fontWeight:900,color:"#fff",margin:"0 0 16px",letterSpacing:"-1px"}}>Prêt à commencer ?</h2>
         <p style={{color:"#9ca3af",fontSize:16,marginBottom:36}}>Première séance gratuite. Sans engagement.</p>
         <div style={{display:"flex",gap:14,justifyContent:"center"}}>
@@ -1497,9 +1497,9 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* FAQ */}
-      <div style={{background:"rgba(255,255,255,0.55)",padding:"80px 40px"}}>
+      <div style={{background:"rgba(255,255,255,0.55)",padding:"40px 40px"}}>
         <div style={{maxWidth:760,margin:"0 auto"}}>
-          <div style={{textAlign:"center",marginBottom:48}}>
+          <div style={{textAlign:"center",marginBottom:28}}>
             <span style={S.label}>Questions fréquentes</span>
             <h2 style={S.h2}>Tout ce que vous devez savoir</h2>
           </div>
