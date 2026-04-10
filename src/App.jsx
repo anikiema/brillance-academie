@@ -931,7 +931,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
         </div>
         <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
           <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#f3f4f6",color:"#374151"}}>Devenir tuteur</button>
-          <button onClick={()=>setModal("parent")} style={{...S.btn,background:"#dc2626",color:"#fff"}}>Chercher un tuteur</button>
+          <button onClick={()=>setModal("parent")} style={{...S.btn,background:"#374151",color:"#fff"}}>Chercher un tuteur</button>
           <button onClick={goEspaceParent} style={{...S.btn,background:"#ede9fe",color:"#4f46e5",fontWeight:700}}>👤 Parents</button>
           <button onClick={goEspaceTuteur} style={{...S.btn,background:"#dcfce7",color:"#16a34a",fontWeight:700}}>👨‍🏫 Tuteurs</button>
           <button onClick={goAdmin} style={{...S.btn,background:"#111827",color:"#fff",fontSize:12,padding:"9px 16px"}}>⚙</button>
