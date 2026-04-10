@@ -1643,6 +1643,8 @@ function Admin({ goHome }) {
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setET]    = useState(null);
   const [form, setForm]        = useState({});
+  const [crModal, setCrModal]  = useState(null); // compte-rendu modal
+  const [crData, setCrData]    = useState({ points:"", progres:"", exercices:"" });
   const setF = (k,v) => setForm(p=>({...p,[k]:v}));
 
   // Charger tuteurs, parents et réservations depuis Supabase
@@ -1943,12 +1945,18 @@ function Admin({ goHome }) {
                             </button>
                           )}
                           {r.statut==="confirmée" && (
-                            <button onClick={async()=>{
-                              await changerStatutReservation(r.id,"annulée");
-                              setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"annulée"}:x));
-                            }} style={{padding:"4px 12px",background:"#fee2e2",color:"#991b1b",border:"1px solid #fca5a5",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                              ✗ Annuler
-                            </button>
+                            <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                              <button onClick={()=>{ setCrModal(r); setCrData({points:"",progres:"",exercices:""}); }}
+                                style={{padding:"4px 12px",background:"#dbeafe",color:"#1d4ed8",border:"1px solid #93c5fd",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                                📋 Compte-rendu
+                              </button>
+                              <button onClick={async()=>{
+                                await changerStatutReservation(r.id,"annulée");
+                                setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"annulée"}:x));
+                              }} style={{padding:"4px 12px",background:"#fee2e2",color:"#991b1b",border:"1px solid #fca5a5",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                                ✗ Annuler
+                              </button>
+                            </div>
                           )}
                         </td>
                       </tr>
@@ -2282,6 +2290,49 @@ function Admin({ goHome }) {
           </div>
         )}
       </div>
+
+      {/* ── MODALE COMPTE-RENDU ────────────────────────────────────── */}
+      {crModal && (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",zIndex:999,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <div style={{background:"#fff",borderRadius:20,padding:32,width:"100%",maxWidth:480,boxShadow:"0 24px 60px rgba(0,0,0,.2)"}}>
+            <p style={{fontWeight:800,fontSize:17,margin:"0 0 4px",color:"#111827"}}>📋 Compte-rendu de séance</p>
+            <p style={{fontSize:13,color:"#6b7280",margin:"0 0 20px"}}>
+              {crModal.enfant} · {crModal.niveau} — <strong>{crModal.parent_nom}</strong>
+            </p>
+
+            {[
+              {label:"Points travaillés",key:"points",ph:"Ex : Tables de multiplication, fractions, lecture de texte..."},
+              {label:"Progrès observés",key:"progres",ph:"Ex : Bonne compréhension, encore des difficultés sur les divisions..."},
+              {label:"Exercices recommandés",key:"exercices",ph:"Ex : Pages 34–36 du cahier de maths, relire le chapitre 3..."},
+            ].map(({label,key,ph})=>(
+              <div key={key} style={{marginBottom:14}}>
+                <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:5}}>{label}</label>
+                <textarea value={crData[key]} onChange={e=>setCrData(d=>({...d,[key]:e.target.value}))}
+                  placeholder={ph} rows={2}
+                  style={{width:"100%",padding:"10px 12px",borderRadius:10,border:"1.5px solid #e5e7eb",fontSize:13,resize:"vertical",fontFamily:"inherit",boxSizing:"border-box",outline:"none"}}/>
+              </div>
+            ))}
+
+            <div style={{display:"flex",gap:10,marginTop:20}}>
+              <a href={`https://wa.me/${(crModal.parent_tel||"").replace(/\D/g,"")||"226"}?text=${encodeURIComponent(
+                `Bonjour ${crModal.parent_nom},\n\nVoici le compte-rendu de la seance de ${crModal.enfant} (${crModal.niveau}) avec Brillance Academie.\n\n` +
+                `POINTS TRAVAILLES :\n${crData.points||"—"}\n\n` +
+                `PROGRES OBSERVES :\n${crData.progres||"—"}\n\n` +
+                `EXERCICES RECOMMANDES :\n${crData.exercices||"—"}\n\n` +
+                `Pour toute question : wa.me/22677166565\nBrillance Academie`
+              )}`} target="_blank" rel="noreferrer"
+                style={{flex:1,padding:"12px",background:"#25d366",color:"#fff",borderRadius:12,fontWeight:700,fontSize:14,textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+                📲 Envoyer sur WhatsApp
+              </a>
+              <button onClick={()=>setCrModal(null)}
+                style={{padding:"12px 20px",background:"none",border:"1.5px solid #e5e7eb",borderRadius:12,fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
