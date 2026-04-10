@@ -521,7 +521,8 @@ function InscriptionTuteur({ onClose }) {
     d.prenom&&d.nom&&d.email&&d.password&&d.password.length>=6&&d.tel&&d.ville,
     d.matieres.length>0&&d.niveaux.length>0&&d.experience,
     d.jours.length>0&&(d.tousQuartiers||d.quartiersCouVerts.length>0),
-    true,
+    true, // récap
+    true, // step 4 : écran "Soumettre ma candidature"
   ];
 
   const envoyer = async () => {
