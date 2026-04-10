@@ -1496,26 +1496,6 @@ function SitePublic({ goAdmin, goPayment }) {
         </div>
       </div>
 
-      {/* FAQ */}
-      <div style={{background:"rgba(255,255,255,0.55)",padding:"40px 40px"}}>
-        <div style={{maxWidth:760,margin:"0 auto"}}>
-          <div style={{textAlign:"center",marginBottom:28}}>
-            <span style={S.label}>Questions fréquentes</span>
-            <h2 style={S.h2}>Tout ce que vous devez savoir</h2>
-          </div>
-          {[
-            {q:"Comment sont sélectionnés les tuteurs ?",r:"Chaque tuteur passe par un processus de vérification : entretien, vérification des diplômes et expériences, test pédagogique. Seuls les candidats ayant obtenu une évaluation positive sont mis en ligne."},
-            {q:"Combien coûte une séance ?",r:"Le tarif varie selon le tuteur et la matière, entre 25 000 et 40 000 FCFA par heure. La première séance bénéficie d'une réduction de 20 %. Vous ne payez qu'à la séance, sans abonnement."},
-            {q:"Les séances se font à domicile ou en ligne ?",r:"Les deux options sont disponibles selon votre tuteur et votre préférence. La majorité des séances se font à domicile dans les quartiers de Ouagadougou. Les séances en ligne se font via WhatsApp Video ou Zoom."},
-            {q:"Comment se passe le paiement ?",r:"Le paiement se fait via Orange Money, Moov Money, Coris Money ou carte bancaire. Tout est sécurisé via CinetPay. Vous payez après avoir confirmé votre réservation."},
-            {q:"Que faire si je ne suis pas satisfait ?",r:"Si la première séance ne vous convient pas, nous vous remboursons intégralement. Aucune question posée. Nous pouvons également vous proposer un autre tuteur sans frais supplémentaires."},
-            {q:"Est-ce que Brillance Académie couvre toute la ville ?",r:"Nous couvrons actuellement les principaux quartiers de Ouagadougou : Ouaga 2000, Hamdalaye, Gounghin, Pissy, Patte d'Oie, Wemtenga, et bien d'autres. La liste s'agrandit chaque mois."},
-            {q:"Comment devenir tuteur sur la plateforme ?",r:"Cliquez sur « Devenir tuteur » et remplissez le formulaire. Notre équipe examine votre candidature sous 48h. Si votre profil est retenu, il sera mis en ligne après validation. Des frais d'inscription de 2 000 FCFA sont appliqués."},
-          ].map(({q,r},i)=>(
-            <FaqItem key={i} q={q} r={r}/>
-          ))}
-        </div>
-      </div>
 
       {/* BOUTON WHATSAPP FLOTTANT */}
       <a href="https://wa.me/22600000000?text=Bonjour%2C%20je%20souhaite%20trouver%20un%20tuteur%20pour%20mon%20enfant."
