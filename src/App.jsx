@@ -228,7 +228,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
   const ouvrirWhatsApp = () => {
     const msg = encodeURIComponent(
-      `Bonjour Brillance Academie,\n\nJe souhaite confirmer ma reservation :\n- Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n- Matiere : ${tuteur?.subject}\n- Jour : ${jour} a ${creneau}\n- Eleve : ${enfant} - ${niveau}\n- Mode : ${modeSeance==="enligne"?"En ligne (Jitsi)":"A domicile"}\n- Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n- Reference : ${refNum}${jitsiLink?"\n- Lien Jitsi : "+jitsiLink:""}\n\nJ'effectue le paiement par ${cur.label}.`
+      `Bonjour Brillance Académie,\n\nJe souhaite confirmer ma réservation :\n- Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n- Matière : ${tuteur?.subject}\n- Jour : ${jour} à ${creneau}\n- Élève : ${enfant} — ${niveau}\n- Mode : ${modeSeance==="enligne"?"En ligne (Jitsi)":"À domicile"}\n- Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n- Référence : ${refNum}${jitsiLink?"\n- Lien Jitsi : "+jitsiLink:""}\n\nJ'effectue le paiement par ${cur.label}.`
     );
     window.open(`https://wa.me/${WA_ADMIN}?text=${msg}`, "_blank");
   };
@@ -2321,11 +2321,11 @@ function Admin({ goHome }) {
 
             <div style={{display:"flex",gap:10,marginTop:20}}>
               <a href={`https://wa.me/${(crModal.parent_tel||"").replace(/\D/g,"")||"226"}?text=${encodeURIComponent(
-                `Bonjour ${crModal.parent_nom},\n\nVoici le compte-rendu de la seance de ${crModal.enfant} (${crModal.niveau}) avec Brillance Academie.\n\n` +
-                `POINTS TRAVAILLES :\n${crData.points||"—"}\n\n` +
-                `PROGRES OBSERVES :\n${crData.progres||"—"}\n\n` +
-                `EXERCICES RECOMMANDES :\n${crData.exercices||"—"}\n\n` +
-                `Pour toute question : wa.me/22677166565\nBrillance Academie`
+                `Bonjour ${crModal.parent_nom},\n\nVoici le compte-rendu de la séance de ${crModal.enfant} (${crModal.niveau}) avec Brillance Académie.\n\n` +
+                `POINTS TRAVAILLÉS :\n${crData.points||"—"}\n\n` +
+                `PROGRÈS OBSERVÉS :\n${crData.progres||"—"}\n\n` +
+                `EXERCICES RECOMMANDÉS :\n${crData.exercices||"—"}\n\n` +
+                `Pour toute question : wa.me/22677166565\nBrillance Académie`
               )}`} target="_blank" rel="noreferrer"
                 style={{flex:1,padding:"12px",background:"#25d366",color:"#fff",borderRadius:12,fontWeight:700,fontSize:14,textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
                 📲 Envoyer sur WhatsApp
