@@ -439,6 +439,32 @@ export async function supprimerEcole(id) {
   if (error) throw error
 }
 
+// ─── LOOKUP RÉFÉRENCE ─────────────────────────────────────────────────────────
+// Recherche instantanée par référence BA-XXXXXX
+export async function getReservationByRef(ref) {
+  const { data, error } = await supabase
+    .from('v_reservations_lookup')
+    .select('*')
+    .ilike('reference', ref.trim())
+    .limit(1)
+    .single()
+  if (error) throw error
+  return data
+}
+
+// Recherche dans les réservations (admin) par ref, nom parent ou nom tuteur
+export async function searchReservations(query) {
+  const q = query.trim()
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*')
+    .or(`paiement_reference.ilike.%${q}%,parent_nom.ilike.%${q}%,tuteur_nom.ilike.%${q}%,parent_email.ilike.%${q}%`)
+    .order('created_at', { ascending: false })
+    .limit(20)
+  if (error) throw error
+  return data
+}
+
 // ─── COMPTEUR DE VISITEURS ────────────────────────────────────────────────────
 // Enregistre une visite (une fois par jour par navigateur via localStorage)
 export async function enregistrerVisite() {
