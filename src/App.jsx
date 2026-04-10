@@ -1506,7 +1506,7 @@ function SitePublic({ goAdmin, goPayment }) {
       </a>
 
       {/* FOOTER */}
-      <footer style={{background:"linear-gradient(180deg,#6b7280 0%,#374151 40%,#1f2937 100%)",padding:"40px 40px 24px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+      <footer style={{background:"linear-gradient(180deg,#6b7280 0%,#9ca3af 25%,#d1d5db 55%,#f3f4f6 80%,#ffffff 100%)",padding:"40px 40px 24px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
 
           {/* Grille principale */}
@@ -1514,8 +1514,8 @@ function SitePublic({ goAdmin, goPayment }) {
 
             {/* Colonne marque */}
             <div className="ba-footer-brand">
-              <p style={{fontWeight:900,fontSize:20,color:"#fff",margin:"0 0 10px"}}>🎓 Brillance Académie</p>
-              <p style={{fontSize:13,color:"#94a3b8",lineHeight:1.8,margin:"0 0 20px",maxWidth:280}}>
+              <p style={{fontWeight:900,fontSize:20,color:"#111827",margin:"0 0 10px"}}>🎓 Brillance Académie</p>
+              <p style={{fontSize:13,color:"#4b5563",lineHeight:1.8,margin:"0 0 20px",maxWidth:280}}>
                 La plateforme de tutorat de référence à Ouagadougou. Des tuteurs certifiés pour les élèves du CP au 3ème.
               </p>
               {/* WhatsApp CTA */}
@@ -1530,7 +1530,7 @@ function SitePublic({ goAdmin, goPayment }) {
               <p style={{fontSize:11,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:2,margin:"0 0 16px"}}>Tuteurs</p>
               {["Devenir tuteur","Comment ça marche","Tarification","FAQ"].map(l=>(
                 <p key={l} style={{margin:"0 0 10px"}}>
-                  <button style={{background:"none",border:"none",color:"#94a3b8",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+                  <button style={{background:"none",border:"none",color:"#374151",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
                 </p>
               ))}
             </div>
@@ -1540,7 +1540,7 @@ function SitePublic({ goAdmin, goPayment }) {
               <p style={{fontSize:11,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:2,margin:"0 0 16px"}}>Parents</p>
               {["Trouver un tuteur","S'inscrire","Matières disponibles","Nos garanties"].map(l=>(
                 <p key={l} style={{margin:"0 0 10px"}}>
-                  <button style={{background:"none",border:"none",color:"#94a3b8",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+                  <button style={{background:"none",border:"none",color:"#374151",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
                 </p>
               ))}
             </div>
@@ -1555,7 +1555,7 @@ function SitePublic({ goAdmin, goPayment }) {
               ].map(({icon,txt})=>(
                 <p key={txt} style={{margin:"0 0 12px",display:"flex",gap:8,alignItems:"flex-start"}}>
                   <span style={{fontSize:14,marginTop:1}}>{icon}</span>
-                  <span style={{color:"#94a3b8",fontSize:13,lineHeight:1.5}}>{txt}</span>
+                  <span style={{color:"#374151",fontSize:13,lineHeight:1.5}}>{txt}</span>
                 </p>
               ))}
               {/* Réseaux sociaux */}
@@ -1565,7 +1565,7 @@ function SitePublic({ goAdmin, goPayment }) {
                   {icon:"🐦",label:"X / Twitter"},
                 ].map(({icon,label})=>(
                   <button key={label} title={label}
-                    style={{width:34,height:34,borderRadius:8,background:"#1e293b",border:"none",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    style={{width:34,height:34,borderRadius:8,background:"#e5e7eb",border:"none",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
                     {icon}
                   </button>
                 ))}
@@ -1574,8 +1574,8 @@ function SitePublic({ goAdmin, goPayment }) {
           </div>
 
           {/* Séparateur */}
-          <div style={{borderTop:"1px solid #1e293b",paddingTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
-            <p style={{color:"#475569",fontSize:12,margin:0}}>© {new Date().getFullYear()} Brillance Académie · Tous droits réservés</p>
+          <div style={{borderTop:"1px solid #d1d5db",paddingTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+            <p style={{color:"#6b7280",fontSize:12,margin:0}}>© {new Date().getFullYear()} Brillance Académie · Tous droits réservés</p>
             <div style={{display:"flex",gap:20}}>
               {["Confidentialité","Conditions d'utilisation","Mentions légales"].map(l=>(
                 <button key={l} style={{background:"none",border:"none",color:"#475569",fontSize:12,cursor:"pointer",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
