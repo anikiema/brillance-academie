@@ -164,7 +164,7 @@ function FaqItem({ q, r }) {
   return (
     <div style={{borderBottom:"1px solid #e5e7eb",padding:"20px 0"}}>
       <button onClick={()=>setOpen(!open)}
-        style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",background:"none",border:"none",cursor:"pointer",textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+        style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",background:"none",border:"none",cursor:"pointer",textAlign:"left",fontFamily:"Tahoma,'Geneva',sans-serif"}}>
         <span style={{fontSize:16,fontWeight:700,color:"#111827"}}>{q}</span>
         <span style={{fontSize:22,color:"#4f46e5",fontWeight:300,flexShrink:0,marginLeft:16,lineHeight:1}}>{open?"−":"+"}</span>
       </button>
@@ -694,13 +694,13 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
   }, [tuteurId]);
 
   if (loading) return (
-    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Comic Sans MS',cursive"}}>
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Tahoma,'Geneva',sans-serif"}}>
       <p style={{color:"#9ca3af"}}>Chargement…</p>
     </div>
   );
 
   if (!tuteur) return (
-    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'Comic Sans MS',cursive",gap:16}}>
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"Tahoma,'Geneva',sans-serif",gap:16}}>
       <p style={{fontSize:48}}>😕</p>
       <p style={{color:"#374151",fontWeight:700,fontSize:18}}>Tuteur introuvable</p>
       <button onClick={goHome} style={{padding:"10px 28px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,cursor:"pointer"}}>← Retour</button>
@@ -710,7 +710,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
   const essaiPrice = Math.round(tuteur.price * 0.8);
 
   return (
-    <div style={{minHeight:"100vh",background:"#e8ddd0",backgroundImage:"repeating-linear-gradient(transparent,transparent 27px,rgba(180,160,130,0.18) 27px,rgba(180,160,130,0.18) 28px)",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+    <div style={{minHeight:"100vh",background:"#e8ddd0",backgroundImage:"repeating-linear-gradient(transparent,transparent 27px,rgba(180,160,130,0.18) 27px,rgba(180,160,130,0.18) 28px)",fontFamily:"Tahoma,'Geneva',sans-serif"}}>
 
       {/* Navbar */}
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
@@ -867,9 +867,9 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
   const hasFilters = activeM || activeQ || activeN || activeOnline || search;
 
   const S = { // shared styles
-    page:    { fontFamily:"'Comic Sans MS','Comic Sans',cursive", color:"#111827", background:"#e8ddd0", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(180,160,130,0.18) 27px, rgba(180,160,130,0.18) 28px)", margin:0 },
+    page:    { fontFamily:"Tahoma,'Geneva',sans-serif", color:"#111827", background:"#e8ddd0", backgroundImage:"repeating-linear-gradient(transparent, transparent 27px, rgba(180,160,130,0.18) 27px, rgba(180,160,130,0.18) 28px)", margin:0 },
     nav:     { position:"sticky", top:0, zIndex:100, background:"#fff", borderBottom:"1px solid #e8ddd0", padding:"0 40px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64, boxShadow:"0 2px 12px rgba(0,0,0,0.06)" },
-    navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"'Comic Sans MS','Comic Sans',cursive" },
+    navLink: { background:"none", border:"none", color:"#22c55e", fontSize:15, fontWeight:600, cursor:"pointer", padding:"0 4px", fontFamily:"Tahoma,'Geneva',sans-serif" },
     btn:     { padding:"11px 26px", borderRadius:999, border:"none", fontWeight:700, fontSize:14, cursor:"pointer" },
     section: { padding:"48px 40px", maxWidth:1100, margin:"0 auto" },
     label:   { fontSize:11, fontWeight:700, color:"#6366f1", textTransform:"uppercase", letterSpacing:2, display:"block", marginBottom:10 },
@@ -959,7 +959,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           {/* Matières */}
           <div style={{position:"relative"}}>
             <select value={activeM||""} onChange={e=>setActiveM(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeM?"#4f46e5":"#e5e7eb"}`,background:activeM?"#eef2ff":"#fff",color:activeM?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:150}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeM?"#4f46e5":"#e5e7eb"}`,background:activeM?"#eef2ff":"#fff",color:activeM?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"Tahoma,'Geneva',sans-serif",minWidth:150}}>
               <option value="">📚 Toutes les matières</option>
               {MATIERES.map(({label,emoji})=><option key={label} value={label}>{emoji} {label}</option>)}
             </select>
@@ -969,7 +969,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           {/* Quartiers */}
           <div style={{position:"relative"}}>
             <select value={activeQ||""} onChange={e=>setActiveQ(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeQ?"#4f46e5":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff",color:activeQ?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:160}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeQ?"#4f46e5":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff",color:activeQ?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"Tahoma,'Geneva',sans-serif",minWidth:160}}>
               <option value="">📍 Tous les quartiers</option>
               {QUARTIERS.map(q=><option key={q} value={q}>{q}</option>)}
             </select>
@@ -979,7 +979,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           {/* Niveaux */}
           <div style={{position:"relative"}}>
             <select value={activeN||""} onChange={e=>setActiveN(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeN?"#4f46e5":"#e5e7eb"}`,background:activeN?"#eef2ff":"#fff",color:activeN?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Comic Sans MS','Comic Sans',cursive",minWidth:140}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeN?"#4f46e5":"#e5e7eb"}`,background:activeN?"#eef2ff":"#fff",color:activeN?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"Tahoma,'Geneva',sans-serif",minWidth:140}}>
               <option value="">🎓 Tous les niveaux</option>
               {NIVEAUX.map(n=><option key={n} value={n}>{n}</option>)}
             </select>
@@ -1510,7 +1510,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
       </a>
 
       {/* FOOTER */}
-      <footer style={{background:"linear-gradient(180deg,#6b7280 0%,#9ca3af 25%,#d1d5db 55%,#f3f4f6 80%,#ffffff 100%)",padding:"40px 40px 24px",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+      <footer style={{background:"linear-gradient(180deg,#6b7280 0%,#9ca3af 25%,#d1d5db 55%,#f3f4f6 80%,#ffffff 100%)",padding:"40px 40px 24px",fontFamily:"Tahoma,'Geneva',sans-serif"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
 
           {/* Grille principale */}
@@ -1534,7 +1534,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <p style={{fontSize:11,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:2,margin:"0 0 16px"}}>Tuteurs</p>
               {["Devenir tuteur","Comment ça marche","Tarification","FAQ"].map(l=>(
                 <p key={l} style={{margin:"0 0 10px"}}>
-                  <button style={{background:"none",border:"none",color:"#374151",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+                  <button style={{background:"none",border:"none",color:"#374151",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"Tahoma,'Geneva',sans-serif"}}>{l}</button>
                 </p>
               ))}
             </div>
@@ -1544,7 +1544,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <p style={{fontSize:11,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:2,margin:"0 0 16px"}}>Parents</p>
               {["Trouver un tuteur","S'inscrire","Matières disponibles","Nos garanties"].map(l=>(
                 <p key={l} style={{margin:"0 0 10px"}}>
-                  <button style={{background:"none",border:"none",color:"#374151",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+                  <button style={{background:"none",border:"none",color:"#374151",fontSize:13,cursor:"pointer",padding:0,textAlign:"left",fontFamily:"Tahoma,'Geneva',sans-serif"}}>{l}</button>
                 </p>
               ))}
             </div>
@@ -1582,7 +1582,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
             <p style={{color:"#6b7280",fontSize:12,margin:0}}>© {new Date().getFullYear()} Brillance Académie · Tous droits réservés</p>
             <div style={{display:"flex",gap:20}}>
               {["Confidentialité","Conditions d'utilisation","Mentions légales"].map(l=>(
-                <button key={l} style={{background:"none",border:"none",color:"#475569",fontSize:12,cursor:"pointer",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>{l}</button>
+                <button key={l} style={{background:"none",border:"none",color:"#475569",fontSize:12,cursor:"pointer",fontFamily:"Tahoma,'Geneva',sans-serif"}}>{l}</button>
               ))}
             </div>
             <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -1756,7 +1756,7 @@ function Admin({ goHome }) {
   };
 
   return (
-    <div style={{display:"flex",minHeight:"100vh",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+    <div style={{display:"flex",minHeight:"100vh",fontFamily:"Tahoma,'Geneva',sans-serif"}}>
       {/* Sidebar */}
       <div style={S.sidebar}>
         <div style={{marginBottom:28,paddingLeft:14}}>
@@ -2411,7 +2411,7 @@ function PageEspaceTuteur({ goHome }) {
   );
 
   return (
-    <div style={{minHeight:"100vh",background:"#e8ddd0",fontFamily:"'Comic Sans MS','Comic Sans',cursive",display:"flex",flexDirection:"column"}}>
+    <div style={{minHeight:"100vh",background:"#e8ddd0",fontFamily:"Tahoma,'Geneva',sans-serif",display:"flex",flexDirection:"column"}}>
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
         <button onClick={goHome} style={{padding:"8px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Retour</button>
@@ -2627,7 +2627,7 @@ function PageEspaceParent({ goHome }) {
   });
 
   return (
-    <div style={{minHeight:"100vh",background:"#e8ddd0",fontFamily:"'Comic Sans MS','Comic Sans',cursive",display:"flex",flexDirection:"column"}}>
+    <div style={{minHeight:"100vh",background:"#e8ddd0",fontFamily:"Tahoma,'Geneva',sans-serif",display:"flex",flexDirection:"column"}}>
       {/* Nav */}
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
@@ -2741,7 +2741,7 @@ function LoginAdmin({ onSuccess, onBack }) {
   };
 
   return (
-    <div style={{minHeight:"100vh",background:"#0f172a",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Comic Sans MS','Comic Sans',cursive"}}>
+    <div style={{minHeight:"100vh",background:"#0f172a",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Tahoma,'Geneva',sans-serif"}}>
       <div style={{background:"#1e293b",borderRadius:24,padding:48,width:"100%",maxWidth:400,boxShadow:"0 25px 60px rgba(0,0,0,.4)"}}>
         <div style={{textAlign:"center",marginBottom:36}}>
           <div style={{fontSize:40,marginBottom:12}}>🎓</div>
