@@ -1020,11 +1020,11 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           ))}
         </div>
         <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
-          <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"transparent",color:T.body,border:`1.5px solid ${T.border}`}}>Devenir tuteur</button>
-          <button onClick={goEspaceParent} style={{...S.btn,background:"transparent",color:T.body,border:`1.5px solid ${T.border}`}}>👤 Parents</button>
-          <button onClick={goEspaceTuteur} style={{...S.btn,background:"transparent",color:T.body,border:`1.5px solid ${T.border}`}}>👨‍🏫 Tuteurs</button>
-          <button onClick={()=>setModal("parent")} style={{...S.btn,background:T.primary,color:"#fff",fontWeight:700}}>Chercher un tuteur</button>
-          <button onClick={goAdmin} style={{...S.btn,background:T.ink,color:"#fff",fontSize:12,padding:"9px 16px"}}>⚙</button>
+          <button onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>Devenir tuteur</button>
+          <button onClick={goEspaceParent} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>👤 Parents</button>
+          <button onClick={goEspaceTuteur} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>👨‍🏫 Tuteurs</button>
+          <button onClick={()=>setModal("parent")} style={{...S.btn,background:T.primary,color:"#fff",fontWeight:700,border:`1.5px solid ${T.primary}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>Chercher un tuteur</button>
+          <button onClick={goAdmin} style={{...S.btn,background:T.ink,color:"#fff",fontSize:12,padding:"9px 14px",borderRadius:10}}>⚙</button>
         </div>
       </nav>
 
