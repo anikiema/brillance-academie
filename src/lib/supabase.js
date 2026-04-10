@@ -392,6 +392,15 @@ export async function changerStatutReservation(id, statut) {
   notifWA(`${emojis[statut]||'🔄'} Réservation #${id} → ${statut}`)
 }
 
+export async function supprimerReservation(id) {
+  const { error } = await supabase
+    .from('reservations')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+  notifWA(`🗑 Réservation #${id} supprimée`)
+}
+
 // ─── Avis ─────────────────────────────────────────────────────────────────────
 export async function getAvis() {
   const { data, error } = await supabase

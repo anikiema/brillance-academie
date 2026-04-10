@@ -26,7 +26,7 @@ const T = {
   dangerSoft:    "#fee2e2",  // fond erreur
   dangerInk:     "#991b1b",  // texte erreur
 };
-import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, upsertParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef, hashPassword, loginParent, loginTuteur, changerMotDePasseParent, changerMotDePasseTuteur } from "./lib/supabase.js";
+import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, upsertParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, supprimerReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getReservationsByParentEmail, getTuteurByEmail, getReservationsByTuteurId, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef, hashPassword, loginParent, loginTuteur, changerMotDePasseParent, changerMotDePasseTuteur } from "./lib/supabase.js";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -978,6 +978,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
     <div style={S.page}>
       {/* ── CSS RESPONSIVE MOBILE ── */}
       <style>{`
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         @media (max-width: 768px) {
           .ba-nav-links { display: none !important; }
           .ba-nav-btns  { gap: 6px !important; }
@@ -1014,7 +1015,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
       <nav style={S.nav}>
         <span style={{fontSize:18,fontWeight:800,color:T.primary,letterSpacing:"-0.5px"}}>Brillance Académie</span>
         <div className="ba-nav-links" style={{display:"flex",gap:28}}>
-          {[["Trouver un tuteur","tutors"],["Comment ça marche","how"],["Avis","avis"]].map(([l,id])=>(
+          {[["Nos tuteurs","tutors"],["Comment ça marche","how"]].map(([l,id])=>(
             <button key={id} onClick={()=>scrollTo(id)} style={S.navLink} onMouseOver={e=>e.target.style.color=T.primaryDark} onMouseOut={e=>e.target.style.color=T.body}>{l}</button>
           ))}
         </div>
@@ -2095,28 +2096,42 @@ function Admin({ goHome }) {
                           })() : <span style={{color:"#9ca3af"}}>—</span>}
                         </td>
                         <td style={S.td}>
-                          {r.statut==="en_attente" && (
-                            <button onClick={async()=>{
-                              await changerStatutReservation(r.id,"confirmée");
-                              setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"confirmée"}:x));
-                            }} style={{padding:"4px 12px",background:"#dcfce7",color:"#065f46",border:"1px solid #86efac",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                              ✓ Confirmer
-                            </button>
-                          )}
-                          {r.statut==="confirmée" && (
-                            <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                              <button onClick={()=>{ setCrModal(r); setCrData({points:"",progres:"",exercices:""}); }}
-                                style={{padding:"4px 12px",background:"#dbeafe",color:"#1d4ed8",border:"1px solid #93c5fd",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                                📋 Compte-rendu
-                              </button>
+                          <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                            {r.statut==="en_attente" && (
                               <button onClick={async()=>{
-                                await changerStatutReservation(r.id,"annulée");
-                                setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"annulée"}:x));
-                              }} style={{padding:"4px 12px",background:"#fee2e2",color:"#991b1b",border:"1px solid #fca5a5",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
-                                ✗ Annuler
+                                await changerStatutReservation(r.id,"confirmée");
+                                setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"confirmée"}:x));
+                              }} style={{padding:"4px 12px",background:"#dcfce7",color:"#065f46",border:"1px solid #86efac",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                                ✓ Confirmer
                               </button>
-                            </div>
-                          )}
+                            )}
+                            {r.statut==="confirmée" && (
+                              <>
+                                <button onClick={()=>{ setCrModal(r); setCrData({points:"",progres:"",exercices:""}); }}
+                                  style={{padding:"4px 12px",background:"#dbeafe",color:"#1d4ed8",border:"1px solid #93c5fd",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                                  📋 Compte-rendu
+                                </button>
+                                <button onClick={async()=>{
+                                  await changerStatutReservation(r.id,"annulée");
+                                  setReservations(rs=>rs.map(x=>x.id===r.id?{...x,statut:"annulée"}:x));
+                                }} style={{padding:"4px 12px",background:"#fee2e2",color:"#991b1b",border:"1px solid #fca5a5",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                                  ✗ Annuler
+                                </button>
+                              </>
+                            )}
+                            <button onClick={async()=>{
+                              const ref = r.ref || `#${r.id}`;
+                              if(!confirm(`⚠️ Supprimer définitivement la réservation ${ref} ?\n\nCette action est irréversible.`)) return;
+                              try {
+                                await supprimerReservation(r.id);
+                                setReservations(rs=>rs.filter(x=>x.id!==r.id));
+                              } catch(e) {
+                                alert("Erreur lors de la suppression : " + (e.message || e));
+                              }
+                            }} style={{padding:"4px 12px",background:"#fff",color:"#991b1b",border:"1px dashed #fca5a5",borderRadius:8,fontSize:11,fontWeight:600,cursor:"pointer"}}>
+                              🗑 Supprimer
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
