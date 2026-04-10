@@ -1,4 +1,4 @@
-// Brillance Académie v1.1 — admin protégé
+// Brillance Académie v1.2 — design gris harmonisé
 import React, { useState, useEffect } from "react";
 import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservation, ajouterParent, modifierParent, supprimerParent, ajouterTuteur, modifierTuteur, supprimerTuteur, changerStatutReservation, getAvis, getTousAvis, ajouterAvis, changerStatutAvis, supprimerAvis, getParentByEmail, getReservationCountByEmail, getEcoles, ajouterEcole, modifierEcole, supprimerEcole, sendEmail, emailTemplates, enregistrerVisite, getVisiteStats, getReservationByRef } from "./lib/supabase.js";
 
