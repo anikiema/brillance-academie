@@ -178,12 +178,12 @@ function FaqItem({ q, r }) {
 const WA_ADMIN = "22677166565"; // ← numéro WhatsApp Brillance Académie
 
 function PagePaiement({ booking, onSuccess, onBack }) {
-  const { tuteur, jour, creneau, enfant, niveau, modeSeance="domicile", jitsiLink } = booking;
+  const { tuteur, jour, creneau, enfant, niveau, modeSeance="domicile", jitsiLink, duree=1 } = booking;
   const [method,  setMethod]  = useState("orange");
   const [done,    setDone]    = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const essaiAmount = Math.round((tuteur?.price || 27500) * 0.8);
+  const essaiAmount = Math.round((tuteur?.price || 27500) * duree * 0.8);
   const refNum = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
 
   const METHODS = [
@@ -228,7 +228,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
   const ouvrirWhatsApp = () => {
     const msg = encodeURIComponent(
-      `Bonjour Brillance Académie,\n\nJe souhaite confirmer ma réservation :\n- Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n- Matière : ${tuteur?.subject}\n- Jour : ${jour} à ${creneau}\n- Élève : ${enfant} — ${niveau}\n- Mode : ${modeSeance==="enligne"?"En ligne (Jitsi)":"À domicile"}\n- Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n- Référence : ${refNum}${jitsiLink?"\n- Lien Jitsi : "+jitsiLink:""}\n\nJ'effectue le paiement par ${cur.label}.`
+      `Bonjour Brillance Académie,\n\nJe souhaite confirmer ma réservation :\n- Tuteur : ${tuteur?.prenom} ${tuteur?.nom}\n- Matière : ${tuteur?.subject}\n- Jour : ${jour} à ${creneau}\n- Durée : ${duree}h\n- Élève : ${enfant} — ${niveau}\n- Mode : ${modeSeance==="enligne"?"En ligne (Jitsi)":"À domicile"}\n- Montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA\n- Référence : ${refNum}${jitsiLink?"\n- Lien Jitsi : "+jitsiLink:""}\n\nJ'effectue le paiement par ${cur.label}.`
     );
     window.open(`https://wa.me/${WA_ADMIN}?text=${msg}`, "_blank");
   };
@@ -247,6 +247,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
           {[
             ["👩‍🏫 Tuteur",   `${tuteur?.prenom} ${tuteur?.nom} · ${tuteur?.subject}`],
             ["📅 Séance",    `${jour} à ${creneau}`],
+            ["⏱ Durée",     `${duree}h`],
             ["📍 Mode",      modeSeance==="enligne"?"🌐 En ligne":"🏠 À domicile"],
             ["👧 Élève",     `${enfant} · ${niveau}`],
             ["💰 Montant",   `${essaiAmount.toLocaleString("fr-FR")} FCFA (−20 % 1ère séance)`],
@@ -317,12 +318,12 @@ function PagePaiement({ booking, onSuccess, onBack }) {
               <p style={{fontSize:13, color:"#6366f1", margin:"3px 0 0", fontWeight:600}}>{tuteur?.subject}</p>
             </div>
             <div style={{textAlign:"right"}}>
-              <p style={{fontSize:12, color:"#9ca3af", margin:0, textDecoration:"line-through"}}>{fmt(tuteur?.price||0)}</p>
+              <p style={{fontSize:12, color:"#9ca3af", margin:0, textDecoration:"line-through"}}>{fmt((tuteur?.price||0)*duree)}</p>
               <p style={{fontSize:22, fontWeight:900, color:"#4f46e5", margin:0}}>{fmt(essaiAmount)}</p>
               <span style={{fontSize:11, background:"#dcfce7", color:"#065f46", padding:"2px 8px", borderRadius:999, fontWeight:700}}>−20 % 1ère séance</span>
             </div>
           </div>
-          {[["📅 Jour & heure",`${jour} à ${creneau}`],["👧 Élève",`${enfant} · ${niveau}`]].map(([k,v])=>(
+          {[["📅 Jour & heure",`${jour} à ${creneau}`],["⏱ Durée",`${duree}h`],["👧 Élève",`${enfant} · ${niveau}`]].map(([k,v])=>(
             <div key={k} style={{display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid #f9fafb", fontSize:14}}>
               <span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600}}>{v}</span>
             </div>
@@ -825,6 +826,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
   const [tuteur, setTuteur] = useState(null);
   const [jour, setJour]     = useState(null);
   const [creneau, setCreneau] = useState(null);
+  const [duree, setDuree]     = useState(1); // nombre d'heures
   const [modeSeance, setModeSeance] = useState("domicile"); // "domicile" | "enligne"
   const [bi, setBi]         = useState({nom:"",email:"",password:"",enfant:"",niveau:""});
   const [bookDone, setBookDone] = useState(false);
@@ -1421,6 +1423,15 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:20}}>
                   {CRENEAUX.map(c=><Pill key={c} active={creneau===c} onClick={()=>setCreneau(c)}>{c}</Pill>)}
                 </div>
+                <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:10}}>Durée de la séance</p>
+                <div style={{display:"flex",gap:8,marginBottom:20}}>
+                  {[1,2,3].map(h=>(
+                    <button key={h} onClick={()=>setDuree(h)}
+                      style={{flex:1,padding:"12px 0",borderRadius:12,border:`2px solid ${duree===h?"#4f46e5":"#e5e7eb"}`,background:duree===h?"#ede9fe":"#fff",color:duree===h?"#4f46e5":"#374151",fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                      {h}h — {((tuteur?.price||0)*h).toLocaleString("fr-FR")} FCFA
+                    </button>
+                  ))}
+                </div>
               </>}
               <div style={{display:"flex",gap:10}}>
                 <button onClick={()=>{ setBook(0); setTuteur(null); setJour(null); setCreneau(null); }} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
@@ -1467,14 +1478,14 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 </div>
               )}
               <div style={{background:"#f5f3ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
-                {[["Tuteur",`${tuteur?.prenom} ${tuteur?.nom}`],["Matière",tuteur?.subject],["Jour",jour],["Créneau",creneau],["Parent",bi.nom],["Enfant",`${bi.enfant}${bi.niveau?" · "+bi.niveau:""}`]].map(([k,v])=>(
+                {[["Tuteur",`${tuteur?.prenom} ${tuteur?.nom}`],["Matière",tuteur?.subject],["Jour",jour],["Créneau",creneau],["Durée",`${duree}h`],["Parent",bi.nom],["Enfant",`${bi.enfant}${bi.niveau?" · "+bi.niveau:""}`]].map(([k,v])=>(
                   <div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:14}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827"}}>{v}</span></div>
                 ))}
                 <div style={{borderTop:"1.5px solid #ddd6fe",paddingTop:12,marginTop:4,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                  <span style={{fontSize:13,color:"#6b7280"}}>{premiereSeance ? "Séance d'essai (−20 %)" : "Tarif séance"}</span>
+                  <span style={{fontSize:13,color:"#6b7280"}}>{premiereSeance ? `${duree}h d'essai (−20 %)` : `Tarif ${duree}h`}</span>
                   <div style={{textAlign:"right"}}>
-                    {premiereSeance && <span style={{textDecoration:"line-through",color:"#9ca3af",fontSize:13,marginRight:8}}>{fmt(tuteur?.price||0)}</span>}
-                    <span style={{fontWeight:800,color:"#4f46e5",fontSize:20}}>{fmt(premiereSeance ? Math.round((tuteur?.price||0)*0.8) : (tuteur?.price||0))}</span>
+                    {premiereSeance && <span style={{textDecoration:"line-through",color:"#9ca3af",fontSize:13,marginRight:8}}>{fmt((tuteur?.price||0)*duree)}</span>}
+                    <span style={{fontWeight:800,color:"#4f46e5",fontSize:20}}>{fmt(premiereSeance ? Math.round((tuteur?.price||0)*duree*0.8) : (tuteur?.price||0)*duree)}</span>
                   </div>
                 </div>
               </div>
@@ -1482,7 +1493,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 onClick={()=> {
                   const ref = "BA-" + Math.random().toString(36).slice(2,8).toUpperCase();
                   const jitsiLink = modeSeance==="enligne" ? `https://meet.jit.si/Brillance-${ref}` : null;
-                  goPayment({ tuteur, jour, creneau, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentEmail:bi.email, parentPassword:bi.password, modeSeance, jitsiLink, ref });
+                  goPayment({ tuteur, jour, creneau, duree, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentEmail:bi.email, parentPassword:bi.password, modeSeance, jitsiLink, ref });
                 }}
                 style={{padding:"14px 0",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:16,cursor:"pointer"}}>
                 Procéder au paiement →
