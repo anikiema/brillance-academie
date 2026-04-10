@@ -1172,9 +1172,9 @@ function SitePublic({ goAdmin, goPayment }) {
 
 
       {/* AVIS */}
-      <div id="avis" style={{...S.section,background:"rgba(255,255,255,0.6)",maxWidth:"none",padding:"80px 40px"}}>
+      <div id="avis" style={{...S.section,background:"rgba(255,255,255,0.6)",maxWidth:"none",padding:"40px 40px"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:40,flexWrap:"wrap",gap:16}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:24,flexWrap:"wrap",gap:16}}>
             <div><span style={S.label}>Témoignages</span><h2 style={{...S.h2,marginBottom:0}}>Ce que disent les familles</h2></div>
             <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
               {[["parents","👨‍👩‍👧 Parents"],["tuteurs","📖 Tuteurs"]].map(([v,l])=>(
@@ -1267,8 +1267,8 @@ function SitePublic({ goAdmin, goPayment }) {
       </div>
 
       {/* RÉSERVATION */}
-      <div id="book" style={{...S.section}}>
-        <div style={{textAlign:"center",marginBottom:48}}>
+      <div id="book" style={{...S.section,paddingTop:40}}>
+        <div style={{textAlign:"center",marginBottom:32}}>
           <span style={S.label}>Réservation</span>
           <h2 style={S.h2}>Réservez une séance d'essai</h2>
           <p style={S.sub}>Première séance à −20 % pour tester sans engagement.</p>
