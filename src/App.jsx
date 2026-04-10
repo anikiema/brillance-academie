@@ -265,7 +265,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
           {[
             `Composez *144# (Orange) ou *555# (Moov) sur votre téléphone`,
             `Sélectionnez "Transfert d'argent"`,
-            `Entrez le numéro Brillance et le montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA`,
+            `Entrez le numéro Brillance (77 16 65 65) et le montant : ${essaiAmount.toLocaleString("fr-FR")} FCFA`,
             `Mentionnez la référence ${refNum} dans le motif`,
           ].map((s,i)=>(
             <div key={i} style={{display:"flex", gap:10, alignItems:"flex-start", marginBottom:i<3?8:0}}>
