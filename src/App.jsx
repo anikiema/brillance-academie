@@ -16,7 +16,9 @@ const MATIERES = [
 ];
 
 const NIVEAUX = ["CP", "CE1", "CE2", "CM1", "CM2", "6ème", "5ème", "4ème", "3ème"];
-const JOURS   = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+const NIVEAUX_LIST = NIVEAUX;
+const QUARTIERS_LIST = ["Ouaga 2000","Hamdalaye","Gounghin","Pissy","Patte d'Oie","Wemtenga","Karpala","Tampouy","Secteur 30","Zone du Bois"];
+const JOURS   = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 const CRENEAUX = ["08h00", "09h00", "10h00", "11h00", "14h00", "15h00", "16h00", "17h00"];
 
 const TUTEURS = [
@@ -2339,9 +2341,6 @@ function Admin({ goHome }) {
 // ─── LOGIN ADMIN ──────────────────────────────────────────────────────────────
 
 // ─── ESPACE TUTEUR ────────────────────────────────────────────────────────────
-const JOURS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
-const NIVEAUX_LIST = ["CP","CE1","CE2","CM1","CM2","6ème","5ème","4ème","3ème"];
-const QUARTIERS_LIST = ["Ouaga 2000","Hamdalaye","Gounghin","Pissy","Patte d'Oie","Wemtenga","Karpala","Tampouy","Secteur 30","Zone du Bois"];
 
 function PageEspaceTuteur({ goHome }) {
   const [email, setEmail]       = useState("");
