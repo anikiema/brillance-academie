@@ -1643,8 +1643,12 @@ function Admin({ goHome }) {
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setET]    = useState(null);
   const [form, setForm]        = useState({});
-  const [crModal, setCrModal]  = useState(null); // compte-rendu modal
+  const [crModal, setCrModal]  = useState(null);
   const [crData, setCrData]    = useState({ points:"", progres:"", exercices:"" });
+  const [refQ, setRefQ]        = useState("");
+  const [refRes, setRefRes]    = useState(null);
+  const [refErr, setRefErr]    = useState("");
+  const [refLoading, setRefLoading] = useState(false);
   const setF = (k,v) => setForm(p=>({...p,[k]:v}));
 
   // Charger tuteurs, parents et réservations depuis Supabase
@@ -1720,6 +1724,16 @@ function Admin({ goHome }) {
     {id:"avis",         icon:"⭐",label:"Avis"},
     {id:"ecoles",       icon:"🏫",label:"Écoles partenaires"},
   ];
+
+  const lookup = async () => {
+    if (!refQ.trim()) return;
+    setRefLoading(true); setRefErr(""); setRefRes(null);
+    try {
+      const data = await getReservationByRef(refQ.trim());
+      setRefRes(data);
+    } catch(e) { setRefErr("Référence introuvable."); }
+    setRefLoading(false);
+  };
 
   const openAdd = (defaults) => { setET(null); setForm(defaults); setShowForm(true); };
   const openEdit = (row) => { setET(row); setForm({...row}); setShowForm(true); };
@@ -1805,60 +1819,41 @@ function Admin({ goHome }) {
             </div>
 
             {/* Lookup référence */}
-            {(()=>{
-              const [refQ, setRefQ] = React.useState("");
-              const [refRes, setRefRes] = React.useState(null);
-              const [refErr, setRefErr] = React.useState("");
-              const [refLoading, setRefLoading] = React.useState(false);
-              const lookup = async () => {
-                if (!refQ.trim()) return;
-                setRefLoading(true); setRefErr(""); setRefRes(null);
-                try {
-                  const data = await getReservationByRef(refQ.trim());
-                  setRefRes(data);
-                } catch(e) {
-                  setRefErr("Référence introuvable.");
-                }
-                setRefLoading(false);
-              };
-              return (
-                <div style={{...S.card,marginBottom:16}}>
-                  <p style={{fontSize:13,fontWeight:700,color:"#374151",margin:"0 0 10px"}}>🔍 Lookup par référence</p>
-                  <div style={{display:"flex",gap:8,marginBottom:refRes||refErr?12:0}}>
-                    <input value={refQ} onChange={e=>setRefQ(e.target.value.toUpperCase())}
-                      onKeyDown={e=>e.key==="Enter"&&lookup()}
-                      placeholder="BA-XXXXXX"
-                      style={{flex:1,padding:"9px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"monospace",letterSpacing:1}}/>
-                    <button onClick={lookup} disabled={refLoading}
-                      style={{padding:"9px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:13,cursor:"pointer"}}>
-                      {refLoading?"…":"Chercher"}
-                    </button>
-                  </div>
-                  {refErr && <p style={{fontSize:13,color:"#ef4444",margin:0}}>{refErr}</p>}
-                  {refRes && (
-                    <div style={{background:"#f8fafc",borderRadius:12,padding:14,display:"flex",flexDirection:"column",gap:6}}>
-                      {[
-                        ["📋 Référence", refRes.reference],
-                        ["👩‍🏫 Tuteur",   `${refRes.tuteur_nom} — ${refRes.tuteur_matiere||""}`],
-                        ["📱 Tel tuteur", refRes.tuteur_tel||"—"],
-                        ["👨‍👩‍👧 Parent",   refRes.parent_nom],
-                        ["📧 Email",      refRes.parent_email],
-                        ["📱 Tel parent", refRes.parent_tel||"—"],
-                        ["📅 Séance",     `${refRes.jour} à ${refRes.creneau}`],
-                        ["👧 Élève",      `${refRes.enfant} · ${refRes.niveau}`],
-                        ["💰 Montant",    refRes.montant ? refRes.montant.toLocaleString("fr-FR")+" FCFA" : "—"],
-                        ["✅ Statut",     refRes.statut],
-                      ].map(([k,v])=>(
-                        <div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:13,borderBottom:"1px solid #f1f5f9",paddingBottom:4}}>
-                          <span style={{color:"#6b7280",flexShrink:0}}>{k}</span>
-                          <span style={{fontWeight:600,color:"#111827",textAlign:"right",marginLeft:12}}>{v||"—"}</span>
-                        </div>
-                      ))}
+            <div style={{...S.card,marginBottom:16}}>
+              <p style={{fontSize:13,fontWeight:700,color:"#374151",margin:"0 0 10px"}}>🔍 Lookup par référence</p>
+              <div style={{display:"flex",gap:8,marginBottom:refRes||refErr?12:0}}>
+                <input value={refQ} onChange={e=>setRefQ(e.target.value.toUpperCase())}
+                  onKeyDown={e=>e.key==="Enter"&&lookup()}
+                  placeholder="BA-XXXXXX"
+                  style={{flex:1,padding:"9px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"monospace",letterSpacing:1}}/>
+                <button onClick={lookup} disabled={refLoading}
+                  style={{padding:"9px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:13,cursor:"pointer"}}>
+                  {refLoading?"…":"Chercher"}
+                </button>
+              </div>
+              {refErr && <p style={{fontSize:13,color:"#ef4444",margin:0}}>{refErr}</p>}
+              {refRes && (
+                <div style={{background:"#f8fafc",borderRadius:12,padding:14,display:"flex",flexDirection:"column",gap:6}}>
+                  {[
+                    ["📋 Référence", refRes.reference],
+                    ["👩‍🏫 Tuteur",   `${refRes.tuteur_nom||""} — ${refRes.tuteur_matiere||""}`],
+                    ["📱 Tel tuteur", refRes.tuteur_tel||"—"],
+                    ["👨‍👩‍👧 Parent",   refRes.parent_nom],
+                    ["📧 Email",      refRes.parent_email],
+                    ["📱 Tel parent", refRes.parent_tel||"—"],
+                    ["📅 Séance",     `${refRes.jour} à ${refRes.creneau}`],
+                    ["👧 Élève",      `${refRes.enfant} · ${refRes.niveau}`],
+                    ["💰 Montant",    refRes.montant ? refRes.montant.toLocaleString("fr-FR")+" FCFA" : "—"],
+                    ["✅ Statut",     refRes.statut],
+                  ].map(([k,v])=>(
+                    <div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:13,borderBottom:"1px solid #f1f5f9",paddingBottom:4}}>
+                      <span style={{color:"#6b7280",flexShrink:0}}>{k}</span>
+                      <span style={{fontWeight:600,color:"#111827",textAlign:"right",marginLeft:12}}>{v||"—"}</span>
                     </div>
-                  )}
+                  ))}
                 </div>
-              );
-            })()}
+              )}
+            </div>
 
             {/* Revenue chart */}
             <div style={{...S.card,marginBottom:16}}>
