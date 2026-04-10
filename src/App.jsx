@@ -1116,7 +1116,7 @@ function SitePublic({ goAdmin, goPayment }) {
           </div>
         )}
 
-        <div className="ba-tutor-cards" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))",gap:12}}>
+        <div className="ba-tutor-cards" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
           {!loadingTuteurs && filteredTuteurs.map(t=>{
             const isNew = t.created_at && (Date.now() - new Date(t.created_at).getTime()) < 30*24*60*60*1000;
             return (
