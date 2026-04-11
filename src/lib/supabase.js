@@ -6,53 +6,56 @@ const supabaseKey  = import.meta.env.VITE_SUPABASE_ANON_KEY
 export const supabase = createClient(supabaseUrl || '', supabaseKey || '')
 
 // ─── Auth helpers ─────────────────────────────────────────────────────────────
+// Le hash du mot de passe est calculé UNIQUEMENT côté serveur (api/login.js).
+// hashPassword reste disponible pour le flux de création de compte lors d'une
+// réservation (App.jsx → PagePaiement) — à migrer vers un endpoint serveur.
 export async function hashPassword(password) {
   const encoder = new TextEncoder()
-  const data = encoder.encode(password + "brillance_salt_2025")
+  const data = encoder.encode(password + (import.meta.env.VITE_AUTH_SALT || "brillance_salt_2025"))
   const hash = await crypto.subtle.digest('SHA-256', data)
   return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('')
 }
 
 export async function loginParent(email, password) {
-  const hash = await hashPassword(password)
-  const { data, error } = await supabase
-    .from('parents')
-    .select('*')
-    .eq('email', email.toLowerCase().trim())
-    .eq('password_hash', hash)
-    .maybeSingle()
-  if (error) throw error
-  return data // null si mauvais mot de passe
+  const res = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role: 'parent', email, password }),
+  })
+  if (res.status === 401) return null // mauvais mot de passe
+  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur login') }
+  const { user } = await res.json()
+  return user
 }
 
 export async function loginTuteur(email, password) {
-  const hash = await hashPassword(password)
-  const { data, error } = await supabase
-    .from('tuteurs')
-    .select('*')
-    .eq('email', email.toLowerCase().trim())
-    .eq('password_hash', hash)
-    .maybeSingle()
-  if (error) throw error
-  return data
+  const res = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role: 'tuteur', email, password }),
+  })
+  if (res.status === 401) return null
+  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur login') }
+  const { user } = await res.json()
+  return user
 }
 
 export async function changerMotDePasseParent(id, newPassword) {
-  const hash = await hashPassword(newPassword)
-  const { error } = await supabase
-    .from('parents')
-    .update({ password_hash: hash })
-    .eq('id', id)
-  if (error) throw error
+  const res = await fetch('/api/change-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role: 'parent', id, newPassword }),
+  })
+  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur changement mot de passe') }
 }
 
 export async function changerMotDePasseTuteur(id, newPassword) {
-  const hash = await hashPassword(newPassword)
-  const { error } = await supabase
-    .from('tuteurs')
-    .update({ password_hash: hash })
-    .eq('id', id)
-  if (error) throw error
+  const res = await fetch('/api/change-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role: 'tuteur', id, newPassword }),
+  })
+  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur changement mot de passe') }
 }
 
 // ─── WhatsApp notification (via /api/notify — serverless Vercel) ──────────────
