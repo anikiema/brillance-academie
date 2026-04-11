@@ -1,22 +1,8 @@
-import crypto from 'crypto'
-import { createClient } from '@supabase/supabase-js'
-
-// ─── Auth serveur ─────────────────────────────────────────────────────────────
-// Le sel et le hash ne sont JAMAIS exposés côté client.
-// Env vars requises :
-//   AUTH_SALT          — sel secret (ex: valeur de brillance_salt_2025 + entropie)
-//   SUPABASE_URL       — URL Supabase (sans le préfixe VITE_)
-//   SUPABASE_ANON_KEY  — clé anonyme Supabase (sans le préfixe VITE_)
-
-function hashPassword(password, salt) {
-  return crypto.createHash('sha256').update(password + salt).digest('hex')
-}
+import { hashPassword, createSupabaseClient, getAuthSalt, handleCors } from './_supabaseAuth.js'
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
-  if (req.method === 'OPTIONS') return res.status(200).end()
+  if (!handleCors(req, res)) return
+
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { role, email, password } = req.body || {}
@@ -25,15 +11,14 @@ export default async function handler(req, res) {
   if (role !== 'parent' && role !== 'tuteur')
     return res.status(400).json({ error: 'role doit être "parent" ou "tuteur"' })
 
-  const salt = process.env.AUTH_SALT
-  if (!salt) return res.status(500).json({ error: 'AUTH_SALT non configuré' })
+  let salt, supabase
+  try {
+    salt = getAuthSalt()
+    supabase = createSupabaseClient()
+  } catch (e) {
+    return res.status(500).json({ error: e.message })
+  }
 
-  const supabaseUrl = process.env.SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_ANON_KEY
-  if (!supabaseUrl || !supabaseKey)
-    return res.status(500).json({ error: 'Variables Supabase non configurées' })
-
-  const supabase = createClient(supabaseUrl, supabaseKey)
   const table = role === 'tuteur' ? 'tuteurs' : 'parents'
   const hash = hashPassword(password, salt)
 

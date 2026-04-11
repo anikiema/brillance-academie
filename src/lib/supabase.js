@@ -10,10 +10,24 @@ export const supabase = createClient(supabaseUrl || '', supabaseKey || '')
 // hashPassword reste disponible pour le flux de création de compte lors d'une
 // réservation (App.jsx → PagePaiement) — à migrer vers un endpoint serveur.
 export async function hashPassword(password) {
+  const envSalt = import.meta.env.VITE_AUTH_SALT
+  const isDev = import.meta.env.DEV
+  if (!envSalt && !isDev) {
+    throw new Error(
+      'VITE_AUTH_SALT non défini. ' +
+      'Cela provoquerait un décalage avec le hash côté serveur (AUTH_SALT). ' +
+      'Veuillez définir VITE_AUTH_SALT dans votre configuration.'
+    )
+  }
+  const salt = envSalt || 'brillance_salt_2025'
   const encoder = new TextEncoder()
-  const data = encoder.encode(password + (import.meta.env.VITE_AUTH_SALT || "brillance_salt_2025"))
+  const data = encoder.encode(password + salt)
   const hash = await crypto.subtle.digest('SHA-256', data)
   return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('')
+}
+
+async function parseErrorMessage(res, fallback) {
+  try { const e = await res.json(); return e?.error || fallback } catch (_) { return fallback }
 }
 
 export async function loginParent(email, password) {
@@ -23,7 +37,7 @@ export async function loginParent(email, password) {
     body: JSON.stringify({ role: 'parent', email, password }),
   })
   if (res.status === 401) return null // mauvais mot de passe
-  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur login') }
+  if (!res.ok) throw new Error(await parseErrorMessage(res, 'Erreur login'))
   const { user } = await res.json()
   return user
 }
@@ -35,27 +49,27 @@ export async function loginTuteur(email, password) {
     body: JSON.stringify({ role: 'tuteur', email, password }),
   })
   if (res.status === 401) return null
-  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur login') }
+  if (!res.ok) throw new Error(await parseErrorMessage(res, 'Erreur login'))
   const { user } = await res.json()
   return user
 }
 
-export async function changerMotDePasseParent(id, newPassword) {
+export async function changerMotDePasseParent(id, currentPassword, newPassword) {
   const res = await fetch('/api/change-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ role: 'parent', id, newPassword }),
+    body: JSON.stringify({ role: 'parent', id, currentPassword, newPassword }),
   })
-  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur changement mot de passe') }
+  if (!res.ok) throw new Error(await parseErrorMessage(res, 'Erreur changement mot de passe'))
 }
 
-export async function changerMotDePasseTuteur(id, newPassword) {
+export async function changerMotDePasseTuteur(id, currentPassword, newPassword) {
   const res = await fetch('/api/change-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ role: 'tuteur', id, newPassword }),
+    body: JSON.stringify({ role: 'tuteur', id, currentPassword, newPassword }),
   })
-  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Erreur changement mot de passe') }
+  if (!res.ok) throw new Error(await parseErrorMessage(res, 'Erreur changement mot de passe'))
 }
 
 // ─── WhatsApp notification (via /api/notify — serverless Vercel) ──────────────

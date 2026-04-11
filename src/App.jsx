@@ -2559,6 +2559,7 @@ function PageEspaceTuteur({ goHome }) {
   const [saving, setSaving]     = useState(false);
   const [saved, setSaved]       = useState(false);
   const [showChangePwd, setShowChangePwd] = useState(false);
+  const [currentPwd, setCurrentPwd] = useState("");
   const [newPwd, setNewPwd]     = useState("");
   const [newPwd2, setNewPwd2]   = useState("");
   const [pwdMsg, setPwdMsg]     = useState("");
@@ -2590,13 +2591,14 @@ function PageEspaceTuteur({ goHome }) {
   };
 
   const changerPwd = async () => {
+    if (!currentPwd) { setPwdMsg("Veuillez saisir votre mot de passe actuel."); return; }
     if (!newPwd || newPwd !== newPwd2) { setPwdMsg("Les mots de passe ne correspondent pas."); return; }
     if (newPwd.length < 6) { setPwdMsg("Le mot de passe doit faire au moins 6 caractères."); return; }
     setPwdLoading(true); setPwdMsg("");
     try {
-      await changerMotDePasseTuteur(tuteur.id, newPwd);
+      await changerMotDePasseTuteur(tuteur.id, currentPwd, newPwd);
       setPwdMsg("✅ Mot de passe modifié avec succès !");
-      setNewPwd(""); setNewPwd2("");
+      setCurrentPwd(""); setNewPwd(""); setNewPwd2("");
       setTimeout(() => { setShowChangePwd(false); setPwdMsg(""); }, 2500);
     } catch(e) { setPwdMsg("Erreur : " + e.message); }
     setPwdLoading(false);
@@ -2824,6 +2826,12 @@ function PageEspaceTuteur({ goHome }) {
                 {showChangePwd && (
                   <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:12}}>
                     <div>
+                      <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Mot de passe actuel</label>
+                      <input type="password" value={currentPwd} onChange={e=>setCurrentPwd(e.target.value)}
+                        placeholder="Votre mot de passe actuel"
+                        style={{width:"100%",padding:"10px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+                    </div>
+                    <div>
                       <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Nouveau mot de passe</label>
                       <input type="password" value={newPwd} onChange={e=>setNewPwd(e.target.value)}
                         placeholder="Minimum 6 caractères"
@@ -2865,6 +2873,7 @@ function PageEspaceParent({ goHome }) {
   const [reservations, setReservations] = useState([]);
   const [error, setError]       = useState("");
   const [showChangePwd, setShowChangePwd] = useState(false);
+  const [currentPwd, setCurrentPwd] = useState("");
   const [newPwd, setNewPwd]     = useState("");
   const [newPwd2, setNewPwd2]   = useState("");
   const [pwdMsg, setPwdMsg]     = useState("");
@@ -2884,13 +2893,14 @@ function PageEspaceParent({ goHome }) {
   };
 
   const changerPwd = async () => {
+    if (!currentPwd) { setPwdMsg("Veuillez saisir votre mot de passe actuel."); return; }
     if (!newPwd || newPwd !== newPwd2) { setPwdMsg("Les mots de passe ne correspondent pas."); return; }
     if (newPwd.length < 6) { setPwdMsg("Le mot de passe doit faire au moins 6 caractères."); return; }
     setPwdLoading(true); setPwdMsg("");
     try {
-      await changerMotDePasseParent(parent.id, newPwd);
+      await changerMotDePasseParent(parent.id, currentPwd, newPwd);
       setPwdMsg("✅ Mot de passe modifié avec succès !");
-      setNewPwd(""); setNewPwd2("");
+      setCurrentPwd(""); setNewPwd(""); setNewPwd2("");
       setTimeout(() => { setShowChangePwd(false); setPwdMsg(""); }, 2500);
     } catch(e) { setPwdMsg("Erreur : " + e.message); }
     setPwdLoading(false);
@@ -3008,6 +3018,12 @@ function PageEspaceParent({ goHome }) {
                 </button>
                 {showChangePwd && (
                   <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:12}}>
+                    <div>
+                      <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Mot de passe actuel</label>
+                      <input type="password" value={currentPwd} onChange={e=>setCurrentPwd(e.target.value)}
+                        placeholder="Votre mot de passe actuel"
+                        style={{width:"100%",padding:"10px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box"}}/>
+                    </div>
                     <div>
                       <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:4}}>Nouveau mot de passe</label>
                       <input type="password" value={newPwd} onChange={e=>setNewPwd(e.target.value)}
