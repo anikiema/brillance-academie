@@ -1629,7 +1629,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
       </div>
 
       {/* BOUTON WHATSAPP FLOTTANT */}
-      <a href="https://wa.me/22600000000?text=Bonjour%2C%20je%20souhaite%20trouver%20un%20tuteur%20pour%20mon%20enfant."
+      <a href="https://wa.me/22677166565?text=Bonjour%2C%20je%20souhaite%20trouver%20un%20tuteur%20pour%20mon%20enfant."
         target="_blank" rel="noopener noreferrer"
         style={{position:"fixed",bottom:28,right:28,zIndex:999,width:56,height:56,borderRadius:999,background:"#25d366",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 20px rgba(37,211,102,0.5)",textDecoration:"none",transition:"transform .2s"}}
         onMouseOver={e=>e.currentTarget.style.transform="scale(1.1)"}
@@ -1651,7 +1651,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 La plateforme de tutorat de référence à Ouagadougou. Des tuteurs certifiés pour les élèves du CP au 3ème.
               </p>
               {/* WhatsApp CTA */}
-              <a href="https://wa.me/22600000000" target="_blank" rel="noreferrer"
+              <a href="https://wa.me/22677166565" target="_blank" rel="noreferrer"
                 style={{display:"inline-flex",alignItems:"center",gap:8,background:"#25d366",color:"#fff",padding:"10px 18px",borderRadius:999,fontSize:13,fontWeight:700,textDecoration:"none"}}>
                 <span style={{fontSize:16}}>💬</span> WhatsApp nous
               </a>
