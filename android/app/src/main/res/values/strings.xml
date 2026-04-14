@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Brillance Académie</string>
+    <string name="title_activity_main">Brillance Académie</string>
+    <string name="package_name">com.brillance.academie</string>
+    <string name="custom_url_scheme">com.brillance.academie</string>
+</resources>
