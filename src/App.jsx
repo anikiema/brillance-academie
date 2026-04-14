@@ -1092,11 +1092,6 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               {activeM && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeM}</span>}
               {activeQ && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeQ}</span>}
               {activeN && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>✓ {activeN}</span>}
-              {activeOnline && <span style={{background:T.primarySoft,color:T.primary,padding:"4px 10px",borderRadius:999,fontSize:12,fontWeight:600}}>🌐 En ligne</span>}
-              <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setActiveOnline(false);setSearch("");}}
-                style={{background:"none",border:"none",color:"#ef4444",fontWeight:700,fontSize:12,cursor:"pointer",padding:"4px 8px"}}>
-                ✕ Effacer
-              </button>
             </div>
           )}
         </div>
