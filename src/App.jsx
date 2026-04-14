@@ -1015,13 +1015,15 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
       {/* NAV */}
       <nav style={S.nav}>
         <span style={{fontSize:18,fontWeight:800,color:T.primary,letterSpacing:"-0.5px",flexShrink:0}}>Brillance Académie</span>
-        <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center"}}>
+        <div className="ba-nav-btns" style={{display:"flex",gap:10,alignItems:"center",flex:1}}>
           <button className="ba-nav-secondary" onClick={()=>scrollTo("how")} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>À Propos</button>
           <button className="ba-nav-secondary" onClick={()=>setModal("tuteur")} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>Devenir tuteur</button>
           <button className="ba-nav-secondary" onClick={goEspaceParent} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>👤 Parents</button>
           <button className="ba-nav-secondary" onClick={goEspaceTuteur} style={{...S.btn,background:"#fff",color:T.body,border:`1.5px solid ${T.border}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>👨‍🏫 Tuteurs</button>
-          <button onClick={()=>setModal("parent")} style={{...S.btn,background:T.primary,color:"#fff",fontWeight:700,border:`1.5px solid ${T.primary}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>Chercher un tuteur</button>
-          <button onClick={goAdmin} style={{...S.btn,background:T.ink,color:"#fff",fontSize:12,padding:"9px 14px",borderRadius:10}}>⚙</button>
+          <div style={{marginLeft:"auto",display:"flex",gap:10,alignItems:"center"}}>
+            <button onClick={()=>setModal("parent")} style={{...S.btn,background:T.primary,color:"#fff",fontWeight:700,border:`1.5px solid ${T.primary}`,borderRadius:10,padding:"9px 18px",fontSize:13}}>Chercher un tuteur</button>
+            <button onClick={goAdmin} style={{...S.btn,background:T.ink,color:"#fff",fontSize:12,padding:"9px 14px",borderRadius:10}}>⚙</button>
+          </div>
         </div>
       </nav>
 
