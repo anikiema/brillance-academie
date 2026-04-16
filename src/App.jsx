@@ -2561,6 +2561,17 @@ function PageEspaceTuteur({ goHome }) {
   const [pwdMsg, setPwdMsg]     = useState("");
   const [pwdLoading, setPwdLoading] = useState(false);
 
+  // Restore session from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("ba_session"));
+      if (saved?.role === "tuteur" && saved.email) {
+        // Re-fetch fresh data from DB using saved session
+        loginTuteur(saved.email, "").catch(() => {}); // won't succeed without pwd — handled below
+      }
+    } catch {}
+  }, []);
+
   const login = async () => {
     if (!email.trim() || !password) return;
     setLoading(true); setError("");
@@ -2868,6 +2879,16 @@ function PageEspaceParent({ goHome }) {
   const [pwdMsg, setPwdMsg]     = useState("");
   const [pwdLoading, setPwdLoading] = useState(false);
 
+  // Restore session info (display only) on mount — user must still login with password
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("ba_session"));
+      if (saved?.role === "parent" && saved.email) {
+        setEmail(saved.email); // Pre-fill email field for convenience
+      }
+    } catch {}
+  }, []);
+
   const login = async () => {
     if (!email.trim() || !password) return;
     setLoading(true); setError(""); setParent(null); setReservations([]);
@@ -3042,12 +3063,23 @@ function PageEspaceParent({ goHome }) {
 
 function LoginAdmin({ onSuccess, onBack }) {
   const [pwd, setPwd]     = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [show, setShow]   = useState(false);
 
-  const check = () => {
-    if (pwd === "Kayden2020@$") { onSuccess(); }
-    else { setError(true); setTimeout(() => setError(false), 1500); }
+  const check = async () => {
+    if (!pwd) return;
+    setLoading(true); setError("");
+    try {
+      const res = await fetch("/api/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pwd }),
+      });
+      if (res.ok) { onSuccess(); }
+      else { setError("Mot de passe incorrect"); setTimeout(() => setError(""), 2000); }
+    } catch { setError("Erreur réseau. Réessayez."); }
+    setLoading(false);
   };
 
   return (
@@ -3082,11 +3114,11 @@ function LoginAdmin({ onSuccess, onBack }) {
             </button>
           </div>
 
-          {error && <p style={{color:"#ef4444",fontSize:13,margin:0,textAlign:"center"}}>Mot de passe incorrect</p>}
+          {error && <p style={{color:"#ef4444",fontSize:13,margin:0,textAlign:"center"}}>{error}</p>}
 
-          <button onClick={check}
-            style={{padding:"14px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
-            Accéder au tableau de bord →
+          <button onClick={check} disabled={loading||!pwd}
+            style={{padding:"14px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer",opacity:loading||!pwd?0.6:1}}>
+            {loading ? "Vérification…" : "Accéder au tableau de bord →"}
           </button>
 
           <button onClick={onBack}
