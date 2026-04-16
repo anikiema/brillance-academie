@@ -131,12 +131,12 @@ export async function hashPassword(password) {
 export const fmt = (n) => Number(n).toLocaleString('fr-FR') + ' FCFA';
 
 export const MATIERES_EMOJI = {
-  'Mathématiques':    '🔢',
-  'Lecture & phonics':'📖',
-  'Écriture':         '✏️',
-  'Sciences':         '🔬',
-  'Histoire & Géo':   '🌍',
-  'Langues':          '💬',
-  'Arts & Musique':   '🎨',
-  'Technologie':      '💻',
+  'Anglais débutant':        '🔤',
+  'Anglais intermédiaire':   '💬',
+  'Anglais avancé':          '🗣️',
+  'Initiation informatique': '🖥️',
+  'Programmation (Scratch)': '🧩',
+  'Python & Algorithmique':  '🐍',
+  'Bureautique (Word/Excel)':'📊',
+  'Culture numérique':       '🌐',
 };

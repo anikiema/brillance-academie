@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Réservation — Brillance Académie · Réservez votre séance de tutorat</title>
-  <meta name="description" content="Réservez votre séance de tutorat en ligne en 3 étapes. Choisissez votre matière, votre tuteur et payez via Orange Money, Moov ou Coris. Première séance à −20%." />
+  <title>Réservation — Brillance Académie · Réservez votre cours d'Anglais ou d'Informatique</title>
+  <meta name="description" content="Réservez votre cours d'Anglais ou d'Informatique en ligne en 3 étapes. Choisissez votre matière, votre formateur et payez via Orange Money, Moov ou Coris. Première séance à −20%." />
+  <meta name="keywords" content="réservation cours anglais informatique Burkina Faso, cours en ligne enfants BF, formateur certifié Ouagadougou" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -573,7 +574,7 @@
     <div class="nav-inner">
       <a href="index.html" class="nav-logo"><span>🔆</span> Brillance Académie</a>
       <ul class="nav-links">
-        <li><a href="tuteurs.html">Tuteurs</a></li>
+        <li><a href="tuteurs.html">Formateurs</a></li>
         <li><a href="matieres.html">Matières</a></li>
         <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
         <li><a href="temoignages.html">Témoignages</a></li>
@@ -581,7 +582,7 @@
       </ul>
       <div class="nav-actions">
         <a href="faq.html" class="nav-ghost">FAQ</a>
-        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un formateur</a>
       </div>
     </div>
   </nav>
@@ -603,7 +604,7 @@
         <div class="step-connector"></div>
         <div class="step-item">
           <div class="step-bubble" id="bubble-2">2</div>
-          <div class="step-label" id="label-2">Choisir un tuteur</div>
+          <div class="step-label" id="label-2">Choisir un formateur</div>
         </div>
         <div class="step-connector"></div>
         <div class="step-item">
@@ -636,44 +637,39 @@
           <div class="step-panel-body">
             <!-- Subject grid -->
             <div class="subject-grid" id="subject-grid">
-              <div class="subject-card" data-subject="Lecture" onclick="selectSubject(this)">
-                <span class="emoji">📖</span><span class="label">Lecture</span>
+              <div class="subject-card" data-subject="Anglais débutant" onclick="selectSubject(this)">
+                <span class="emoji">🔤</span><span class="label">Anglais débutant</span>
               </div>
-              <div class="subject-card" data-subject="Maths" onclick="selectSubject(this)">
-                <span class="emoji">🔢</span><span class="label">Maths</span>
+              <div class="subject-card" data-subject="Anglais intermédiaire" onclick="selectSubject(this)">
+                <span class="emoji">💬</span><span class="label">Anglais interm.</span>
               </div>
-              <div class="subject-card" data-subject="Écriture" onclick="selectSubject(this)">
-                <span class="emoji">✏️</span><span class="label">Écriture</span>
+              <div class="subject-card" data-subject="Anglais avancé" onclick="selectSubject(this)">
+                <span class="emoji">🗣️</span><span class="label">Anglais avancé</span>
               </div>
-              <div class="subject-card" data-subject="Sciences" onclick="selectSubject(this)">
-                <span class="emoji">🔬</span><span class="label">Sciences</span>
+              <div class="subject-card" data-subject="Initiation informatique" onclick="selectSubject(this)">
+                <span class="emoji">🖥️</span><span class="label">Init. info.</span>
               </div>
-              <div class="subject-card" data-subject="Histoire/Géo" onclick="selectSubject(this)">
-                <span class="emoji">🌍</span><span class="label">Histoire/Géo</span>
+              <div class="subject-card" data-subject="Programmation (Scratch)" onclick="selectSubject(this)">
+                <span class="emoji">🧩</span><span class="label">Scratch</span>
               </div>
-              <div class="subject-card" data-subject="Langues" onclick="selectSubject(this)">
-                <span class="emoji">💬</span><span class="label">Langues</span>
+              <div class="subject-card" data-subject="Python &amp; Algorithmique" onclick="selectSubject(this)">
+                <span class="emoji">🐍</span><span class="label">Python</span>
               </div>
-              <div class="subject-card" data-subject="Arts" onclick="selectSubject(this)">
-                <span class="emoji">🎨</span><span class="label">Arts</span>
+              <div class="subject-card" data-subject="Bureautique (Word/Excel)" onclick="selectSubject(this)">
+                <span class="emoji">📊</span><span class="label">Bureautique</span>
               </div>
-              <div class="subject-card" data-subject="Technologie" onclick="selectSubject(this)">
-                <span class="emoji">💻</span><span class="label">Technologie</span>
+              <div class="subject-card" data-subject="Culture numérique" onclick="selectSubject(this)">
+                <span class="emoji">🌐</span><span class="label">Culture num.</span>
               </div>
             </div>
 
             <!-- Level chips -->
-            <div class="level-label">Niveau scolaire</div>
+            <div class="level-label">Tranche d'âge</div>
             <div class="level-chips" id="level-chips">
-              <button class="level-chip" onclick="selectLevel(this)">CP</button>
-              <button class="level-chip" onclick="selectLevel(this)">CE1</button>
-              <button class="level-chip" onclick="selectLevel(this)">CE2</button>
-              <button class="level-chip" onclick="selectLevel(this)">CM1</button>
-              <button class="level-chip" onclick="selectLevel(this)">CM2</button>
-              <button class="level-chip" onclick="selectLevel(this)">6ème</button>
-              <button class="level-chip" onclick="selectLevel(this)">5ème</button>
-              <button class="level-chip" onclick="selectLevel(this)">4ème</button>
-              <button class="level-chip" onclick="selectLevel(this)">3ème</button>
+              <button class="level-chip" onclick="selectLevel(this)">7–9 ans</button>
+              <button class="level-chip" onclick="selectLevel(this)">10–12 ans</button>
+              <button class="level-chip" onclick="selectLevel(this)">13–15 ans</button>
+              <button class="level-chip" onclick="selectLevel(this)">16–17 ans</button>
             </div>
 
             <button class="btn btn-primary" id="btn-step1-continue" onclick="completeStep1()" disabled>
@@ -687,7 +683,7 @@
           <div class="step-panel-header" onclick="togglePanel(2)">
             <div class="step-panel-title">
               <span id="step2-icon">②</span>
-              Choisir un tuteur
+              Choisir un formateur
               <span class="step-panel-badge" id="step2-badge">🔒 Verrouillé</span>
             </div>
             <div class="step-panel-icon" id="step2-chevron">▾</div>
@@ -700,7 +696,7 @@
                 <div class="tutor-info">
                   <div class="tutor-name-row">
                     <span class="tutor-name">Claire B.</span>
-                    <span class="tutor-subject-tag">Maths, Lecture</span>
+                    <span class="tutor-subject-tag">Anglais intermédiaire</span>
                   </div>
                   <div class="tutor-meta">
                     <span class="tutor-rating">⭐ 4.9</span>
@@ -715,8 +711,8 @@
                 <div class="tutor-avatar">👨‍🏫</div>
                 <div class="tutor-info">
                   <div class="tutor-name-row">
-                    <span class="tutor-name">Moussa K.</span>
-                    <span class="tutor-subject-tag">Maths, Sciences</span>
+                    <span class="tutor-name">Kwame A.</span>
+                    <span class="tutor-subject-tag">Scratch, Python</span>
                   </div>
                   <div class="tutor-meta">
                     <span class="tutor-rating">⭐ 4.8</span>
@@ -731,8 +727,8 @@
                 <div class="tutor-avatar">👩‍🏫</div>
                 <div class="tutor-info">
                   <div class="tutor-name-row">
-                    <span class="tutor-name">Aminata S.</span>
-                    <span class="tutor-subject-tag">Lecture, Écriture</span>
+                    <span class="tutor-name">Sofia R.</span>
+                    <span class="tutor-subject-tag">Python &amp; Algorithmique</span>
                   </div>
                   <div class="tutor-meta">
                     <span class="tutor-rating">⭐ 5.0</span>
@@ -846,11 +842,11 @@
             <span class="summary-row-val empty" id="sum-subject">—</span>
           </div>
           <div class="summary-row">
-            <span class="summary-row-key">Niveau</span>
+            <span class="summary-row-key">Tranche d'âge</span>
             <span class="summary-row-val empty" id="sum-level">—</span>
           </div>
           <div class="summary-row">
-            <span class="summary-row-key">Tuteur</span>
+            <span class="summary-row-key">Formateur</span>
             <span class="summary-row-val empty" id="sum-tutor">—</span>
           </div>
           <div class="summary-row">
@@ -906,7 +902,7 @@
       </div>
       <div class="trust-item">
         <div class="trust-icon">✅</div>
-        <div class="trust-label">Tuteurs vérifiés</div>
+        <div class="trust-label">Formateurs vérifiés</div>
       </div>
       <div class="trust-item">
         <div class="trust-icon">📅</div>
@@ -927,7 +923,7 @@
       <div class="footer-top">
         <div>
           <div class="footer-logo">🔆 Brillance Académie</div>
-          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <p class="footer-tagline">Des formateurs certifiés en Anglais &amp; Informatique pour les 7–17 ans, partout au Burkina Faso.</p>
           <div class="footer-payment">
             <span class="footer-pay-chip">🟠 Orange Money</span>
             <span class="footer-pay-chip">🔵 Moov Money</span>
@@ -937,7 +933,7 @@
         <div>
           <div class="footer-col-title">Navigation</div>
           <div class="footer-links">
-            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="tuteurs.html">Nos formateurs</a>
             <a href="comment-ca-marche.html">Fonctionnement</a>
             <a href="matieres.html">Matières</a>
             <a href="temoignages.html">Témoignages</a>
@@ -947,25 +943,25 @@
         <div>
           <div class="footer-col-title">Matières</div>
           <div class="footer-links">
-            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
-            <a href="matieres.html">🔢 Mathématiques</a>
-            <a href="matieres.html">🔬 Sciences</a>
-            <a href="matieres.html">🌍 Histoire / Géo</a>
-            <a href="matieres.html">💻 Technologie</a>
+            <a href="matieres.html#anglais-debutant">🔤 Anglais débutant</a>
+            <a href="matieres.html#anglais-intermediaire">💬 Anglais intermédiaire</a>
+            <a href="matieres.html#scratch">🧩 Scratch</a>
+            <a href="matieres.html#python">🐍 Python</a>
+            <a href="matieres.html#bureautique">📊 Bureautique</a>
           </div>
         </div>
         <div>
           <div class="footer-col-title">Contact</div>
           <div class="footer-links">
             <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
-            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="devenir-tuteur.html">Devenir formateur</a>
             <a href="faq.html">FAQ</a>
             <a href="reservation.html">Réserver en ligne</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>© 2025 Brillance Académie · Burkina Faso</span>
         <span>Tous droits réservés</span>
       </div>
     </div>
@@ -1047,7 +1043,7 @@
       const list = document.querySelector('.tutor-list');
       list.innerHTML = allTuteurs.length
         ? allTuteurs.map((t, i) => buildTutorCard(t, i)).join('')
-        : '<p style="color:var(--muted);padding:16px;">Aucun tuteur disponible pour le moment.</p>';
+        : '<p style="color:var(--muted);padding:16px;">Aucun formateur disponible pour le moment.</p>';
 
       // Pre-select if ?tuteur=ID in URL
       if (preselectedTuteurId) {

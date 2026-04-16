@@ -31,29 +31,29 @@ import { getTuteurs, getTousTuteurs, getReservations, getParents, creerReservati
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
 const MATIERES = [
-  { label: "Lecture & phonics",   emoji: "📖" },
-  { label: "Mathématiques",       emoji: "🔢" },
-  { label: "Écriture",            emoji: "✏️" },
-  { label: "Sciences",            emoji: "🔬" },
-  { label: "Histoire & Géo",      emoji: "🌍" },
-  { label: "Langues",             emoji: "💬" },
-  { label: "Arts & Musique",      emoji: "🎨" },
-  { label: "Technologie",         emoji: "💻" },
+  { label: "Anglais débutant",      emoji: "🔤" },
+  { label: "Anglais intermédiaire", emoji: "💬" },
+  { label: "Anglais avancé",        emoji: "🗣️" },
+  { label: "Initiation informatique", emoji: "🖥️" },
+  { label: "Programmation (Scratch)", emoji: "🧩" },
+  { label: "Python & Algorithmique", emoji: "🐍" },
+  { label: "Bureautique (Word/Excel)", emoji: "📊" },
+  { label: "Culture numérique",     emoji: "🌐" },
 ];
 
-const NIVEAUX = ["CP", "CE1", "CE2", "CM1", "CM2", "6ème", "5ème", "4ème", "3ème"];
+const NIVEAUX = ["7–9 ans", "10–12 ans", "13–15 ans", "16–17 ans"];
 const NIVEAUX_LIST = NIVEAUX;
-const QUARTIERS_LIST = ["Ouaga 2000","Hamdalaye","Gounghin","Pissy","Patte d'Oie","Wemtenga","Karpala","Tampouy","Secteur 30","Zone du Bois"];
+const QUARTIERS_LIST = ["Ouagadougou","Bobo-Dioulasso","Koudougou","Banfora","Ouahigouya","Kaya","En ligne"];
 const JOURS   = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 const CRENEAUX = ["08h00", "09h00", "10h00", "11h00", "14h00", "15h00", "16h00", "17h00"];
 
 const TUTEURS = [
-  { id:1, prenom:"Claire", nom:"B.",  subject:"Mathématiques",     rating:5, sessions:42, price:32500, availableDays:["Lundi","Mercredi","Vendredi"], statut:"Actif",     bio:"Spécialiste CP–CM2, passionnée par les méthodes ludiques.",            emoji:"👩‍🏫", quartier:"Ouaga 2000",  niveaux:["CP","CE1","CE2","CM1","CM2"] },
-  { id:2, prenom:"Kwame",  nom:"A.",  subject:"Lecture & phonics", rating:5, sessions:38, price:27500, availableDays:["Mardi","Jeudi","Samedi"],      statut:"Actif",     bio:"Expert en conscience phonologique et fluence de lecture.",              emoji:"👨‍🏫", quartier:"Hamdalaye",   niveaux:["CP","CE1","CE2"] },
-  { id:3, prenom:"Sofia",  nom:"R.",  subject:"Sciences",          rating:4, sessions:27, price:35000, availableDays:["Lundi","Mardi","Jeudi"],       statut:"Actif",     bio:"Rend les sciences concrètes et amusantes pour les enfants.",            emoji:"👩‍🔬", quartier:"Gounghin",    niveaux:["CM1","CM2","6ème","5ème"] },
-  { id:4, prenom:"Liam",   nom:"T.",  subject:"Histoire & Géo",    rating:5, sessions:15, price:27500, availableDays:["Mercredi","Vendredi"],         statut:"Inactif",   bio:"Passionné par l'histoire de l'Afrique et du monde.",                   emoji:"👨‍🎓", quartier:"Patte d'Oie", niveaux:["6ème","5ème","4ème","3ème"] },
-  { id:5, prenom:"Amara",  nom:"N.",  subject:"Arts & Musique",    rating:4, sessions:0,  price:25000, availableDays:["Lundi","Samedi"],              statut:"En attente",bio:"Artiste et musicienne, accompagne les enfants avec créativité.",        emoji:"👩‍🎨", quartier:"Wemtenga",    niveaux:["CP","CE1","CE2","CM1","CM2"] },
-  { id:6, prenom:"Daniel", nom:"K.",  subject:"Technologie",       rating:5, sessions:31, price:40000, availableDays:["Mardi","Mercredi","Vendredi"], statut:"Actif",     bio:"Initie les enfants au code et à la pensée computationnelle.",           emoji:"👨‍💻", quartier:"Pissy",       niveaux:["CM1","CM2","6ème","5ème","4ème","3ème"] },
+  { id:1, prenom:"Aminata", nom:"K.", subject:"Anglais intermédiaire", rating:5, sessions:38, price:25000, availableDays:["Lundi","Mercredi","Vendredi"], statut:"Actif", bio:"Formatrice certifiée TOEFL, spécialiste anglais technique 10–15 ans.", emoji:"👩‍🏫", quartier:"Ouagadougou", niveaux:["10–12 ans","13–15 ans"] },
+  { id:2, prenom:"Seydou",  nom:"B.", subject:"Programmation (Scratch)", rating:5, sessions:45, price:30000, availableDays:["Mardi","Jeudi","Samedi"], statut:"Actif", bio:"Ingénieur logiciel, initie les enfants au code par le jeu.", emoji:"👨‍💻", quartier:"Bobo-Dioulasso", niveaux:["7–9 ans","10–12 ans"] },
+  { id:3, prenom:"Fatoumata",nom:"D.",subject:"Python & Algorithmique", rating:5, sessions:29, price:35000, availableDays:["Lundi","Mardi","Jeudi"], statut:"Actif", bio:"Développeuse Python, rend l'algorithmique accessible aux ados.", emoji:"👩‍💻", quartier:"Ouagadougou", niveaux:["13–15 ans","16–17 ans"] },
+  { id:4, prenom:"Ibrahim", nom:"T.", subject:"Anglais débutant",       rating:4, sessions:22, price:20000, availableDays:["Mercredi","Vendredi","Samedi"], statut:"Actif", bio:"Professeur d'anglais, méthodes ludiques pour les 7–12 ans.", emoji:"👨‍🏫", quartier:"Koudougou", niveaux:["7–9 ans","10–12 ans"] },
+  { id:5, prenom:"Mariam",  nom:"S.", subject:"Initiation informatique", rating:5, sessions:18, price:22000, availableDays:["Lundi","Samedi"], statut:"Actif", bio:"Découverte de l'ordinateur, internet et outils numériques.", emoji:"👩‍🎓", quartier:"En ligne (toute ville)", niveaux:["7–9 ans","10–12 ans"] },
+  { id:6, prenom:"Olivier", nom:"N.", subject:"Bureautique (Word/Excel)", rating:4, sessions:31, price:28000, availableDays:["Mardi","Mercredi","Vendredi"], statut:"Actif", bio:"Expert Office, prépare les jeunes au monde professionnel.", emoji:"👨‍🎓", quartier:"Banfora", niveaux:["13–15 ans","16–17 ans"] },
 ];
 
 const fmt = n => n.toLocaleString("fr-FR") + " FCFA";
@@ -63,22 +63,23 @@ const fmt = n => n.toLocaleString("fr-FR") + " FCFA";
 const CP_API_KEY = "VOTRE_CINETPAY_API_KEY";
 const CP_SITE_ID = "VOTRE_CINETPAY_SITE_ID";
 
-const QUARTIERS = [
-  "Bonheur Ville","Ouaga 2000","Hamdalaye","Gounghin","Patte d'Oie","Wemtenga",
-  "Pissy","Karpala","Dassasgo","Zogona","Tampouy","Nongr-Masson","Bogodogo",
-  "Baskuy","Sig-Noghin","Dapoya","Bilbalgo","Samandin","Wayalghin","Tanghin",
-  "Larlé","Cissin","Koulouba","Zone du Bois","Nioko","Paul VI",
-  "Secteur 22","Secteur 27","Secteur 28","Secteur 30","Autres",
+const VILLES = [
+  "Ouagadougou","Bobo-Dioulasso","Koudougou","Banfora","Ouahigouya",
+  "Kaya","Dédougou","Fada N'Gourma","Tenkodogo","Ziniaré",
+  "Kongoussi","Gaoua","Dori","Léo","Titao","Réo","Diébougou",
+  "Manga","Pô","Bogandé","Zorgho","Yako","Tougan","Nouna",
+  "En ligne (toute ville)",
 ];
+const QUARTIERS = VILLES; // alias for backward compat
 
 const ECOLES_PARTENAIRES = [
-  "École Primaire Privée Les Élites De Demain · Bonheur Ville",
-  "École Privée La Réussite · Ouaga 2000",
-  "Collège Saint-Viateur · Gounghin",
-  "École Les Étoiles Brillantes · Hamdalaye",
-  "Institut Sainte-Famille · Patte d'Oie",
-  "École Primaire La Lumière · Wemtenga",
-  "Académie Excellence · Pissy",
+  "Lycée Philippe Zinda Kaboré · Ouagadougou",
+  "Collège Saint-Viateur · Ouagadougou",
+  "Lycée Municipal de Bobo-Dioulasso · Bobo-Dioulasso",
+  "Institut Supérieur de Génie Électrique · Ouagadougou",
+  "École Privée La Réussite · Koudougou",
+  "Centre de Formation en TIC · Banfora",
+  "Lycée Mixte de Ouahigouya · Ouahigouya",
 ];
 
 const PARENTS_INIT = [
@@ -504,8 +505,8 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
       <p style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:16}}>Votre enfant</p>
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
         <Inp label="Prénom de l'enfant" value={d.enfant} onChange={v=>set("enfant",v)} placeholder=""/>
-        <Inp label="Âge de l'enfant (4–18 ans)" value={d.age} onChange={v=>set("age",v)} placeholder="Ex : 9" type="number" filter="number" min={4} max={18}/>
-        <Sel label="Niveau scolaire" value={d.niveau} onChange={v=>set("niveau",v)} options={NIVEAUX}/>
+        <Inp label="Âge de l'enfant (7–17 ans)" value={d.age} onChange={v=>set("age",v)} placeholder="Ex : 10" type="number" filter="number" min={7} max={17}/>
+        <Sel label="Tranche d'âge" value={d.niveau} onChange={v=>set("niveau",v)} options={NIVEAUX}/>
         <div>
           <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>École fréquentée (optionnel)</label>
           <select style={{width:"100%",border:"1.5px solid #e5e7eb",borderRadius:12,padding:"11px 16px",fontSize:13,background:"#fafafa",outline:"none"}}>
@@ -513,7 +514,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
             {ecolesList.map(e=><option key={e.id||e.nom} value={e.nom}>{e.nom}{e.quartier ? " · " + e.quartier : ""}</option>)}
             <option>Autre école</option>
           </select>
-          <p style={{fontSize:11,color:"#9ca3af",marginTop:5}}>Nos tuteurs connaissent les programmes de ces écoles.</p>
+          <p style={{fontSize:11,color:"#9ca3af",marginTop:5}}>Nos tuteurs adaptent leurs cours aux besoins spécifiques de chaque établissement.</p>
         </div>
       </div>
     </>,
@@ -521,7 +522,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
       <p style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:16}}>Les besoins de {d.enfant||"votre enfant"}</p>
       <div style={{display:"flex",flexDirection:"column",gap:14}}>
         <div>
-          <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Matières à renforcer</label>
+          <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Cours souhaités</label>
           <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
             {MATIERES.map(({label})=>(
               <Pill key={label} active={d.matieres.includes(label)} onClick={()=>tog(label)}>{label}</Pill>
@@ -529,7 +530,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
           </div>
         </div>
         <Sel label="Objectif principal" value={d.objectif} onChange={v=>set("objectif",v)}
-          options={["Rattrapage scolaire","Préparation aux examens","Avance sur le programme","Soutien général"]}/>
+          options={["Apprentissage de l'anglais","Initiation à l'informatique","Préparation aux certifications","Renforcement des compétences numériques"]}/>
         <Sel label="Fréquence souhaitée" value={d.frequence} onChange={v=>set("frequence",v)}
           options={["1 fois par semaine","2 fois par semaine","3 fois par semaine","Week-end uniquement"]}/>
       </div>
@@ -687,11 +688,11 @@ function InscriptionTuteur({ onClose }) {
         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{JOURS.map(j=><Pill key={j} active={d.jours.includes(j)} onClick={()=>tog("jours",j)}>{j}</Pill>)}</div>
       </div>
       <div>
-        <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
+        <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Villes couvertes</label>
         <div style={{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}}>
           <button onClick={()=>set("tousQuartiers",!d.tousQuartiers)}
             style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.tousQuartiers?"#1d6fe8":"#e5e7eb"}`,background:d.tousQuartiers?"#dbeafe":"#f9fafb",color:d.tousQuartiers?"#1d6fe8":"#374151",fontWeight:700,fontSize:13,cursor:"pointer"}}>
-            {d.tousQuartiers?"✓ Tous les quartiers de Ouaga":"Tous les quartiers"}
+            {d.tousQuartiers?"✓ Toutes les villes du Burkina":"Toutes les villes"}
           </button>
           <button onClick={()=>set("enLigne",!d.enLigne)}
             style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.enLigne?"#0ea5e9":"#e5e7eb"}`,background:d.enLigne?"#e0f2fe":"#f9fafb",color:d.enLigne?"#0284c7":"#374151",fontWeight:700,fontSize:13,cursor:"pointer"}}>
@@ -706,14 +707,14 @@ function InscriptionTuteur({ onClose }) {
           </div>
         )}
         {!d.tousQuartiers && d.quartiersCouVerts.length===0 && (
-          <p style={{fontSize:11,color:"#ef4444",margin:"4px 0 0"}}>Sélectionnez au moins un quartier ou cochez "Tous les quartiers"</p>
+          <p style={{fontSize:11,color:"#ef4444",margin:"4px 0 0"}}>Sélectionnez au moins une ville ou cochez "Toutes les villes"</p>
         )}
       </div>
     </div>,
     <div style={{display:"flex",flexDirection:"column",gap:12}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Récapitulatif</p>
       <div style={{background:"#eff6ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
-        {[["Nom",`${d.prenom} ${d.nom}`],["Contact",d.email],["Ville",d.ville],["Matières",d.matieres.join(", ")],["Niveaux",d.niveaux.join(", ")],["Expérience",d.experience],["Tarif",`${d.tarif.toLocaleString("fr-FR")} FCFA/h`],["Jours",d.jours.join(", ")],["Quartiers",d.tousQuartiers?"Tous les quartiers de Ouagadougou":d.quartiersCouVerts.join(", ")]]
+        {[["Nom",`${d.prenom} ${d.nom}`],["Contact",d.email],["Ville",d.ville],["Matières",d.matieres.join(", ")],["Niveaux",d.niveaux.join(", ")],["Expérience",d.experience],["Tarif",`${d.tarif.toLocaleString("fr-FR")} FCFA/h`],["Jours",d.jours.join(", ")],["Villes",d.tousQuartiers?"Toutes les villes du Burkina Faso":d.quartiersCouVerts.join(", ")]]
           .map(([k,v])=><div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827",textAlign:"right",maxWidth:"60%"}}>{v||"—"}</span></div>)}
       </div>
       <p style={{fontSize:11,color:"#9ca3af"}}>Réponse sous 48h après examen de votre profil.</p>
@@ -821,7 +822,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
               <h1 style={{fontSize:26,fontWeight:900,margin:"0 0 4px",color:"#111827"}}>{tuteur.prenom} {tuteur.nom}</h1>
               <p style={{fontSize:16,color:"#6366f1",fontWeight:700,margin:"0 0 10px"}}>{tuteur.subject}</p>
               <div style={{display:"flex",gap:16,flexWrap:"wrap",fontSize:14,color:"#6b7280"}}>
-                <span>📍 {tuteur.quartier||"Ouagadougou"}</span>
+                <span>📍 {tuteur.quartier||"Burkina Faso"}</span>
                 <span>🎓 {tuteur.sessions} séances réalisées</span>
                 <span><Stars n={tuteur.rating}/></span>
               </div>
@@ -1064,7 +1065,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           <div style={{position:"relative"}}>
             <select value={activeQ||""} onChange={e=>setActiveQ(e.target.value||null)}
               style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeQ?"#1d6fe8":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff",color:activeQ?"#1d6fe8":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Inter',sans-serif",minWidth:160}}>
-              <option value="">📍 Tous les quartiers</option>
+              <option value="">📍 Toutes les villes</option>
               {QUARTIERS.map(q=><option key={q} value={q}>{q}</option>)}
             </select>
             <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeQ?"#1d6fe8":"#f0f0f0",borderLeft:`1px solid ${activeQ?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeQ?"#fff":"#6b7280"}}>▼</span>
@@ -1100,13 +1101,13 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
       {/* HERO */}
       <div className="ba-hero" style={{textAlign:"center",padding:"90px 40px 32px",background:"rgba(255,255,255,0.55)"}}>
         <span style={{display:"inline-block",background:T.primarySoft,color:T.primary,fontSize:13,fontWeight:600,padding:"5px 16px",borderRadius:999,marginBottom:24}}>
-          Tuteurs spécialisés · CP au 3ème
+          Tuteurs spécialisés · 7 à 17 ans
         </span>
         <h1 style={{fontSize:54,fontWeight:900,color:T.ink,lineHeight:1.1,maxWidth:640,margin:"0 auto 18px",letterSpacing:"-1.5px"}}>
           Trouvez le bon tuteur<br/>pour votre enfant
         </h1>
         <p style={{fontSize:17,color:T.muted,maxWidth:520,margin:"0 auto 40px",lineHeight:1.7}}>
-          Chaque tuteur sur Brillance Académie est sélectionné pour son expérience avec les jeunes élèves — phonics, maths de base, lecture, et plus encore.
+          Chaque tuteur sur Brillance Académie est sélectionné pour son expertise en anglais technique et informatique — pour les enfants de 7 à 17 ans au Burkina Faso.
         </p>
         {/* Search bar */}
         <div style={{display:"flex",maxWidth:580,margin:"0 auto 28px",background:"#fff",borderRadius:999,border:"1.5px solid #e5e7eb",overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
@@ -1118,7 +1119,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
         </div>
         {/* Trust pills */}
         <div style={{display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap",marginBottom:18}}>
-          {[["✓","Tuteurs vérifiés"],["✓","Certifiés élémentaire"],["✓","-20 % sur la 1ʳᵉ séance"]].map(([icon,txt])=>(
+          {[["✓","Tuteurs vérifiés"],["✓","Anglais & Informatique"],["✓","-20 % sur la 1ʳᵉ séance"]].map(([icon,txt])=>(
             <span key={txt} style={{fontSize:14,color:T.body,display:"flex",alignItems:"center",gap:6}}>
               <span style={{color:T.success,fontWeight:700}}>{icon}</span>{txt}
             </span>
@@ -1143,9 +1144,9 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           {/* Steps timeline — un seul accent indigo, icônes pour différencier */}
           <div className="ba-how-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:24,marginBottom:56}}>
             {[
-              {n:"01",icon:"📝",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, niveau, quartier de Ouagadougou, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
-              {n:"02",icon:"🔍",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés au niveau et au programme de votre école. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
-              {n:"03",icon:"📅",t:"Vous choisissez le créneau",d:"On vous propose des créneaux disponibles selon votre quartier. Séances à domicile ou en ligne, selon votre préférence.",tag:"Flexible"},
+              {n:"01",icon:"📝",t:"Décrivez les besoins de votre enfant",d:"Remplissez notre formulaire en 2 minutes : matière, tranche d'âge, ville au Burkina Faso, disponibilités. Plus c'est précis, meilleur sera le match.",tag:"2 min"},
+              {n:"02",icon:"🔍",t:"On sélectionne votre tuteur",d:"Notre équipe revoit les profils et sélectionne 1 à 3 tuteurs adaptés à la tranche d'âge et aux objectifs de votre enfant. Chaque tuteur est vérifié et certifié.",tag:"Sous 24h"},
+              {n:"03",icon:"📅",t:"Vous choisissez le créneau",d:"On vous propose des créneaux disponibles selon votre ville. Séances à domicile ou en ligne, selon votre préférence.",tag:"Flexible"},
               {n:"04",icon:"💳",t:"Paiement sécurisé à la séance",d:"Orange Money, Moov Money, Coris Money ou carte bancaire. Aucun abonnement, aucun engagement. La première séance d'essai est à −20 %.",tag:"Sans engagement"},
               {n:"05",icon:"📊",t:"Suivi & compte-rendu",d:"Après chaque séance, vous recevez un compte-rendu par WhatsApp : points travaillés, progrès, exercices recommandés.",tag:"Après chaque séance"},
               {n:"06",icon:"🏆",t:"Résultats garantis",d:"Si vous n'êtes pas satisfait après la première séance, nous vous remboursons intégralement. Zéro risque, satisfaction garantie.",tag:"Garantie 100 %"},
@@ -1555,7 +1556,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <Inp label="Mot de passe (optionnel — min. 6 caractères)" value={bi.password} onChange={v=>setBI("password",v)} placeholder="Laissez vide pour passer" type="password"/>
               <p style={{fontSize:11,color:T.subtle,margin:"-8px 0 0"}}>💡 Optionnel. Si renseigné, vous pourrez suivre vos réservations dans votre espace parent. Sinon, vous recevrez tout par WhatsApp.</p>
               <Inp label="Prénom de l'enfant" value={bi.enfant} onChange={v=>setBI("enfant",v)} placeholder=""/>
-              <Sel label="Niveau de l'enfant" value={bi.niveau} onChange={v=>setBI("niveau",v)} options={NIVEAUX}/>
+              <Sel label="Tranche d'âge de l'enfant" value={bi.niveau} onChange={v=>setBI("niveau",v)} options={NIVEAUX}/>
               {(() => {
                 const pwdOk = !bi.password || bi.password.length >= 6;
                 const canGo = bi.nom && bi.sexe && bi.email && bi.enfant && pwdOk;
@@ -1645,7 +1646,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
             <div className="ba-footer-brand">
               <p style={{fontWeight:900,fontSize:20,color:"#111827",margin:"0 0 10px"}}>🎓 Brillance Académie</p>
               <p style={{fontSize:13,color:"#4b5563",lineHeight:1.8,margin:"0 0 20px",maxWidth:280}}>
-                La plateforme de tutorat de référence à Ouagadougou. Des tuteurs certifiés pour les élèves du CP au 3ème.
+                La plateforme de tutorat de référence au Burkina Faso. Des tuteurs certifiés en anglais et informatique pour les 7–17 ans.
               </p>
               {/* WhatsApp CTA */}
               <a href="https://wa.me/22677166565" target="_blank" rel="noreferrer"
@@ -1712,7 +1713,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
             </div>
             <div style={{display:"flex",alignItems:"center",gap:6}}>
               <span style={{width:8,height:8,borderRadius:999,background:"#22c55e",display:"inline-block"}}/>
-              <span style={{color:"#475569",fontSize:12}}>Plateforme en ligne · Ouagadougou</span>
+              <span style={{color:"#475569",fontSize:12}}>Plateforme en ligne · Burkina Faso</span>
             </div>
           </div>
         </div>
@@ -2011,11 +2012,11 @@ function Admin({ goHome }) {
             <div style={S.card}>
               <h2 style={{fontSize:16,fontWeight:700,margin:"0 0 16px",color:"#111827"}}>Activité récente</h2>
               {[
-                {dot:"#10b981",msg:"Réservation confirmée",detail:"Moussa (CM1) × Mme Claire B. · Mercredi 15h00",time:"Il y a 8 min"},
-                {dot:"#6366f1",msg:"Nouvel inscrit parent",detail:"Ndéye Faye · enfant Lamine, CM2",time:"Il y a 45 min"},
+                {dot:"#10b981",msg:"Réservation confirmée",detail:"Moussa (10–12 ans) × Mme Aminata K. · Mercredi 15h00",time:"Il y a 8 min"},
+                {dot:"#6366f1",msg:"Nouvel inscrit parent",detail:"Ndéye Faye · enfant Lamine, 13–15 ans",time:"Il y a 45 min"},
                 {dot:"#3b82f6",msg:"Paiement Wave reçu",detail:"Ibrahima Sow · 27 500 FCFA",time:"Il y a 2h"},
-                {dot:"#f59e0b",msg:"Candidature tuteur",detail:"Mme Amara N. · Arts & Musique",time:"Il y a 3h"},
-                {dot:"#10b981",msg:"Séance complétée",detail:"M. Daniel K. × Aïssatou (CP)",time:"Il y a 5h"},
+                {dot:"#f59e0b",msg:"Candidature tuteur",detail:"Mme Mariam S. · Initiation informatique",time:"Il y a 3h"},
+                {dot:"#10b981",msg:"Séance complétée",detail:"M. Seydou B. × Aïssatou (7–9 ans)",time:"Il y a 5h"},
               ].map((a,i)=>(
                 <div key={i} style={{display:"flex",gap:14,alignItems:"flex-start",padding:"10px 0",borderBottom:i<4?"1px solid #f8fafc":"none"}}>
                   <div style={{width:8,height:8,borderRadius:999,background:a.dot,marginTop:6,flexShrink:0}}/>
@@ -2227,7 +2228,7 @@ function Admin({ goHome }) {
                     <SexeToggle value={form.sexe||""} onChange={v=>setF("sexe",v)}/>
                     <Inp label="E-mail" value={form.email||""} onChange={v=>setF("email",v)} placeholder="aminata@gmail.com" type="email"/>
                     <Inp label="Téléphone" value={form.telephone||""} onChange={v=>setF("telephone",v)} placeholder="+226 77 00 00 00" type="tel" filter="tel"/>
-                    <Inp label="Enfant (prénom, niveau)" value={form.enfant||""} onChange={v=>setF("enfant",v)} placeholder="Moussa, CM1"/>
+                    <Inp label="Enfant (prénom, tranche d'âge)" value={form.enfant||""} onChange={v=>setF("enfant",v)} placeholder="Moussa, 10–12 ans"/>
                     <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif","Refusé"]}/>
                     <button disabled={!form.nom||!form.email} onClick={()=>{
                       if(editTarget) setParents(p=>p.map(x=>x.id===editTarget.id?{...x,...form}:x));
@@ -2356,7 +2357,7 @@ function Admin({ goHome }) {
                   <button onClick={()=>setShowForm(false)} style={{position:"absolute",top:16,right:18,background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#9ca3af"}}>×</button>
                   <h2 style={{fontSize:18,fontWeight:800,margin:"0 0 20px",color:"#111827"}}>{editTarget?"Modifier":"Ajouter"} un établissement</h2>
                   <div style={{display:"flex",flexDirection:"column",gap:14}}>
-                    <Inp label="Nom de l'établissement" value={form.nom||""} onChange={v=>setF("nom",v)} placeholder="Ex: École Primaire Les Étoiles"/>
+                    <Inp label="Nom de l'établissement" value={form.nom||""} onChange={v=>setF("nom",v)} placeholder="Ex: Lycée Philippe Zinda Kaboré"/>
                     <Inp label="Quartier" value={form.quartier||""} onChange={v=>setF("quartier",v)} placeholder="Ex: Ouaga 2000"/>
                     <div style={{display:"flex",flexDirection:"column",gap:6}}>
                       <label style={{fontSize:13,fontWeight:600,color:"#374151"}}>Type</label>
@@ -2462,10 +2463,10 @@ function Admin({ goHome }) {
                       <Sel label="Statut" value={form.statut||"En attente"} onChange={v=>setF("statut",v)} options={["En attente","Actif","Inactif","Refusé"]}/>
                     </div>
                     <div>
-                      <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
+                      <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Villes couvertes</label>
                       <button type="button" onClick={()=>setF("quartiersCouVerts", (form.quartiersCouVerts||[]).length===QUARTIERS.length ? [] : [...QUARTIERS])}
                         style={{padding:"6px 14px",borderRadius:999,border:`2px solid ${(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#1d6fe8":"#e5e7eb"}`,background:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#dbeafe":"#f9fafb",color:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#1d6fe8":"#374151",fontWeight:700,fontSize:12,cursor:"pointer",marginBottom:8}}>
-                        {(form.quartiersCouVerts||[]).length===QUARTIERS.length?"✓ Tous les quartiers":"Tous les quartiers"}
+                        {(form.quartiersCouVerts||[]).length===QUARTIERS.length?"✓ Toutes les villes":"Toutes les villes"}
                       </button>
                       <div style={{display:"flex",flexWrap:"wrap",gap:5,maxHeight:120,overflowY:"auto"}}>
                         {QUARTIERS.map(q=>{
@@ -2502,9 +2503,9 @@ function Admin({ goHome }) {
             </p>
 
             {[
-              {label:"Points travaillés",key:"points",ph:"Ex : Tables de multiplication, fractions, lecture de texte..."},
+              {label:"Points travaillés",key:"points",ph:"Ex : Vocabulaire anglais, exercices de conversation, programmation Scratch..."},
               {label:"Progrès observés",key:"progres",ph:"Ex : Bonne compréhension, encore des difficultés sur les divisions..."},
-              {label:"Exercices recommandés",key:"exercices",ph:"Ex : Pages 34–36 du cahier de maths, relire le chapitre 3..."},
+              {label:"Exercices recommandés",key:"exercices",ph:"Ex : Exercices 5–8 du workbook anglais, finir le projet Scratch..."},
             ].map(({label,key,ph})=>(
               <div key={key} style={{marginBottom:14}}>
                 <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:5}}>{label}</label>
@@ -2767,7 +2768,7 @@ function PageEspaceTuteur({ goHome }) {
                   </div>
 
                   <div style={{marginBottom:20}}>
-                    <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Quartiers couverts</label>
+                    <label style={{fontSize:12,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>Villes couvertes</label>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {QUARTIERS_LIST.map(q=>(
                         <button key={q} onClick={()=>toggleItem("quartiersCouVerts",q)}

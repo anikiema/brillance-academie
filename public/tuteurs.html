@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nos Tuteurs — Brillance Académie · Ouagadougou</title>
-  <meta name="description" content="Trouvez votre tuteur idéal à Ouagadougou. 15 tuteurs certifiés disponibles en mathématiques, lecture, sciences et plus. Cours à domicile. Première séance à −20%." />
+  <title>Nos Formateurs — Brillance Académie · Anglais &amp; Informatique au Burkina Faso</title>
+  <meta name="description" content="Trouvez votre formateur idéal en Anglais ou Informatique au Burkina Faso. 15 formateurs certifiés disponibles. Cours en ligne &amp; à domicile pour enfants de 7 à 17 ans. Première séance à −20%." />
+  <meta name="keywords" content="anglais informatique Burkina Faso, cours en ligne enfants BF, programmation scratch Ouagadougou, tech kids Burkina" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -283,14 +284,14 @@
     <div class="nav-inner">
       <a href="index.html" class="nav-logo"><span>🔆</span> Brillance Académie</a>
       <ul class="nav-links">
-        <li><a href="tuteurs.html" class="active">Tuteurs</a></li>
+        <li><a href="tuteurs.html" class="active">Formateurs</a></li>
         <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
         <li><a href="matieres.html">Matières</a></li>
         <li><a href="temoignages.html">Témoignages</a></li>
       </ul>
       <div class="nav-actions">
-        <a href="devenir-tuteur.html" class="nav-ghost">Devenir tuteur</a>
-        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+        <a href="devenir-tuteur.html" class="nav-ghost">Devenir formateur</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un formateur</a>
       </div>
     </div>
   </nav>
@@ -301,10 +302,10 @@
   <div class="page-header">
     <div class="page-header-inner">
       <div>
-        <h1>Nos tuteurs à Ouagadougou</h1>
-        <p class="page-header-sub">15 tuteurs certifiés disponibles · Cours à domicile · Première séance à −20%</p>
+        <h1>Trouvez un formateur en Anglais ou Informatique</h1>
+        <p class="page-header-sub">15 formateurs certifiés disponibles · Cours en ligne &amp; à domicile au Burkina Faso · Première séance à −20%</p>
       </div>
-      <div class="count-badge" id="count-badge">✅ 15 tuteurs trouvés</div>
+      <div class="count-badge" id="count-badge">✅ 15 formateurs trouvés</div>
     </div>
   </div>
 
@@ -318,29 +319,26 @@
       <span class="filter-label">Matière</span>
       <div class="filter-group" id="filter-matiere">
         <button class="filter-chip active" data-value="">Toutes</button>
-        <button class="filter-chip" data-value="Lecture">📖 Lecture</button>
-        <button class="filter-chip" data-value="Mathématiques">🔢 Maths</button>
-        <button class="filter-chip" data-value="Sciences">🔬 Sciences</button>
-        <button class="filter-chip" data-value="Histoire">🌍 Histoire</button>
-        <button class="filter-chip" data-value="Arts">🎨 Arts</button>
-        <button class="filter-chip" data-value="Technologie">💻 Techno</button>
+        <button class="filter-chip" data-value="Anglais débutant">🔤 Anglais débutant</button>
+        <button class="filter-chip" data-value="Anglais intermédiaire">💬 Anglais interm.</button>
+        <button class="filter-chip" data-value="Anglais avancé">🗣️ Anglais avancé</button>
+        <button class="filter-chip" data-value="Initiation informatique">🖥️ Initiation info.</button>
+        <button class="filter-chip" data-value="Programmation (Scratch)">🧩 Scratch</button>
+        <button class="filter-chip" data-value="Python & Algorithmique">🐍 Python</button>
+        <button class="filter-chip" data-value="Bureautique (Word/Excel)">📊 Bureautique</button>
+        <button class="filter-chip" data-value="Culture numérique">🌐 Culture num.</button>
       </div>
 
       <div class="filter-divider"></div>
 
-      <!-- Niveau -->
-      <span class="filter-label">Niveau</span>
+      <!-- Tranche d'âge -->
+      <span class="filter-label">Âge</span>
       <div class="filter-group" id="filter-niveau">
         <button class="filter-chip active" data-value="">Tous</button>
-        <button class="filter-chip" data-value="CP">CP</button>
-        <button class="filter-chip" data-value="CE1">CE1</button>
-        <button class="filter-chip" data-value="CE2">CE2</button>
-        <button class="filter-chip" data-value="CM1">CM1</button>
-        <button class="filter-chip" data-value="CM2">CM2</button>
-        <button class="filter-chip" data-value="6ème">6ème</button>
-        <button class="filter-chip" data-value="5ème">5ème</button>
-        <button class="filter-chip" data-value="4ème">4ème</button>
-        <button class="filter-chip" data-value="3ème">3ème</button>
+        <button class="filter-chip" data-value="7–9 ans">7–9 ans</button>
+        <button class="filter-chip" data-value="10–12 ans">10–12 ans</button>
+        <button class="filter-chip" data-value="13–15 ans">13–15 ans</button>
+        <button class="filter-chip" data-value="16–17 ans">16–17 ans</button>
       </div>
 
       <div class="filter-spacer"></div>
@@ -388,21 +386,21 @@
     <!-- Empty state -->
     <div class="empty-state" id="empty-state">
       <div class="empty-icon">🔍</div>
-      <div class="empty-title">Aucun tuteur trouvé</div>
+      <div class="empty-title">Aucun formateur trouvé</div>
       <p class="empty-desc">Essayez d'autres filtres ou <a href="https://wa.me/22677166565" style="color:var(--primary);font-weight:600;">contactez-nous sur WhatsApp</a> pour un profil sur mesure.</p>
     </div>
 
     <!-- Load More -->
     <div class="load-more" id="load-more">
-      <button class="btn btn-secondary btn-lg" onclick="this.textContent='Chargement…'; setTimeout(()=>this.textContent='✓ Tous les tuteurs affichés',1000)">
-        ↓ Charger plus de tuteurs
+      <button class="btn btn-secondary btn-lg" onclick="this.textContent='Chargement…'; setTimeout(()=>this.textContent='✓ Tous les formateurs affichés',1000)">
+        ↓ Charger plus de formateurs
       </button>
     </div>
 
     <!-- CTA Banner -->
     <div class="cta-banner">
-      <h2>Vous ne trouvez pas le bon tuteur ?</h2>
-      <p>Contactez-nous sur WhatsApp, nous vous aidons à trouver le profil idéal pour votre enfant.</p>
+      <h2>Vous ne trouvez pas le bon formateur ?</h2>
+      <p>Contactez-nous sur WhatsApp, nous vous aidons à trouver le profil idéal en Anglais ou Informatique pour votre enfant.</p>
       <a href="https://wa.me/22677166565" target="_blank" class="btn btn-white btn-lg">
         💬 +226 77 16 65 65
       </a>
@@ -418,7 +416,7 @@
       <div class="footer-top">
         <div>
           <div class="footer-logo">🔆 Brillance Académie</div>
-          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <p class="footer-tagline">Des formateurs certifiés en Anglais &amp; Informatique pour les 7–17 ans, partout au Burkina Faso.</p>
           <div class="footer-payment">
             <span class="footer-pay-chip">🟠 Orange Money</span>
             <span class="footer-pay-chip">🔵 Moov Money</span>
@@ -428,7 +426,7 @@
         <div>
           <div class="footer-col-title">Navigation</div>
           <div class="footer-links">
-            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="tuteurs.html">Nos formateurs</a>
             <a href="comment-ca-marche.html">Fonctionnement</a>
             <a href="matieres.html">Matières</a>
             <a href="temoignages.html">Témoignages</a>
@@ -438,25 +436,25 @@
         <div>
           <div class="footer-col-title">Matières</div>
           <div class="footer-links">
-            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
-            <a href="matieres.html">🔢 Mathématiques</a>
-            <a href="matieres.html">🔬 Sciences</a>
-            <a href="matieres.html">🌍 Histoire / Géo</a>
-            <a href="matieres.html">💻 Technologie</a>
+            <a href="matieres.html">🔤 Anglais débutant</a>
+            <a href="matieres.html">💬 Anglais intermédiaire</a>
+            <a href="matieres.html">🖥️ Initiation informatique</a>
+            <a href="matieres.html">🧩 Programmation (Scratch)</a>
+            <a href="matieres.html">🐍 Python &amp; Algorithmique</a>
           </div>
         </div>
         <div>
           <div class="footer-col-title">Contact</div>
           <div class="footer-links">
             <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
-            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="devenir-tuteur.html">Devenir formateur</a>
             <a href="faq.html">FAQ</a>
             <a href="contact.html">Formulaire contact</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>© 2025 Brillance Académie · Burkina Faso</span>
         <span>Tous droits réservés</span>
       </div>
     </div>
@@ -518,7 +516,7 @@
           </a>
           <div class="tutor-subject-chip">${subjectEmoji(t.subject || t.matiere)}${t.subject || t.matiere || ''}</div>
           <div class="tutor-stars">${starsHtml(rating)}</div>
-          <div class="tutor-sessions">${sessions > 0 ? sessions + ' séances réalisées' : 'Nouveau tuteur'}</div>
+          <div class="tutor-sessions">${sessions > 0 ? sessions + ' séances réalisées' : 'Nouveau formateur'}</div>
           <p class="tutor-bio">${t.bio || ''}</p>
           <div class="tutor-price">${fmt ? fmt(price) : price.toLocaleString('fr-FR')} FCFA <span>/ séance</span></div>
           ${niveaux.length ? `<div class="tutor-levels">${niveaux.map(n => `<span class="level-chip">${n}</span>`).join('')}</div>` : ''}
@@ -541,12 +539,12 @@
       if (list.length === 0) {
         grid.innerHTML = '';
         empty.classList.add('visible');
-        badge.textContent = '✅ 0 tuteur trouvé';
+        badge.textContent = '✅ 0 formateur trouvé';
         loadMore.style.display = 'none';
       } else {
         empty.classList.remove('visible');
         grid.innerHTML = list.map(buildCard).join('');
-        badge.textContent = `✅ ${list.length} tuteur${list.length > 1 ? 's' : ''} trouvé${list.length > 1 ? 's' : ''}`;
+        badge.textContent = `✅ ${list.length} formateur${list.length > 1 ? 's' : ''} trouvé${list.length > 1 ? 's' : ''}`;
         loadMore.style.display = '';
       }
     }
