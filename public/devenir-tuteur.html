@@ -263,7 +263,7 @@
         <div class="apply-card-title">Candidater en 2 minutes</div>
         <div class="apply-card-sub">Réponse de notre équipe sous 24h.</div>
 
-        <form id="candidature-form" onsubmit="handleSubmit(event)">
+        <form id="candidature-form" >
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Prénom</label>
@@ -584,17 +584,33 @@
       btn.disabled = true;
       btn.textContent = 'Envoi en cours…';
 
-      const inputs = form.querySelectorAll('input, select');
-      const prenom   = inputs[0].value.trim();
-      const nom      = inputs[1].value.trim();
-      const tel      = inputs[2].value.trim();
-      const email    = inputs[3].value.trim();
-      const matiere  = form.querySelector('select:nth-of-type(1)').value;
-      const niveau   = form.querySelector('select:nth-of-type(2)').value;
-      const quartier = inputs[inputs.length - 1].value.trim();
+      const prenom   = (form.querySelector('input[name="prenom"]')   || form.querySelectorAll('input')[0])?.value.trim() || '';
+      const nom      = (form.querySelector('input[name="nom"]')      || form.querySelectorAll('input')[1])?.value.trim() || '';
+      const tel      = (form.querySelector('input[name="telephone"]')|| form.querySelectorAll('input')[2])?.value.trim() || '';
+      const email    = (form.querySelector('input[name="email"]')    || form.querySelectorAll('input')[3])?.value.trim() || '';
+      const subject  = form.querySelector('select')?.value || 'Mathématiques';
+      const niveaux  = [form.querySelectorAll('select')[1]?.value || 'CP–CM2'];
+      const quartier = form.querySelectorAll('input')[form.querySelectorAll('input').length - 1]?.value.trim() || '';
+
+      // Timeout de sécurité — 10 secondes max
+      const withTimeout = (promise, ms) => Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Délai dépassé')), ms))
+      ]);
 
       try {
-        await ajouterCandidatureTuteur({ prenom, nom, telephone: tel, email, matiere, niveau, quartier });
+        await withTimeout(
+          ajouterCandidatureTuteur({
+            prenom, nom,
+            telephone: tel,
+            email,
+            subject,          // ← champ correct en base
+            niveaux,
+            quartier,
+            price: 30000,     // ← requis NOT NULL, défaut modifiable par l'admin
+          }),
+          10000
+        );
         btn.textContent = '✅ Candidature envoyée ! Nous vous contacterons dans 24-48h.';
         btn.style.background = 'var(--success)';
         btn.style.boxShadow = '0 2px 8px rgba(16,185,129,.30)';

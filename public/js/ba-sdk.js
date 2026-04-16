@@ -77,8 +77,22 @@ export async function creerReservation(params) {
 }
 
 export async function ajouterCandidatureTuteur(form) {
+  // S'assurer que les champs NOT NULL sont présents
+  const payload = {
+    prenom:   form.prenom  || '',
+    nom:      form.nom     || '',
+    subject:  form.subject || form.matiere || 'Mathématiques',  // NOT NULL
+    price:    form.price   || 30000,                            // NOT NULL
+    statut:   'En attente',
+    sessions: 0,
+    email:    form.email     || null,
+    telephone:form.telephone || null,
+    quartier: form.quartier  || null,
+    niveaux:  form.niveaux   || [],
+    bio:      form.bio       || null,
+  };
   const { data, error } = await supabase
-    .from('tuteurs').insert([{ ...form, statut: 'En attente', sessions: 0 }]).select().single();
+    .from('tuteurs').insert([payload]).select().single();
   if (error) throw error;
   return data;
 }
