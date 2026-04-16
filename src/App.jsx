@@ -3173,22 +3173,22 @@ function App() {
   if (page === "admin" && !adminAuth)
     return <LoginAdmin
       onSuccess={() => setAdminAuth(true)}
-      onBack={() => goTo("accueil")}
+      onBack={() => window.location.href = "/"}
     />;
 
   if (page === "admin" && adminAuth)
-    return <Admin goHome={() => { goTo("accueil"); setAdminAuth(false); }} />;
+    return <Admin goHome={() => { setAdminAuth(false); window.location.href = "/"; }} />;
 
   if (page === "espace-parent")
-    return <PageEspaceParent goHome={() => goTo("accueil")} />;
+    return <PageEspaceParent goHome={() => window.location.href = "/"} />;
 
   if (page === "espace-tuteur")
-    return <PageEspaceTuteur goHome={() => goTo("accueil")} />;
+    return <PageEspaceTuteur goHome={() => window.location.href = "/"} />;
 
   if (page === "tuteur" && tuteurId)
     return <PageTuteur
       tuteurId={tuteurId}
-      goHome={() => goTo("accueil")}
+      goHome={() => window.location.href = "/"}
       goPayment={b => { setBooking(b); goTo("paiement"); }}
     />;
 
@@ -3196,8 +3196,8 @@ function App() {
     return (
       <PagePaiement
         booking={booking}
-        onBack={()  => goTo("accueil")}
-        onSuccess={() => { setBooking(null); goTo("accueil"); }}
+        onBack={()  => window.location.href = "/"}
+        onSuccess={() => { setBooking(null); window.location.href = "/"; }}
       />
     );
 
