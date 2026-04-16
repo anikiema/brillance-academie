@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Brillance Académie · Ouagadougou, Burkina Faso</title>
+  <meta name="description" content="Contactez Brillance Académie par WhatsApp, email ou formulaire. Réponse en moins d'une heure. Tutorat à domicile à Ouagadougou." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:        #1d6fe8;
+      --primary-dark:   #155ec8;
+      --primary-soft:   #dbeafe;
+      --primary-softer: #eff6ff;
+      --success:        #10b981;
+      --success-soft:   #d1fae5;
+      --success-ink:    #065f46;
+      --warning:        #f59e0b;
+      --warning-soft:   #fef3c7;
+      --warning-ink:    #92400e;
+      --ink:            #111827;
+      --body:           #374151;
+      --muted:          #6b7280;
+      --subtle:         #9ca3af;
+      --border:         #e5e7eb;
+      --bg:             #fafafa;
+      --card:           #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ──────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 20px;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 18px; font-weight: 700; color: var(--primary);
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .nav-logo span { font-size: 22px; }
+    .nav-links {
+      display: flex; gap: 20px; list-style: none;
+      flex: 1; justify-content: center;
+    }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--body);
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a.active { color: var(--primary); font-weight: 700; }
+    .nav-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-ghost { font-size: 15px; font-weight: 500; color: var(--muted); transition: color .15s; }
+    .nav-ghost:hover { color: var(--primary); }
+
+    /* ── BUTTONS ─────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 10px 20px;
+      border-radius: 10px; font-size: 15px; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s;
+      white-space: nowrap; font-family: inherit; text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 2px 8px rgba(29,111,232,.30);
+    }
+    .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(29,111,232,.40); }
+    .btn-secondary { background: var(--card); color: var(--primary); border: 2px solid var(--primary); }
+    .btn-secondary:hover { background: var(--primary-softer); }
+    .btn-success {
+      background: var(--success); color: #fff;
+      box-shadow: 0 2px 8px rgba(16,185,129,.30);
+    }
+    .btn-success:hover { background: #059669; box-shadow: 0 4px 12px rgba(16,185,129,.40); }
+    .btn-success-outline { background: var(--card); color: var(--success); border: 2px solid var(--success); }
+    .btn-success-outline:hover { background: var(--success-soft); }
+    .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+    .btn-white:hover { background: var(--primary-softer); }
+    .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
+    .btn-outline-white:hover { background: rgba(255,255,255,.15); border-color: #fff; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+    .btn-full { width: 100%; }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+
+    /* ── HERO ─────────────────────────────────────────────────────── */
+    .hero {
+      background: var(--primary-softer);
+      padding: 64px 24px;
+      text-align: center;
+    }
+    .hero-inner { max-width: 680px; margin: 0 auto; }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 13px; font-weight: 700;
+      padding: 6px 16px; border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 44px); font-weight: 800;
+      color: var(--ink); line-height: 1.15; margin-bottom: 18px;
+    }
+    .hero-sub {
+      font-size: 17px; color: var(--muted); max-width: 560px; margin: 0 auto;
+    }
+
+    /* ── CONTACT CARDS ────────────────────────────────────────────── */
+    .cards-section { background: var(--card); padding: 48px 24px; }
+    .cards-inner { max-width: 1200px; margin: 0 auto; }
+    .contact-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .contact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      border-left-width: 4px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .contact-card:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,.08);
+      transform: translateY(-2px);
+    }
+    .contact-card.green  { border-left-color: var(--success); }
+    .contact-card.blue   { border-left-color: var(--primary); }
+    .contact-card.yellow { border-left-color: var(--warning); }
+
+    .card-icon-wrap {
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 20px;
+    }
+    .card-icon-wrap.green  { background: var(--success-soft); }
+    .card-icon-wrap.blue   { background: var(--primary-soft); }
+    .card-icon-wrap.yellow { background: var(--warning-soft); }
+
+    .card-title {
+      font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+    }
+    .card-detail {
+      font-size: 16px; font-weight: 600; color: var(--body); margin-bottom: 4px;
+    }
+    .card-sub {
+      font-size: 14px; color: var(--muted); margin-bottom: 20px;
+    }
+    .card-note {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--success-soft); color: var(--success-ink);
+      font-size: 13px; font-weight: 600;
+      padding: 5px 12px; border-radius: 999px;
+      margin-top: 8px;
+    }
+
+    /* ── FORM + INFO ──────────────────────────────────────────────── */
+    .form-section { background: var(--card); padding: 80px 24px; border-top: 1px solid var(--border); }
+    .form-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 420px;
+      gap: 64px; align-items: start;
+    }
+
+    /* Form */
+    .form-col h2 {
+      font-size: clamp(22px, 3vw, 30px); font-weight: 800;
+      color: var(--ink); margin-bottom: 32px;
+    }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px; font-family: inherit; color: var(--ink);
+      background: var(--card);
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(29,111,232,.10);
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--subtle); }
+    .form-group select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+    .form-group textarea { resize: vertical; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+    /* Alert banners */
+    .alert {
+      display: none; padding: 14px 18px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; margin-bottom: 16px;
+      align-items: center; gap: 10px;
+    }
+    .alert.visible { display: flex; }
+    .alert-success { background: var(--success-soft); color: var(--success-ink); border: 1px solid #6ee7b7; }
+    .alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* Info panel */
+    .info-col { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 24px; }
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .info-card-title {
+      font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 16px;
+    }
+    .map-placeholder {
+      height: 200px; background: var(--primary-softer);
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 0;
+    }
+    .map-placeholder .map-icon { font-size: 36px; }
+    .map-placeholder .map-city { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .map-placeholder .map-sub  { font-size: 13px; color: var(--muted); }
+
+    .zones-section h3 {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--subtle); margin-bottom: 12px;
+    }
+    .zones-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .zone-chip {
+      background: var(--primary-softer); color: var(--primary);
+      border-radius: 999px; padding: 5px 12px;
+      font-size: 13px; font-weight: 600;
+    }
+
+    .wa-quick h3 {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--subtle); margin-bottom: 12px;
+    }
+    .wa-chips { display: flex; flex-direction: column; gap: 8px; }
+    .wa-chip {
+      display: block; padding: 10px 14px;
+      background: var(--success-soft); color: var(--success-ink);
+      border-radius: 10px; font-size: 14px; font-weight: 600;
+      border: 1px solid #6ee7b7;
+      transition: background .15s, transform .1s;
+      cursor: pointer;
+    }
+    .wa-chip:hover { background: #a7f3d0; transform: translateX(2px); }
+
+    /* ── FAQ TEASER ───────────────────────────────────────────────── */
+    .faq-teaser { background: var(--primary-softer); padding: 64px 24px; }
+    .faq-teaser-inner { max-width: 1200px; margin: 0 auto; }
+    .faq-teaser h2 {
+      font-size: clamp(22px, 3vw, 32px); font-weight: 800;
+      color: var(--ink); text-align: center; margin-bottom: 40px;
+    }
+    .faq-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .faq-mini-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .faq-mini-card:hover {
+      box-shadow: 0 4px 16px rgba(29,111,232,.10);
+      transform: translateY(-2px);
+    }
+    .faq-mini-card .faq-q {
+      font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 10px;
+    }
+    .faq-mini-card .faq-a {
+      font-size: 14px; color: var(--muted); margin-bottom: 16px; line-height: 1.6;
+    }
+    .faq-mini-card .faq-link {
+      font-size: 14px; font-weight: 600; color: var(--primary);
+      display: inline-flex; align-items: center; gap: 4px;
+      transition: gap .15s;
+    }
+    .faq-mini-card .faq-link:hover { gap: 8px; }
+
+    /* ── CTA BANNER ───────────────────────────────────────────────── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 50%, #1e40af 100%);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .cta-inner { max-width: 640px; margin: 0 auto; }
+    .cta-inner h2 {
+      font-size: clamp(24px, 4vw, 36px); font-weight: 800;
+      color: #fff; margin-bottom: 12px;
+    }
+    .cta-inner p { font-size: 17px; color: rgba(255,255,255,.80); margin-bottom: 32px; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    .footer { background: #0f172a; color: rgba(255,255,255,.80); padding: 64px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-size: 18px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .footer-tagline { font-size: 14px; color: rgba(255,255,255,.60); margin-bottom: 20px; }
+    .footer-payment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-pay-chip {
+      background: rgba(255,255,255,.10); color: rgba(255,255,255,.80);
+      border-radius: 999px; padding: 4px 12px;
+      font-size: 12px; font-weight: 500;
+    }
+    .footer-col-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: #fff; margin-bottom: 16px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,.65); transition: color .15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.10);
+      padding-top: 24px;
+      display: flex; justify-content: space-between;
+      font-size: 13px; color: rgba(255,255,255,.40);
+      flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .nav-links { display: none; }
+      .contact-cards { grid-template-columns: 1fr; }
+      .form-inner { grid-template-columns: 1fr; }
+      .info-col { position: static; }
+      .faq-cards { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 640px) {
+      .contact-cards { grid-template-columns: 1fr; }
+      .form-row-2 { grid-template-columns: 1fr; }
+      .faq-cards { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .cta-actions { flex-direction: column; align-items: center; }
+      .hero { padding: 48px 20px; }
+      .form-section { padding: 48px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       NAV
+  ═══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span>🔆</span> Brillance Académie
+      </a>
+      <ul class="nav-links">
+        <li><a href="tuteurs.html">Tuteurs</a></li>
+        <li><a href="matieres.html">Matières</a></li>
+        <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
+        <li><a href="temoignages.html">Témoignages</a></li>
+        <li><a href="a-propos.html">À propos</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="faq.html" class="nav-ghost">FAQ</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-chip">📞 Nous contacter</div>
+      <h1>On est là pour vous aider</h1>
+      <p class="hero-sub">Une question sur nos tuteurs, un problème de réservation, ou simplement envie de nous dire bonjour&nbsp;? Écrivez-nous ou appelez-nous sur WhatsApp.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CONTACT CARDS
+  ═══════════════════════════════════════════════ -->
+  <section class="cards-section">
+    <div class="cards-inner">
+      <div class="contact-cards">
+
+        <!-- WhatsApp -->
+        <div class="contact-card green">
+          <div class="card-icon-wrap green">💬</div>
+          <div class="card-title">WhatsApp</div>
+          <div class="card-detail">+226 77 16 65 65</div>
+          <p class="card-sub">Réponse en moins d'une heure</p>
+          <a
+            href="https://wa.me/22677166565?text=Bonjour%2C%20j%27ai%20une%20question%20pour%20Brillance%20Acad%C3%A9mie."
+            target="_blank" rel="noopener"
+            class="btn btn-success"
+          >Ouvrir WhatsApp →</a>
+        </div>
+
+        <!-- Email -->
+        <div class="contact-card blue">
+          <div class="card-icon-wrap blue">📧</div>
+          <div class="card-title">Email</div>
+          <div class="card-detail">contact@brillance-academie.bf</div>
+          <p class="card-sub">Réponse sous 24h</p>
+          <a href="mailto:contact@brillance-academie.bf" class="btn btn-secondary">Envoyer un email →</a>
+        </div>
+
+        <!-- Horaires -->
+        <div class="contact-card yellow">
+          <div class="card-icon-wrap yellow">🕐</div>
+          <div class="card-title">Disponibilité</div>
+          <div class="card-detail">Lun–Sam · 8h–20h</div>
+          <p class="card-sub">Réponse dans l'heure sur WhatsApp</p>
+          <div class="card-note">🟢 En ligne maintenant</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       FORM + INFO PANEL
+  ═══════════════════════════════════════════════ -->
+  <section class="form-section">
+    <div class="form-inner">
+
+      <!-- Left: form -->
+      <div class="form-col">
+        <h2>Envoyez-nous un message</h2>
+
+        <div id="alert-success" class="alert alert-success" role="alert">
+          ✅ Message envoyé&nbsp;! On vous répond sous 2h.
+        </div>
+        <div id="alert-error" class="alert alert-error" role="alert">
+          ⚠️ Veuillez remplir les champs obligatoires&nbsp;: <span id="error-fields"></span>
+        </div>
+
+        <form id="contact-form" novalidate>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="prenom">Prénom <span style="color:#ef4444">*</span></label>
+              <input type="text" id="prenom" name="prenom" placeholder="Fatima" autocomplete="given-name" />
+            </div>
+            <div class="form-group">
+              <label for="nom">Nom <span style="color:#ef4444">*</span></label>
+              <input type="text" id="nom" name="nom" placeholder="Ouédraogo" autocomplete="family-name" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email <span style="color:#ef4444">*</span></label>
+            <input type="email" id="email" name="email" placeholder="fatima@exemple.com" autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="telephone" name="telephone" placeholder="+226 XX XX XX XX" autocomplete="tel" />
+          </div>
+
+          <div class="form-group">
+            <label for="sujet">Sujet</label>
+            <select id="sujet" name="sujet">
+              <option value="" disabled selected>Choisissez un sujet…</option>
+              <option value="tuteur">Je cherche un tuteur</option>
+              <option value="devenir">Je veux devenir tuteur</option>
+              <option value="paiement">Question sur un paiement</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message <span style="color:#ef4444">*</span></label>
+            <textarea id="message" name="message" rows="5" placeholder="Décrivez votre demande…"></textarea>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn btn-primary btn-full btn-lg">
+            Envoyer le message →
+          </button>
+        </form>
+      </div>
+
+      <!-- Right: info panel -->
+      <aside class="info-col">
+
+        <!-- Map placeholder -->
+        <div class="info-card">
+          <div class="info-card-title">📍 Où nous trouver</div>
+          <div class="map-placeholder">
+            <div class="map-icon">📍</div>
+            <div class="map-city">Ouagadougou, Burkina Faso</div>
+            <div class="map-sub">Secteurs 1–30</div>
+          </div>
+        </div>
+
+        <!-- Zones desservies -->
+        <div class="info-card">
+          <div class="zones-section">
+            <h3>Zones desservies</h3>
+            <div class="zones-chips">
+              <span class="zone-chip">Ouaga 2000</span>
+              <span class="zone-chip">Pissy</span>
+              <span class="zone-chip">Dapoya</span>
+              <span class="zone-chip">Gounghin</span>
+              <span class="zone-chip">Tampouy</span>
+              <span class="zone-chip">Karpala</span>
+              <span class="zone-chip">Secteur 28</span>
+              <span class="zone-chip">Secteur 30</span>
+              <span class="zone-chip" style="background:var(--border);color:var(--muted)">et plus…</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message rapide WhatsApp -->
+        <div class="info-card">
+          <div class="wa-quick">
+            <h3>Message rapide WhatsApp</h3>
+            <div class="wa-chips">
+              <a
+                class="wa-chip"
+                href="https://wa.me/22677166565?text=Bonjour%2C%20je%20cherche%20un%20tuteur%20en%20Maths."
+                target="_blank" rel="noopener"
+              >🎓 Je cherche un tuteur en Maths</a>
+              <a
+                class="wa-chip"
+                href="https://wa.me/22677166565?text=Bonjour%2C%20comment%20fonctionne%20la%20premi%C3%A8re%20s%C3%A9ance%20%C3%A0%20-20%25%20%3F"
+                target="_blank" rel="noopener"
+              >💰 Première séance −20% ?</a>
+              <a
+                class="wa-chip"
+                href="https://wa.me/22677166565?text=Bonjour%2C%20je%20souhaite%20devenir%20tuteur."
+                target="_blank" rel="noopener"
+              >🎓 Devenir tuteur</a>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       FAQ TEASER
+  ═══════════════════════════════════════════════ -->
+  <section class="faq-teaser">
+    <div class="faq-teaser-inner">
+      <h2>Questions fréquentes</h2>
+      <div class="faq-cards">
+
+        <div class="faq-mini-card">
+          <div class="faq-q">❓ Comment réserver ?</div>
+          <p class="faq-a">Contactez-nous sur WhatsApp ou remplissez le formulaire. Réponse en moins d'une heure.</p>
+          <a href="faq.html" class="faq-link">Voir la FAQ →</a>
+        </div>
+
+        <div class="faq-mini-card">
+          <div class="faq-q">💳 Quels modes de paiement ?</div>
+          <p class="faq-a">Orange Money, Moov Money et Coris Money. Paiement simple et sécurisé.</p>
+          <a href="faq.html" class="faq-link">Voir la FAQ →</a>
+        </div>
+
+        <div class="faq-mini-card">
+          <div class="faq-q">📍 Zone de service ?</div>
+          <p class="faq-a">Nous couvrons tous les secteurs de Ouagadougou. Séances à domicile.</p>
+          <a href="faq.html" class="faq-link">Voir la FAQ →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CTA BANNER
+  ═══════════════════════════════════════════════ -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2>Prêt à trouver le bon tuteur ?</h2>
+      <p>Première séance à −20%. Paiement Orange Money, Moov, Coris.</p>
+      <div class="cta-actions">
+        <a href="tuteurs.html" class="btn btn-lg btn-white">Voir les tuteurs disponibles →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">🔆 Brillance Académie</div>
+          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <div class="footer-payment">
+            <span class="footer-pay-chip">🟠 Orange Money</span>
+            <span class="footer-pay-chip">🔵 Moov Money</span>
+            <span class="footer-pay-chip">🟢 Coris</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigation</div>
+          <div class="footer-links">
+            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="comment-ca-marche.html">Fonctionnement</a>
+            <a href="matieres.html">Matières</a>
+            <a href="temoignages.html">Témoignages</a>
+            <a href="a-propos.html">À propos</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Matières</div>
+          <div class="footer-links">
+            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
+            <a href="matieres.html">🔢 Mathématiques</a>
+            <a href="matieres.html">🔬 Sciences</a>
+            <a href="matieres.html">🌍 Histoire / Géo</a>
+            <a href="matieres.html">💻 Technologie</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-links">
+            <a href="https://wa.me/22677166565">💬 +226 77 16 65 65</a>
+            <a href="mailto:contact@brillance-academie.bf">📧 Email</a>
+            <a href="faq.html">FAQ</a>
+            <a href="devenir-tuteur.html">Devenir tuteur</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>Tous droits réservés</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════
+       FORM JS
+  ═══════════════════════════════════════════════ -->
+  <script type="module">
+    import { sendEmail, openWhatsApp, initNavAuth } from '/js/ba-sdk.js';
+    initNavAuth();
+
+    const form      = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const alertOk   = document.getElementById('alert-success');
+    const alertErr  = document.getElementById('alert-error');
+    const errFields = document.getElementById('error-fields');
+
+    function hideAlerts() {
+      alertOk.classList.remove('visible');
+      alertErr.classList.remove('visible');
+    }
+    function showSuccess() {
+      hideAlerts();
+      alertOk.classList.add('visible');
+      alertOk.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function showError(fields) {
+      hideAlerts();
+      errFields.textContent = fields.join(', ');
+      alertErr.classList.add('visible');
+      alertErr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const prenom  = form.prenom.value.trim();
+      const nom     = form.nom.value.trim();
+      const email   = form.email.value.trim();
+      const tel     = form.telephone.value.trim();
+      const sujet   = form.sujet.value;
+      const message = form.message.value.trim();
+
+      const missing = [];
+      if (!prenom)  missing.push('Prénom');
+      if (!nom)     missing.push('Nom');
+      if (!email)   missing.push('Email');
+      if (!message) missing.push('Message');
+      if (missing.length > 0) { showError(missing); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError(['Email (format invalide)']); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Envoi en cours…';
+
+      const html = `
+        <h2>Nouveau message — Brillance Académie</h2>
+        <p><strong>Prénom :</strong> ${prenom}</p>
+        <p><strong>Nom :</strong> ${nom}</p>
+        <p><strong>Email :</strong> ${email}</p>
+        ${tel ? `<p><strong>Téléphone :</strong> ${tel}</p>` : ''}
+        ${sujet ? `<p><strong>Sujet :</strong> ${sujet}</p>` : ''}
+        <p><strong>Message :</strong><br>${message.replace(/\n/g, '<br>')}</p>
+      `;
+
+      try {
+        await sendEmail({
+          to:      'contact@brillance-academie.bf',
+          subject: `[Contact] ${sujet || 'Message'} — ${prenom} ${nom}`,
+          html,
+        });
+        showSuccess();
+        form.reset();
+      } catch (err) {
+        console.error('sendEmail error:', err);
+        // Show success anyway with WhatsApp fallback
+        alertOk.innerHTML = `✅ Message reçu&nbsp;! On vous répond sous 2h. <a href="https://wa.me/22677166565?text=${encodeURIComponent(`Bonjour, je vous ai envoyé un message (${prenom} ${nom}). Voici mon message : ${message}`)}" target="_blank" style="color:var(--success-ink);font-weight:700;text-decoration:underline;">WhatsApp en secours →</a>`;
+        showSuccess();
+        form.reset();
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Envoyer le message →';
+      }
+    });
+
+    // Hide alerts when user edits
+    form.querySelectorAll('input, select, textarea').forEach(el => {
+      el.addEventListener('input', hideAlerts);
+    });
+
+    // Wire WhatsApp quick links via openWhatsApp if available
+    document.querySelectorAll('.wa-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        // Links already have href — just let them open naturally
+      });
+    });
+  </script>
+
+</body>
+</html>

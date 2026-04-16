@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claire B. — Tutrice Mathématiques · Brillance Académie</title>
+  <meta name="description" content="Réservez une séance avec Claire B., tutrice en mathématiques à Ouaga 2000. CP au CM2. 42 séances réalisées. 5 étoiles. Première séance à −20%." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:        #1d6fe8;
+      --primary-dark:   #155ec8;
+      --primary-soft:   #dbeafe;
+      --primary-softer: #eff6ff;
+      --success:        #10b981;
+      --success-soft:   #d1fae5;
+      --success-ink:    #065f46;
+      --warning:        #f59e0b;
+      --warning-soft:   #fef3c7;
+      --warning-ink:    #92400e;
+      --ink:            #111827;
+      --body:           #374151;
+      --muted:          #6b7280;
+      --subtle:         #9ca3af;
+      --border:         #e5e7eb;
+      --bg:             #fafafa;
+      --card:           #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--body);
+      font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ──────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px;
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 20px; height: 64px; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--primary); white-space: nowrap; flex-shrink: 0; }
+    .nav-logo span { font-size: 22px; }
+    .nav-links { display: flex; gap: 20px; list-style: none; flex: 1; justify-content: center; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--body); transition: color .15s; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-ghost { font-size: 15px; font-weight: 500; color: var(--muted); transition: color .15s; }
+    .nav-ghost:hover { color: var(--primary); }
+
+    /* ── BUTTONS ──────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s; white-space: nowrap; font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(29,111,232,.30); }
+    .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 14px rgba(29,111,232,.40); }
+    .btn-secondary { background: var(--card); color: var(--primary); border: 2px solid var(--primary); }
+    .btn-secondary:hover { background: var(--primary-softer); }
+    .btn-ghost-link { background: none; border: none; color: var(--primary); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; padding: 0; }
+    .btn-ghost-link:hover { text-decoration: underline; }
+    .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+    .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
+    .btn-outline-white:hover { background: rgba(255,255,255,.15); }
+    .btn-lg { padding: 14px 24px; font-size: 16px; border-radius: 12px; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ── BREADCRUMB ───────────────────────────────────────────────── */
+    .breadcrumb { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 24px; }
+    .breadcrumb-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .breadcrumb a { color: var(--primary); font-weight: 500; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { color: var(--subtle); }
+    .breadcrumb-current { color: var(--muted); }
+
+    /* ── PROFILE HERO ─────────────────────────────────────────────── */
+    .profile-section { background: var(--card); padding: 40px 24px 60px; }
+    .profile-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start; }
+
+    /* Left: Profile details */
+    .profile-left {}
+    .avatar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .tutor-avatar-lg { font-size: 72px; line-height: 1; }
+    .profile-name { font-size: 36px; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      background: var(--success-soft); color: var(--success-ink);
+    }
+    .subject-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .subject-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--primary-soft); color: var(--primary);
+      padding: 6px 14px; border-radius: 999px; font-size: 14px; font-weight: 600;
+    }
+    .rating-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; font-size: 15px; }
+    .stars { color: var(--warning); font-size: 18px; letter-spacing: 1px; }
+    .rating-num { font-weight: 700; color: var(--ink); }
+    .rating-sep { color: var(--border); }
+    .rating-meta { color: var(--muted); }
+    .level-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .level-chip { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: #f3f4f6; color: var(--muted); border: 1px solid var(--border); }
+    .days-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .day-item { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 500; color: var(--muted); }
+    .day-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; }
+
+    /* Bio */
+    .bio-section { margin-bottom: 24px; }
+    .bio-section h3 { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+    .bio-section p { font-size: 16px; color: var(--body); line-height: 1.75; }
+    .tags-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #f3f4f6; color: var(--body);
+      padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500;
+      border: 1px solid var(--border);
+    }
+
+    /* ── BOOKING CARD (sticky right) ──────────────────────────────── */
+    .booking-card {
+      position: sticky; top: 80px;
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 24px;
+      box-shadow: 0 8px 32px rgba(29,111,232,.10), 0 2px 8px rgba(0,0,0,.06);
+    }
+    .booking-price { font-size: 30px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+    .booking-price span { font-size: 15px; font-weight: 400; color: var(--muted); }
+    .first-session-badge {
+      background: var(--warning-soft); color: var(--warning-ink);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 13px; font-weight: 600; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .booking-section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--subtle); margin-bottom: 10px; }
+    /* Day buttons */
+    .day-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 18px; }
+    .day-btn {
+      padding: 9px 4px; border-radius: 8px; border: 1.5px solid var(--border);
+      font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer;
+      background: var(--card); text-align: center; transition: all .15s; font-family: inherit;
+    }
+    .day-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .day-btn.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+    /* Time slots */
+    .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 20px; }
+    .slot-btn {
+      padding: 8px 4px; border-radius: 8px; border: 1.5px solid var(--border);
+      font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer;
+      background: var(--card); text-align: center; transition: all .15s; font-family: inherit;
+    }
+    .slot-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .slot-btn.selected { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+    /* Payment */
+    .pay-row { display: flex; gap: 6px; margin-bottom: 20px; }
+    .pay-btn {
+      flex: 1; padding: 8px 4px; border-radius: 8px; border: 1.5px solid var(--border);
+      font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
+      background: var(--card); text-align: center; transition: all .15s; font-family: inherit;
+    }
+    .pay-btn:hover { border-color: var(--warning); }
+    .pay-btn.selected { background: #fff7ed; color: #c2410c; border-color: #fb923c; }
+    /* Book btn */
+    .book-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .payment-chips-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+    .pay-chip { font-size: 11px; font-weight: 500; color: var(--muted); padding: 3px 10px; background: #f3f4f6; border-radius: 999px; }
+
+    /* ── STATS BAR ────────────────────────────────────────────────── */
+    .stats-bar { background: var(--primary-softer); padding: 28px 24px; }
+    .stats-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+    .stat-item { text-align: center; padding: 8px 0; }
+    .stat-item:not(:last-child) { border-right: 1px solid var(--border); }
+    .stat-num { font-size: 28px; font-weight: 800; color: var(--primary); }
+    .stat-lbl { font-size: 14px; color: var(--muted); margin-top: 2px; }
+
+    /* ── SUBJECTS DETAIL ──────────────────────────────────────────── */
+    .section { padding: 60px 24px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-soft { background: var(--primary-softer); }
+    .section-h { font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 24px; }
+    .subjects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .subject-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .subject-card-icon { font-size: 32px; margin-bottom: 10px; }
+    .subject-card-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .subject-card-desc { font-size: 14px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+    .subject-card-levels { display: flex; gap: 5px; flex-wrap: wrap; }
+    .lvl-pill { padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; background: var(--primary-soft); color: var(--primary); }
+
+    /* ── AVAILABILITY CALENDAR ────────────────────────────────────── */
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .cal-day-header { text-align: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--subtle); padding-bottom: 8px; }
+    .cal-slots { display: flex; flex-direction: column; gap: 5px; }
+    .cal-slot {
+      padding: 6px 4px; border-radius: 6px; text-align: center;
+      font-size: 12px; font-weight: 600;
+    }
+    .cal-slot.avail { background: var(--success-soft); color: var(--success-ink); cursor: pointer; }
+    .cal-slot.avail:hover { background: var(--success); color: #fff; }
+    .cal-slot.empty { background: #f3f4f6; color: var(--border); }
+
+    /* ── REVIEWS ──────────────────────────────────────────────────── */
+    .reviews-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .reviews-summary { display: flex; align-items: center; gap: 10px; }
+    .reviews-big-num { font-size: 40px; font-weight: 800; color: var(--ink); }
+    .reviews-stars-col { display: flex; flex-direction: column; gap: 2px; }
+    .reviews-stars { font-size: 20px; color: var(--warning); }
+    .reviews-count { font-size: 13px; color: var(--muted); }
+    .reviews-grid { display: flex; flex-direction: column; gap: 16px; }
+    .review-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+    .reviewer-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .reviewer-meta { font-size: 13px; color: var(--muted); }
+    .review-stars { color: var(--warning); font-size: 14px; }
+    .review-text { font-size: 15px; color: var(--body); line-height: 1.65; }
+
+    /* ── SIMILAR TUTORS ───────────────────────────────────────────── */
+    .similar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .mini-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; transition: box-shadow .2s; }
+    .mini-card:hover { box-shadow: 0 4px 16px rgba(29,111,232,.10); }
+    .mini-avatar { font-size: 36px; }
+    .mini-info { flex: 1; }
+    .mini-name { font-size: 16px; font-weight: 700; color: var(--ink); }
+    .mini-sub { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .mini-stars { font-size: 13px; color: var(--warning); }
+    .mini-price { font-size: 14px; font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    .footer { background: var(--ink); color: rgba(255,255,255,.80); padding: 64px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-logo { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .footer-tagline { font-size: 14px; color: rgba(255,255,255,.60); margin-bottom: 20px; }
+    .footer-payment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-pay-chip { background: rgba(255,255,255,.10); color: rgba(255,255,255,.80); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500; }
+    .footer-col-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #fff; margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,.65); transition: color .15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.10); padding-top: 24px; display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,.40); flex-wrap: wrap; gap: 8px; }
+
+    /* ── MOBILE STICKY BAR ────────────────────────────────────────── */
+    .mobile-sticky-bar {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+      background: var(--card); border-top: 1px solid var(--border);
+      padding: 12px 20px; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .mobile-price { font-size: 18px; font-weight: 800; color: var(--ink); }
+    .mobile-price span { font-size: 13px; font-weight: 400; color: var(--muted); }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 1024px) { .profile-inner { grid-template-columns: 1fr; } .booking-card { position: static; } }
+    @media (max-width: 900px)  {
+      .nav-links { display: none; }
+      .subjects-grid { grid-template-columns: 1fr; }
+      .similar-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .mobile-sticky-bar { display: flex; }
+      body { padding-bottom: 72px; }
+    }
+    @media (max-width: 600px)  { .footer-top { grid-template-columns: 1fr; } .stats-inner { grid-template-columns: 1fr; } .stat-item:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 8px; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span>🔆</span> Brillance Académie</a>
+      <ul class="nav-links">
+        <li><a href="tuteurs.html">Tuteurs</a></li>
+        <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
+        <li><a href="matieres.html">Matières</a></li>
+        <li><a href="temoignages.html">Témoignages</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="devenir-tuteur.html" class="nav-ghost">Devenir tuteur</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <div class="breadcrumb-inner">
+      <a href="tuteurs.html">← Retour aux tuteurs</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Claire B.</span>
+    </div>
+  </div>
+
+  <!-- PROFILE HERO -->
+  <section class="profile-section">
+    <div class="profile-inner">
+
+      <!-- LEFT: Profile Details -->
+      <div class="profile-left">
+        <div class="avatar-row">
+          <span class="tutor-avatar-lg">👩‍🏫</span>
+          <div>
+            <div class="profile-name">Claire B.</div>
+            <span class="status-badge">● Actif</span>
+          </div>
+        </div>
+
+        <div class="subject-chips">
+          <span class="subject-chip">🔢 Mathématiques</span>
+          <span class="subject-chip">✏️ Écriture</span>
+        </div>
+
+        <div class="rating-row">
+          <span class="stars">★★★★★</span>
+          <span class="rating-num">5.0</span>
+          <span class="rating-sep">·</span>
+          <span class="rating-meta">42 séances réalisées</span>
+          <span class="rating-sep">·</span>
+          <span class="rating-meta">📍 Ouaga 2000</span>
+        </div>
+
+        <div class="level-chips">
+          <span class="level-chip">CP</span>
+          <span class="level-chip">CE1</span>
+          <span class="level-chip">CE2</span>
+          <span class="level-chip">CM1</span>
+          <span class="level-chip">CM2</span>
+        </div>
+
+        <div class="days-row">
+          <span class="day-item"><span class="day-dot"></span> Lundi</span>
+          <span class="day-item"><span class="day-dot"></span> Mercredi</span>
+          <span class="day-item"><span class="day-dot"></span> Vendredi</span>
+        </div>
+
+        <div class="bio-section">
+          <h3>À propos de Claire</h3>
+          <p>Spécialiste CP–CM2, passionnée par les méthodes ludiques et l'apprentissage par le jeu. J'aide les enfants à développer leur confiance en mathématiques grâce à des exercices concrets et adaptés à chaque niveau. Diplômée en Sciences de l'Éducation, j'ai 5 ans d'expérience en tutorat à domicile à Ouagadougou.</p>
+        </div>
+
+        <div class="tags-row">
+          <span class="tag">🎓 5 ans d'expérience</span>
+          <span class="tag">📜 Diplômée en Éducation</span>
+          <span class="tag">🏠 Cours à domicile</span>
+          <span class="tag">📍 Ouaga 2000</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Booking Card -->
+      <div class="booking-card">
+        <div class="booking-price">32 500 FCFA <span>/ séance</span></div>
+        <div class="first-session-badge">
+          🎉 Première séance à −20% → <strong>26 000 FCFA</strong>
+        </div>
+
+        <div class="booking-section-label">Choisissez un jour</div>
+        <div class="day-btns" id="day-btns">
+          <button class="day-btn" data-day="Lundi">Lundi</button>
+          <button class="day-btn selected" data-day="Mercredi">Mercredi</button>
+          <button class="day-btn" data-day="Vendredi">Vendredi</button>
+        </div>
+
+        <div class="booking-section-label">Choisissez un créneau</div>
+        <div class="slot-grid" id="slot-grid">
+          <button class="slot-btn">08h00</button>
+          <button class="slot-btn">09h00</button>
+          <button class="slot-btn selected">14h00</button>
+          <button class="slot-btn">15h00</button>
+          <button class="slot-btn">16h00</button>
+          <button class="slot-btn">17h00</button>
+        </div>
+
+        <div class="booking-section-label">Mode de paiement</div>
+        <div class="pay-row" id="pay-row">
+          <button class="pay-btn selected">🟠 Orange</button>
+          <button class="pay-btn">🔵 Moov</button>
+          <button class="pay-btn">🟢 Coris</button>
+        </div>
+
+        <button class="btn btn-primary btn-lg btn-full" id="book-btn">
+          📅 Réserver cette séance
+        </button>
+        <div style="text-align:center; margin-top:12px;">
+          <a href="https://wa.me/22677166565" target="_blank" class="btn-ghost-link">
+            ou contacter via WhatsApp →
+          </a>
+        </div>
+
+        <hr class="book-divider" />
+        <div style="font-size:12px; color:var(--subtle); text-align:center; margin-bottom:8px;">Paiement sécurisé via :</div>
+        <div class="payment-chips-row">
+          <span class="pay-chip">🟠 Orange Money</span>
+          <span class="pay-chip">🔵 Moov Money</span>
+          <span class="pay-chip">🟢 Coris Money</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-num">42</div>
+        <div class="stat-lbl">séances réalisées</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5.0 ★</div>
+        <div class="stat-lbl">note moyenne · 8 avis</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">CP – CM2</div>
+        <div class="stat-lbl">niveaux enseignés</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBJECTS DETAIL -->
+  <section class="section">
+    <div class="section-inner">
+      <h3 class="section-h">Matières enseignées</h3>
+      <div class="subjects-grid">
+        <div class="subject-card">
+          <div class="subject-card-icon">🔢</div>
+          <div class="subject-card-title">Mathématiques</div>
+          <div class="subject-card-desc">Calcul mental, géométrie, résolution de problèmes, fractions et logique. Approche ludique avec des supports visuels et des exercices pratiques.</div>
+          <div class="subject-card-levels">
+            <span class="lvl-pill">CP</span>
+            <span class="lvl-pill">CE1</span>
+            <span class="lvl-pill">CE2</span>
+            <span class="lvl-pill">CM1</span>
+            <span class="lvl-pill">CM2</span>
+          </div>
+        </div>
+        <div class="subject-card">
+          <div class="subject-card-icon">✏️</div>
+          <div class="subject-card-title">Écriture</div>
+          <div class="subject-card-desc">Expression écrite, calligraphie, orthographe et grammaire de base. Exercices progressifs adaptés au niveau de chaque enfant.</div>
+          <div class="subject-card-levels">
+            <span class="lvl-pill">CP</span>
+            <span class="lvl-pill">CE1</span>
+            <span class="lvl-pill">CE2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AVAILABILITY CALENDAR -->
+  <section class="section section-soft">
+    <div class="section-inner">
+      <h3 class="section-h">Disponibilités cette semaine</h3>
+      <div class="cal-grid">
+        <div>
+          <div class="cal-day-header">Lun</div>
+          <div class="cal-slots">
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot avail">14h00</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot avail">16h00</div>
+          </div>
+        </div>
+        <div>
+          <div class="cal-day-header">Mar</div>
+          <div class="cal-slots">
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+          </div>
+        </div>
+        <div>
+          <div class="cal-day-header">Mer</div>
+          <div class="cal-slots">
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot avail">09h00</div>
+            <div class="cal-slot avail">14h00</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot avail">16h00</div>
+          </div>
+        </div>
+        <div>
+          <div class="cal-day-header">Jeu</div>
+          <div class="cal-slots">
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+          </div>
+        </div>
+        <div>
+          <div class="cal-day-header">Ven</div>
+          <div class="cal-slots">
+            <div class="cal-slot avail">08h00</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot avail">14h00</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+          </div>
+        </div>
+        <div>
+          <div class="cal-day-header">Sam</div>
+          <div class="cal-slots">
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+          </div>
+        </div>
+        <div>
+          <div class="cal-day-header">Dim</div>
+          <div class="cal-slots">
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+            <div class="cal-slot empty">—</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:16px; display:flex; gap:16px; font-size:13px; color:var(--muted);">
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:var(--success-soft);display:inline-block;border:1px solid var(--success);"></span> Disponible</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:#f3f4f6;display:inline-block;border:1px solid var(--border);"></span> Indisponible</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="reviews-header">
+        <div class="reviews-summary">
+          <div class="reviews-big-num">5.0</div>
+          <div class="reviews-stars-col">
+            <div class="reviews-stars">★★★★★</div>
+            <div class="reviews-count">8 avis de parents</div>
+          </div>
+        </div>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-header">
+            <div>
+              <div class="reviewer-name">Aminata D.</div>
+              <div class="reviewer-meta">Maman de Moussa · CM1</div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+          <p class="review-text">Mon fils a rattrapé son retard en maths en 3 séances. Claire est exceptionnelle, très patiente et très pédagogue. Je recommande vivement !</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div>
+              <div class="reviewer-name">Ibrahima S.</div>
+              <div class="reviewer-meta">Papa de Fatou · CE2</div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+          <p class="review-text">Très bonne pédagogie, Fatou a retrouvé confiance en elle grâce à Claire. Les exercices sont bien adaptés au niveau et l'ambiance est détendue.</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div>
+              <div class="reviewer-name">Rokhaya N.</div>
+              <div class="reviewer-meta">Maman d'Oumar · CP</div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+          <p class="review-text">Claire est patiente et motivante. Mon fils attend ses cours avec impatience ! En 4 semaines, ses notes ont vraiment progressé.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIMILAR TUTORS -->
+  <section class="section section-soft">
+    <div class="section-inner">
+      <h3 class="section-h">D'autres tuteurs disponibles</h3>
+      <div class="similar-grid">
+        <a href="tuteur-profil.html" class="mini-card">
+          <span class="mini-avatar">👨‍🏫</span>
+          <div class="mini-info">
+            <div class="mini-name">Kwame A.</div>
+            <div class="mini-sub">📖 Lecture &amp; Phonics · CP–CE2</div>
+            <div class="mini-stars">★★★★★ <span style="font-size:12px;color:var(--muted);font-weight:500;">38 séances</span></div>
+          </div>
+          <div class="mini-price">27 500 FCFA</div>
+        </a>
+        <a href="tuteur-profil.html" class="mini-card">
+          <span class="mini-avatar">👩‍🔬</span>
+          <div class="mini-info">
+            <div class="mini-name">Sofia R.</div>
+            <div class="mini-sub">🔬 Sciences · CM1–5ème</div>
+            <div class="mini-stars">★★★★ <span style="font-size:12px;color:var(--muted);font-weight:500;">27 séances</span></div>
+          </div>
+          <div class="mini-price">35 000 FCFA</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">🔆 Brillance Académie</div>
+          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <div class="footer-payment">
+            <span class="footer-pay-chip">🟠 Orange Money</span>
+            <span class="footer-pay-chip">🔵 Moov Money</span>
+            <span class="footer-pay-chip">🟢 Coris</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigation</div>
+          <div class="footer-links">
+            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="comment-ca-marche.html">Fonctionnement</a>
+            <a href="matieres.html">Matières</a>
+            <a href="temoignages.html">Témoignages</a>
+            <a href="a-propos.html">À propos</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Matières</div>
+          <div class="footer-links">
+            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
+            <a href="matieres.html">🔢 Mathématiques</a>
+            <a href="matieres.html">🔬 Sciences</a>
+            <a href="matieres.html">🌍 Histoire / Géo</a>
+            <a href="matieres.html">💻 Technologie</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-links">
+            <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
+            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Formulaire contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>Tous droits réservés</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE STICKY BAR -->
+  <div class="mobile-sticky-bar">
+    <div class="mobile-price">32 500 FCFA <span>/ séance</span></div>
+    <a href="#book-btn" class="btn btn-primary">📅 Réserver</a>
+  </div>
+
+  <script>
+    // Day toggle
+    document.getElementById('day-btns').querySelectorAll('.day-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('day-btns').querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+    // Slot toggle
+    document.getElementById('slot-grid').querySelectorAll('.slot-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('slot-grid').querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+    // Payment toggle
+    document.getElementById('pay-row').querySelectorAll('.pay-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('pay-row').querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+    // Book button feedback
+    document.getElementById('book-btn').addEventListener('click', () => {
+      const btn = document.getElementById('book-btn');
+      btn.textContent = '✅ Réservation confirmée !';
+      btn.style.background = 'var(--success)';
+      setTimeout(() => { btn.textContent = '📅 Réserver cette séance'; btn.style.background = ''; }, 3000);
+    });
+    // Calendar slot click → update booking card
+    document.querySelectorAll('.cal-slot.avail').forEach(slot => {
+      slot.addEventListener('click', () => {
+        document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+        const time = slot.textContent;
+        document.querySelectorAll('.slot-btn').forEach(b => { if (b.textContent === time) b.classList.add('selected'); });
+        slot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  </script>
+
+  <script type="module">
+    import { initNavAuth, getTuteurById, fmt, MATIERES_EMOJI } from '/js/ba-sdk.js';
+    initNavAuth();
+
+    const JOURS_EMOJI = { Lundi:'Lun', Mardi:'Mar', Mercredi:'Mer', Jeudi:'Jeu', Vendredi:'Ven', Samedi:'Sam', Dimanche:'Dim' };
+
+    async function loadTuteur() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (!id) return; // no ID = show default static page
+
+      try {
+        const t = await getTuteurById(id);
+        if (!t) return;
+
+        const matiereEmoji = MATIERES_EMOJI[t.subject] || '📚';
+        const prenom = t.prenom || t.nom?.split(' ')[0] || 'Tuteur';
+        const price = t.price || t.tarif || 30000;
+        const discounted = Math.round(price * 0.8);
+        const stars = '★'.repeat(Math.round(t.rating || 5)) + '☆'.repeat(5 - Math.round(t.rating || 5));
+        const niveaux = (t.niveaux || []).join(', ') || 'CP–3ème';
+        const jours = (t.availableDays || t.jours || []);
+        const emoji = t.emoji || '👨‍🏫';
+
+        // Breadcrumb
+        document.querySelector('.breadcrumb-current').textContent = `${t.prenom} ${t.nom || ''}`.trim();
+
+        // Avatar & name
+        document.querySelector('.tutor-avatar-lg').textContent = emoji;
+        document.querySelector('.profile-name').textContent = `${t.prenom} ${t.nom || ''}`.trim();
+        document.querySelector('.status-badge').textContent = `● ${t.statut || 'Actif'}`;
+
+        // Subject chips
+        const chipsEl = document.querySelector('.subject-chips');
+        chipsEl.innerHTML = `<span class="subject-chip">${matiereEmoji} ${t.subject || ''}</span>`;
+
+        // Rating row
+        document.querySelector('.stars').textContent = stars;
+        document.querySelector('.rating-num').textContent = (t.rating || 5).toFixed(1);
+        document.querySelector('.rating-meta:first-of-type').textContent = `${t.sessions || 0} séances réalisées`;
+        const locationMeta = document.querySelectorAll('.rating-meta');
+        if (locationMeta[1]) locationMeta[1].textContent = `📍 ${t.quartier || 'Ouagadougou'}`;
+
+        // Level chips
+        const levelChips = document.querySelector('.level-chips');
+        if (levelChips && Array.isArray(t.niveaux) && t.niveaux.length) {
+          levelChips.innerHTML = t.niveaux.map(n => `<span class="level-chip">${n}</span>`).join('');
+        }
+
+        // Days row
+        const daysRow = document.querySelector('.days-row');
+        if (daysRow && jours.length) {
+          daysRow.innerHTML = jours.map(j => `<span class="day-item"><span class="day-dot"></span> ${j}</span>`).join('');
+        }
+
+        // Bio
+        const bioSection = document.querySelector('.bio-section');
+        if (bioSection) {
+          bioSection.querySelector('h3').textContent = `À propos de ${prenom}`;
+          bioSection.querySelector('p').textContent = t.bio || 'Tuteur expérimenté à Ouagadougou.';
+        }
+
+        // Tags row
+        const tagsRow = document.querySelector('.tags-row');
+        if (tagsRow) {
+          const tags = [];
+          if (t.experience) tags.push(`🎓 ${t.experience}`);
+          if (t.diplome) tags.push(`📜 ${t.diplome}`);
+          if (t.enLigne) tags.push('💻 Cours en ligne');
+          tags.push('🏠 Cours à domicile');
+          if (t.quartier) tags.push(`📍 ${t.quartier}`);
+          tagsRow.innerHTML = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        }
+
+        // Booking card price
+        const priceEl = document.querySelector('.booking-price');
+        if (priceEl) priceEl.innerHTML = `${fmt(price)} <span>/ séance</span>`;
+        const firstBadge = document.querySelector('.first-session-badge');
+        if (firstBadge) firstBadge.innerHTML = `🎉 Première séance à −20% → <strong>${fmt(discounted)}</strong>`;
+
+        // Day buttons in booking card
+        const dayBtns = document.getElementById('day-btns');
+        if (dayBtns && jours.length) {
+          dayBtns.innerHTML = jours.map((j, i) =>
+            `<button class="day-btn${i===0?' selected':''}" data-day="${j}">${JOURS_EMOJI[j] || j}</button>`
+          ).join('');
+          dayBtns.querySelectorAll('.day-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              dayBtns.querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+            });
+          });
+        }
+
+        // Reserve button → reservation.html with tutor ID
+        const reserveBtn = document.querySelector('.booking-submit, .reserve-btn, button[class*="booking-submit"]');
+        if (reserveBtn) {
+          reserveBtn.addEventListener('click', () => {
+            window.location.href = `reservation.html?tuteur=${t.id}`;
+          });
+        }
+
+        // Update page title
+        document.title = `${t.prenom} ${t.nom || ''} — Tuteur | Brillance Académie`;
+      } catch (err) {
+        console.error('Erreur chargement tuteur:', err);
+      }
+    }
+
+    loadTuteur();
+  </script>
+</body>
+</html>

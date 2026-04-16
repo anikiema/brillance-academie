@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comment ça marche — Brillance Académie · Ouagadougou</title>
+  <meta name="description" content="Trouvez et réservez un tuteur à domicile à Ouagadougou en 3 étapes simples. Paiement Orange Money, Moov, Coris. Première séance à −20%." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:        #1d6fe8;
+      --primary-dark:   #155ec8;
+      --primary-soft:   #dbeafe;
+      --primary-softer: #eff6ff;
+      --success:        #10b981;
+      --success-soft:   #d1fae5;
+      --success-ink:    #065f46;
+      --warning:        #f59e0b;
+      --warning-soft:   #fef3c7;
+      --ink:            #111827;
+      --body:           #374151;
+      --muted:          #6b7280;
+      --border:         #e5e7eb;
+      --bg:             #fafafa;
+      --card:           #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--body);
+      font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ──────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 20px; height: 64px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--primary); white-space: nowrap; flex-shrink: 0; }
+    .nav-logo span { font-size: 22px; }
+    .nav-links { display: flex; gap: 20px; list-style: none; flex: 1; justify-content: center; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--body); transition: color .15s; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a.active { color: var(--primary); font-weight: 700; }
+    .nav-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-ghost { font-size: 15px; font-weight: 500; color: var(--muted); transition: color .15s; }
+    .nav-ghost:hover { color: var(--primary); }
+
+    /* ── BUTTONS ──────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s; white-space: nowrap; font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(29,111,232,.30); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+    .btn-white:hover { background: var(--primary-softer); }
+    .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
+    .btn-outline-white:hover { background: rgba(255,255,255,.15); border-color: #fff; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+
+    /* ── HERO ─────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(160deg, var(--primary-softer) 0%, #fff 65%);
+      padding: 80px 24px; text-align: center;
+    }
+    .hero-inner { max-width: 700px; margin: 0 auto; }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 13px; font-weight: 700; letter-spacing: .04em;
+      padding: 6px 16px; border-radius: 999px; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 52px); font-weight: 800;
+      color: var(--ink); line-height: 1.1; margin-bottom: 18px;
+    }
+    .hero-sub { font-size: 18px; color: var(--muted); margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; }
+
+    /* ── STEPS SECTION ────────────────────────────────────────────── */
+    .steps-section { padding: 100px 24px; background: var(--card); }
+    .steps-inner { max-width: 960px; margin: 0 auto; }
+
+    .step-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center; margin-bottom: 100px;
+    }
+    .step-row:last-child { margin-bottom: 0; }
+    .step-row.reverse { direction: rtl; }
+    .step-row.reverse > * { direction: ltr; }
+
+    /* Step number badge */
+    .step-num-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 22px; font-weight: 800;
+      box-shadow: 0 4px 16px rgba(29,111,232,.35);
+      margin-bottom: 20px; flex-shrink: 0;
+    }
+    .step-content .step-label {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--primary); margin-bottom: 8px;
+    }
+    .step-content h2 {
+      font-size: clamp(24px, 3vw, 32px); font-weight: 800;
+      color: var(--ink); margin-bottom: 16px; line-height: 1.2;
+    }
+    .step-content p { font-size: 16px; color: var(--muted); margin-bottom: 24px; line-height: 1.7; }
+    .feature-list { display: flex; flex-direction: column; gap: 10px; }
+    .feature-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; color: var(--body); font-weight: 500;
+    }
+    .check {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--success-soft); color: var(--success-ink);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+
+    /* ── MOCK CARDS (visual illustrations) ───────────────────────── */
+    .mock-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px;
+      box-shadow: 0 8px 32px rgba(29,111,232,.10), 0 2px 8px rgba(0,0,0,.06);
+    }
+    .mock-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
+
+    /* Mock 1 — Tutor search card */
+    .mock-tutor-row { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; }
+    .mock-avatar { font-size: 28px; }
+    .mock-tutor-info { flex: 1; }
+    .mock-tutor-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .mock-tutor-sub  { font-size: 12px; color: var(--muted); }
+    .mock-stars { font-size: 11px; color: var(--warning); }
+    .mock-price { font-size: 13px; font-weight: 700; color: var(--primary); }
+    .mock-chips-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .mock-chip {
+      padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      background: var(--primary-soft); color: var(--primary);
+    }
+    .mock-chip.gray { background: #f3f4f6; color: var(--muted); }
+
+    /* Mock 2 — Booking card */
+    .mock-days { display: flex; gap: 6px; margin-bottom: 14px; }
+    .mock-day {
+      flex: 1; text-align: center; padding: 8px 4px; border-radius: 8px;
+      font-size: 11px; font-weight: 600; border: 1.5px solid var(--border); color: var(--muted);
+    }
+    .mock-day.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .mock-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px; }
+    .mock-slot {
+      text-align: center; padding: 7px; border-radius: 8px;
+      font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); color: var(--muted);
+    }
+    .mock-slot.selected { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+    .mock-pay-row { display: flex; gap: 6px; }
+    .mock-pay {
+      flex: 1; text-align: center; padding: 7px; border-radius: 8px;
+      font-size: 11px; font-weight: 600; border: 1.5px solid var(--border); color: var(--muted);
+    }
+    .mock-pay.selected { background: #fff7ed; color: #c2410c; border-color: #fb923c; }
+
+    /* Mock 3 — Progress card */
+    .mock-progress-row { margin-bottom: 12px; }
+    .mock-progress-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--body); margin-bottom: 5px; }
+    .mock-progress-bar { background: var(--border); border-radius: 999px; height: 8px; }
+    .mock-progress-fill { background: var(--primary); border-radius: 999px; height: 8px; transition: width .6s; }
+    .mock-progress-fill.green { background: var(--success); }
+    .mock-progress-fill.yellow { background: var(--warning); }
+    .mock-rating-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .mock-rating-avatar { font-size: 24px; }
+    .mock-rating-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+    .mock-rating-stars { font-size: 13px; color: var(--warning); }
+    .mock-rating-text { font-size: 12px; color: var(--muted); }
+
+    /* ── FAQ ──────────────────────────────────────────────────────── */
+    .faq-section { background: var(--primary-softer); padding: 80px 24px; }
+    .faq-inner { max-width: 760px; margin: 0 auto; }
+    .section-title { font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: var(--ink); text-align: center; margin-bottom: 48px; }
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+    .faq-item {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .faq-question {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; cursor: pointer; gap: 16px;
+      font-size: 16px; font-weight: 600; color: var(--ink);
+      user-select: none; list-style: none;
+    }
+    .faq-question::-webkit-details-marker { display: none; }
+    .faq-icon {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: var(--primary-soft); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 300; transition: transform .25s;
+    }
+    details[open] .faq-icon { transform: rotate(45deg); }
+    details[open] .faq-question { color: var(--primary); }
+    .faq-answer {
+      padding: 0 24px 20px; font-size: 15px; color: var(--muted); line-height: 1.7;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── PRICING ──────────────────────────────────────────────────── */
+    .pricing-section { padding: 80px 24px; background: var(--card); }
+    .pricing-inner { max-width: 1000px; margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .pricing-card {
+      border: 2px solid var(--border); border-radius: 16px; padding: 32px 24px;
+      text-align: center; transition: all .2s;
+    }
+    .pricing-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(29,111,232,.10); }
+    .pricing-card.featured {
+      border-color: var(--primary); background: var(--primary-softer);
+      position: relative;
+    }
+    .pricing-card.featured::before {
+      content: '⭐ Offre spéciale';
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--primary); color: #fff;
+      font-size: 12px; font-weight: 700; padding: 4px 16px; border-radius: 999px;
+      white-space: nowrap;
+    }
+    .pricing-icon { font-size: 40px; margin-bottom: 16px; }
+    .pricing-level { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .pricing-price { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .pricing-price-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+    .pricing-subjects { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── TESTIMONIALS ─────────────────────────────────────────────── */
+    .testimonials-section { background: var(--primary-softer); padding: 80px 24px; }
+    .testimonials-inner { max-width: 900px; margin: 0 auto; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .testimonial-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px;
+    }
+    .t-stars { color: var(--warning); font-size: 15px; margin-bottom: 12px; }
+    .t-text { font-size: 16px; color: var(--body); font-style: italic; line-height: 1.7; margin-bottom: 16px; }
+    .t-text::before { content: '"'; } .t-text::after { content: '"'; }
+    .t-author { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .t-meta { font-size: 13px; color: var(--muted); }
+
+    /* ── CTA ──────────────────────────────────────────────────────── */
+    .cta-section { background: var(--primary); padding: 80px 24px; text-align: center; }
+    .cta-inner { max-width: 640px; margin: 0 auto; }
+    .cta-section h2 { font-size: clamp(26px, 4vw, 40px); font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .cta-section p { font-size: 17px; color: rgba(255,255,255,.80); margin-bottom: 32px; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    .footer { background: var(--ink); color: rgba(255,255,255,.80); padding: 64px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-logo { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .footer-tagline { font-size: 14px; color: rgba(255,255,255,.60); margin-bottom: 20px; }
+    .footer-payment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-pay-chip { background: rgba(255,255,255,.10); color: rgba(255,255,255,.80); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500; }
+    .footer-col-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #fff; margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,.65); transition: color .15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.10); padding-top: 24px; display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,.40); flex-wrap: wrap; gap: 8px; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .step-row, .step-row.reverse { grid-template-columns: 1fr; direction: ltr; gap: 40px; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .footer-top { grid-template-columns: 1fr; }
+      .cta-actions { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span>🔆</span> Brillance Académie</a>
+      <ul class="nav-links">
+        <li><a href="tuteurs.html">Tuteurs</a></li>
+        <li><a href="comment-ca-marche.html" class="active">Fonctionnement</a></li>
+        <li><a href="matieres.html">Matières</a></li>
+        <li><a href="temoignages.html">Témoignages</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="devenir-tuteur.html" class="nav-ghost">Devenir tuteur</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-chip">✨ Simple &amp; rapide</div>
+      <h1>Trouver un tuteur n'a jamais été aussi simple</h1>
+      <p class="hero-sub">En 3 étapes seulement, votre enfant commence ses cours à domicile avec un tuteur certifié.</p>
+      <a href="tuteurs.html" class="btn btn-primary btn-lg">Trouver mon tuteur maintenant →</a>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section class="steps-section">
+    <div class="steps-inner">
+
+      <!-- STEP 1 -->
+      <div class="step-row">
+        <div class="step-content">
+          <div class="step-num-badge">01</div>
+          <div class="step-label">🔍 Étape 1</div>
+          <h2>Cherchez le tuteur idéal</h2>
+          <p>Utilisez nos filtres pour trouver le tuteur parfait selon la matière (maths, lecture, sciences…), le niveau scolaire de votre enfant (CP au 3ème) et votre quartier à Ouagadougou.</p>
+          <div class="feature-list">
+            <div class="feature-item"><span class="check">✓</span> Filtrez par matière et niveau</div>
+            <div class="feature-item"><span class="check">✓</span> Choisissez selon votre quartier</div>
+            <div class="feature-item"><span class="check">✓</span> Consultez les avis des autres parents</div>
+            <div class="feature-item"><span class="check">✓</span> Comparez les profils et les tarifs</div>
+          </div>
+        </div>
+
+        <!-- Mock: tutor search card -->
+        <div class="mock-card">
+          <div class="mock-title">Résultats de recherche</div>
+          <div class="mock-chips-row">
+            <span class="mock-chip">🔢 Maths</span>
+            <span class="mock-chip gray">CM1</span>
+            <span class="mock-chip gray">Ouaga 2000</span>
+          </div>
+          <div class="mock-tutor-row" style="border-color: var(--primary); background: var(--primary-softer);">
+            <span class="mock-avatar">👩‍🏫</span>
+            <div class="mock-tutor-info">
+              <div class="mock-tutor-name">Claire B.</div>
+              <div class="mock-tutor-sub">Mathématiques · CP–CM2</div>
+              <div class="mock-stars">★★★★★</div>
+            </div>
+            <div class="mock-price">32 500 FCFA</div>
+          </div>
+          <div class="mock-tutor-row">
+            <span class="mock-avatar">👨‍💻</span>
+            <div class="mock-tutor-info">
+              <div class="mock-tutor-name">Daniel K.</div>
+              <div class="mock-tutor-sub">Technologie · CM1–3ème</div>
+              <div class="mock-stars">★★★★★</div>
+            </div>
+            <div class="mock-price">40 000 FCFA</div>
+          </div>
+          <div style="text-align:center; margin-top:12px; font-size:13px; color:var(--primary); font-weight:600;">Voir 13 autres tuteurs →</div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-row reverse">
+        <div class="step-content">
+          <div class="step-num-badge">02</div>
+          <div class="step-label">📅 Étape 2</div>
+          <h2>Réservez votre créneau</h2>
+          <p>Choisissez le jour et l'heure qui vous conviennent dans le calendrier du tuteur. Payez en toute sécurité via Orange Money, Moov Money ou Coris Money. Confirmation instantanée par SMS.</p>
+          <div class="feature-list">
+            <div class="feature-item"><span class="check">✓</span> Calendrier de disponibilités en temps réel</div>
+            <div class="feature-item"><span class="check">✓</span> Paiement Orange Money / Moov / Coris</div>
+            <div class="feature-item"><span class="check">✓</span> Confirmation SMS immédiate</div>
+            <div class="feature-item"><span class="check">✓</span> Première séance à −20% de réduction</div>
+          </div>
+        </div>
+
+        <!-- Mock: booking card -->
+        <div class="mock-card">
+          <div class="mock-title">Réserver avec Claire B.</div>
+          <div style="font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:600;">Choisissez un jour</div>
+          <div class="mock-days">
+            <div class="mock-day">Lun</div>
+            <div class="mock-day selected">Mer</div>
+            <div class="mock-day">Ven</div>
+          </div>
+          <div style="font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:600;">Choisissez un créneau</div>
+          <div class="mock-slots">
+            <div class="mock-slot">09h00</div>
+            <div class="mock-slot selected">14h00</div>
+            <div class="mock-slot">16h00</div>
+          </div>
+          <div style="font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:600;">Mode de paiement</div>
+          <div class="mock-pay-row">
+            <div class="mock-pay selected">🟠 Orange</div>
+            <div class="mock-pay">🔵 Moov</div>
+            <div class="mock-pay">🟢 Coris</div>
+          </div>
+          <div style="margin-top:16px; background:var(--primary); color:#fff; border-radius:10px; padding:12px; text-align:center; font-size:14px; font-weight:700;">
+            Confirmer — 26 000 FCFA <span style="font-size:11px;opacity:.8;">(−20% première séance)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-row">
+        <div class="step-content">
+          <div class="step-num-badge">03</div>
+          <div class="step-label">🎓 Étape 3</div>
+          <h2>Votre enfant apprend à domicile</h2>
+          <p>Le tuteur se déplace chez vous à l'heure convenue. Suivez les progrès de votre enfant après chaque séance. Laissez un avis pour aider les autres parents.</p>
+          <div class="feature-list">
+            <div class="feature-item"><span class="check">✓</span> Le tuteur se déplace chez vous</div>
+            <div class="feature-item"><span class="check">✓</span> Suivi des progrès après chaque séance</div>
+            <div class="feature-item"><span class="check">✓</span> Possibilité de prolonger ou changer de tuteur</div>
+            <div class="feature-item"><span class="check">✓</span> Avis vérifiés des parents</div>
+          </div>
+        </div>
+
+        <!-- Mock: progress card -->
+        <div class="mock-card">
+          <div class="mock-title">Progrès de Moussa · CM1</div>
+          <div class="mock-progress-row">
+            <div class="mock-progress-label"><span>Mathématiques</span><span style="color:var(--success)">+28%</span></div>
+            <div class="mock-progress-bar"><div class="mock-progress-fill green" style="width:82%"></div></div>
+          </div>
+          <div class="mock-progress-row">
+            <div class="mock-progress-label"><span>Lecture</span><span style="color:var(--primary)">+15%</span></div>
+            <div class="mock-progress-bar"><div class="mock-progress-fill" style="width:65%"></div></div>
+          </div>
+          <div class="mock-progress-row">
+            <div class="mock-progress-label"><span>Écriture</span><span style="color:var(--warning)">+9%</span></div>
+            <div class="mock-progress-bar"><div class="mock-progress-fill yellow" style="width:48%"></div></div>
+          </div>
+          <div style="margin-top:14px; padding:12px; background:var(--success-soft); border-radius:10px; font-size:13px; color:var(--success-ink); font-weight:600;">
+            🏆 Moussa a passé 8 séances. Excellent progrès !
+          </div>
+          <div class="mock-rating-row">
+            <span class="mock-rating-avatar">👩‍🏫</span>
+            <div>
+              <div class="mock-rating-name">Claire B.</div>
+              <div class="mock-rating-stars">★★★★★</div>
+              <div class="mock-rating-text">Votre avis après la séance →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="faq-inner">
+      <h2 class="section-title">Questions fréquentes</h2>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            Comment fonctionne la première séance à −20% ?
+            <span class="faq-icon">+</span>
+          </summary>
+          <div class="faq-answer">
+            La réduction s'applique automatiquement lors de votre première réservation sur Brillance Académie. Aucun code promo nécessaire — le prix affiché intègre déjà la remise de 20%.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            Puis-je changer de tuteur si je ne suis pas satisfait ?
+            <span class="faq-icon">+</span>
+          </summary>
+          <div class="faq-answer">
+            Oui, sans frais. Contactez-nous sur WhatsApp et nous vous trouvons un nouveau tuteur rapidement. Votre satisfaction est notre priorité.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            Quels modes de paiement acceptez-vous ?
+            <span class="faq-icon">+</span>
+          </summary>
+          <div class="faq-answer">
+            Orange Money, Moov Money et Coris Money. Le paiement se fait au moment de la réservation en ligne. Aucun paiement en espèces n'est nécessaire.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            Les tuteurs sont-ils vérifiés ?
+            <span class="faq-icon">+</span>
+          </summary>
+          <div class="faq-answer">
+            Oui. Chaque tuteur passe par une vérification de ses diplômes et une session test avant d'être publié sur la plateforme. Nous publions uniquement les profils qui répondent à nos critères de qualité.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            Puis-je réserver plusieurs séances à l'avance ?
+            <span class="faq-icon">+</span>
+          </summary>
+          <div class="faq-answer">
+            Absolument. Vous pouvez réserver jusqu'à 4 séances à l'avance pour assurer la régularité des cours et garantir la disponibilité de votre tuteur préféré.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            Que faire si le tuteur annule ?
+            <span class="faq-icon">+</span>
+          </summary>
+          <div class="faq-answer">
+            En cas d'annulation du tuteur, vous êtes remboursé intégralement ou nous vous proposons un remplaçant dans les 24h. Vous n'avez rien à faire — nous gérons tout.
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing-section">
+    <div class="pricing-inner">
+      <h2 class="section-title">Des tarifs transparents</h2>
+      <div class="pricing-grid">
+
+        <div class="pricing-card">
+          <div class="pricing-icon">📚</div>
+          <div class="pricing-level">Primaire (CP – CM2)</div>
+          <div class="pricing-price">25 000 FCFA</div>
+          <div class="pricing-price-sub">à partir de / séance</div>
+          <div class="pricing-subjects">Mathématiques · Lecture &amp; Phonics · Écriture · Sciences · Arts &amp; Musique</div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pricing-icon">🎓</div>
+          <div class="pricing-level">Collège (6ème – 3ème)</div>
+          <div class="pricing-price">27 500 FCFA</div>
+          <div class="pricing-price-sub">à partir de / séance</div>
+          <div class="pricing-subjects">Toutes matières · Préparation aux examens · Histoire/Géo · Technologie · Langues</div>
+        </div>
+
+        <div class="pricing-card featured">
+          <div class="pricing-icon">🎉</div>
+          <div class="pricing-level">Première séance</div>
+          <div class="pricing-price">−20%</div>
+          <div class="pricing-price-sub">pour tout nouveau parent</div>
+          <div class="pricing-subjects">Offre valable sans condition pour la première réservation sur Brillance Académie.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials-section">
+    <div class="testimonials-inner">
+      <h2 class="section-title">Ce que disent les parents</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-text">Mon fils a rattrapé son retard en maths en 3 séances. Claire est exceptionnelle !</p>
+          <div class="t-author">Aminata D.</div>
+          <div class="t-meta">Maman de Moussa, CM1 · Ouaga 2000</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-text">Service rapide et tuteur très professionnel. Je recommande vivement à tous les parents.</p>
+          <div class="t-author">Ibrahima S.</div>
+          <div class="t-meta">Papa de Fatou, CE2 · Hamdalaye</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2>Prêt à commencer ?</h2>
+      <p>Réservez votre première séance aujourd'hui et bénéficiez de −20% de réduction.</p>
+      <div class="cta-actions">
+        <a href="tuteurs.html" class="btn btn-lg btn-white">🔍 Trouver un tuteur</a>
+        <a href="https://wa.me/22677166565" target="_blank" class="btn btn-lg btn-outline-white">💬 WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">🔆 Brillance Académie</div>
+          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <div class="footer-payment">
+            <span class="footer-pay-chip">🟠 Orange Money</span>
+            <span class="footer-pay-chip">🔵 Moov Money</span>
+            <span class="footer-pay-chip">🟢 Coris</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigation</div>
+          <div class="footer-links">
+            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="comment-ca-marche.html">Fonctionnement</a>
+            <a href="matieres.html">Matières</a>
+            <a href="temoignages.html">Témoignages</a>
+            <a href="a-propos.html">À propos</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Matières</div>
+          <div class="footer-links">
+            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
+            <a href="matieres.html">🔢 Mathématiques</a>
+            <a href="matieres.html">🔬 Sciences</a>
+            <a href="matieres.html">🌍 Histoire / Géo</a>
+            <a href="matieres.html">💻 Technologie</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-links">
+            <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
+            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Formulaire contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>Tous droits réservés</span>
+      </div>
+    </div>
+  </footer>
+
+
+  <script type="module">
+    import { initNavAuth } from '/js/ba-sdk.js';
+    initNavAuth();
+  </script>
+</body>
+</html>

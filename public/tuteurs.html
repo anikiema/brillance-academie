@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nos Tuteurs — Brillance Académie · Ouagadougou</title>
+  <meta name="description" content="Trouvez votre tuteur idéal à Ouagadougou. 15 tuteurs certifiés disponibles en mathématiques, lecture, sciences et plus. Cours à domicile. Première séance à −20%." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:        #1d6fe8;
+      --primary-dark:   #155ec8;
+      --primary-soft:   #dbeafe;
+      --primary-softer: #eff6ff;
+      --success:        #10b981;
+      --success-soft:   #d1fae5;
+      --success-ink:    #065f46;
+      --warning:        #f59e0b;
+      --warning-soft:   #fef3c7;
+      --warning-ink:    #92400e;
+      --ink:            #111827;
+      --body:           #374151;
+      --muted:          #6b7280;
+      --subtle:         #9ca3af;
+      --border:         #e5e7eb;
+      --bg:             #fafafa;
+      --card:           #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ──────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 20px; height: 64px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 18px; font-weight: 700; color: var(--primary);
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .nav-logo span { font-size: 22px; }
+    .nav-links { display: flex; gap: 20px; list-style: none; flex: 1; justify-content: center; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--body); transition: color .15s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+    .nav-links a.active { font-weight: 700; }
+    .nav-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-ghost { font-size: 15px; font-weight: 500; color: var(--muted); transition: color .15s; }
+    .nav-ghost:hover { color: var(--primary); }
+
+    /* ── BUTTONS ──────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s; white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(29,111,232,.30); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--card); color: var(--primary); border: 2px solid var(--primary); }
+    .btn-secondary:hover { background: var(--primary-softer); }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { color: var(--primary); border-color: var(--primary); }
+    .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+    .btn-white:hover { background: var(--primary-softer); }
+    .btn-sm { padding: 7px 14px; font-size: 13px; border-radius: 8px; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+
+    /* ── PAGE HEADER ──────────────────────────────────────────────── */
+    .page-header {
+      background: var(--primary-softer);
+      padding: 48px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      flex-wrap: wrap;
+    }
+    .page-header h1 {
+      font-size: clamp(28px, 4vw, 40px); font-weight: 800; color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .page-header-sub { font-size: 16px; color: var(--muted); }
+    .count-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary); color: #fff;
+      padding: 8px 20px; border-radius: 999px;
+      font-size: 15px; font-weight: 600; flex-shrink: 0;
+    }
+
+    /* ── FILTER BAR ───────────────────────────────────────────────── */
+    .filter-bar {
+      position: sticky; top: 64px; z-index: 100;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .filter-bar-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 0;
+      flex-wrap: wrap;
+    }
+    .filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .filter-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--subtle); white-space: nowrap; }
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px; border-radius: 999px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid var(--border);
+      background: var(--card); color: var(--body);
+      transition: all .15s; font-family: inherit;
+      white-space: nowrap;
+    }
+    .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .filter-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+    .filter-spacer { flex: 1; }
+    .filter-right { display: flex; align-items: center; gap: 10px; }
+    .sort-select {
+      padding: 7px 32px 7px 12px; border-radius: 8px;
+      border: 1.5px solid var(--border); font-size: 13px; font-weight: 500;
+      color: var(--body); background: var(--card); font-family: inherit;
+      cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .sort-select:focus { outline: none; border-color: var(--primary); }
+
+    /* ── MAIN LAYOUT ──────────────────────────────────────────────── */
+    .main { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── TUTORS GRID ──────────────────────────────────────────────── */
+    .tutors-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; margin-bottom: 40px;
+    }
+
+    .tutor-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      display: flex; flex-direction: column; gap: 0;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .tutor-card:hover {
+      box-shadow: 0 4px 16px rgba(29,111,232,.12), 0 2px 6px rgba(0,0,0,.06);
+      transform: translateY(-2px);
+    }
+    .tutor-card.inactive { opacity: .75; }
+
+    /* Card top row */
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .tutor-avatar { font-size: 44px; line-height: 1; }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    }
+    .status-actif    { background: var(--success-soft); color: var(--success-ink); }
+    .status-attente  { background: var(--warning-soft); color: var(--warning-ink); }
+    .status-inactif  { background: #f3f4f6; color: var(--muted); }
+
+    /* Name & subject */
+    .tutor-name { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+    .tutor-subject-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--primary-soft); color: var(--primary);
+      padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    /* Stars */
+    .tutor-stars { display: flex; align-items: center; gap: 3px; margin-bottom: 3px; }
+    .star.filled { color: var(--warning); font-size: 14px; }
+    .star.empty  { color: var(--border);  font-size: 14px; }
+    .tutor-sessions { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+    /* Bio */
+    .tutor-bio { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 14px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* Price */
+    .tutor-price { font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 10px; }
+    .tutor-price span { font-size: 13px; font-weight: 400; color: var(--muted); }
+
+    /* Days */
+    .tutor-days-row { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .day-dot { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: var(--muted); }
+    .day-dot::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+
+    /* Level chips */
+    .tutor-levels { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+    .level-chip {
+      padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      background: #f3f4f6; color: var(--muted); border: 1px solid var(--border);
+    }
+
+    /* Card actions */
+    .card-actions { display: flex; gap: 8px; margin-top: auto; }
+    .card-actions .btn { flex: 1; font-size: 13px; padding: 9px 12px; }
+
+    /* ── LOAD MORE ────────────────────────────────────────────────── */
+    .load-more { text-align: center; margin-bottom: 60px; }
+
+    /* ── EMPTY STATE ──────────────────────────────────────────────── */
+    .empty-state {
+      text-align: center; padding: 80px 24px; display: none;
+    }
+    .empty-state.visible { display: block; }
+    .empty-icon { font-size: 56px; margin-bottom: 16px; }
+    .empty-title { font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .empty-desc { font-size: 16px; color: var(--muted); }
+
+    /* ── CTA BANNER ───────────────────────────────────────────────── */
+    .cta-banner {
+      background: var(--primary); border-radius: 16px;
+      padding: 48px; text-align: center;
+      margin-bottom: 0;
+    }
+    .cta-banner h2 { font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .cta-banner p  { font-size: 16px; color: rgba(255,255,255,.80); margin-bottom: 28px; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    .footer { background: var(--ink); color: rgba(255,255,255,.80); padding: 64px 24px 32px; margin-top: 80px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-logo { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .footer-tagline { font-size: 14px; color: rgba(255,255,255,.60); margin-bottom: 20px; }
+    .footer-payment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-pay-chip { background: rgba(255,255,255,.10); color: rgba(255,255,255,.80); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500; }
+    .footer-col-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #fff; margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,.65); transition: color .15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.10); padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; color: rgba(255,255,255,.40); flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 1024px) { .tutors-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px)  {
+      .nav-links { display: none; }
+      .tutors-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .filter-bar-inner { gap: 10px; }
+    }
+    @media (max-width: 600px)  {
+      .footer-top { grid-template-columns: 1fr; }
+      .page-header-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span>🔆</span> Brillance Académie</a>
+      <ul class="nav-links">
+        <li><a href="tuteurs.html" class="active">Tuteurs</a></li>
+        <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
+        <li><a href="matieres.html">Matières</a></li>
+        <li><a href="temoignages.html">Témoignages</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="devenir-tuteur.html" class="nav-ghost">Devenir tuteur</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════
+       PAGE HEADER
+  ═══════════════════════════════════════════════ -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div>
+        <h1>Nos tuteurs à Ouagadougou</h1>
+        <p class="page-header-sub">15 tuteurs certifiés disponibles · Cours à domicile · Première séance à −20%</p>
+      </div>
+      <div class="count-badge" id="count-badge">✅ 15 tuteurs trouvés</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FILTER BAR
+  ═══════════════════════════════════════════════ -->
+  <div class="filter-bar">
+    <div class="filter-bar-inner">
+
+      <!-- Matière -->
+      <span class="filter-label">Matière</span>
+      <div class="filter-group" id="filter-matiere">
+        <button class="filter-chip active" data-value="">Toutes</button>
+        <button class="filter-chip" data-value="Lecture">📖 Lecture</button>
+        <button class="filter-chip" data-value="Mathématiques">🔢 Maths</button>
+        <button class="filter-chip" data-value="Sciences">🔬 Sciences</button>
+        <button class="filter-chip" data-value="Histoire">🌍 Histoire</button>
+        <button class="filter-chip" data-value="Arts">🎨 Arts</button>
+        <button class="filter-chip" data-value="Technologie">💻 Techno</button>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <!-- Niveau -->
+      <span class="filter-label">Niveau</span>
+      <div class="filter-group" id="filter-niveau">
+        <button class="filter-chip active" data-value="">Tous</button>
+        <button class="filter-chip" data-value="CP">CP</button>
+        <button class="filter-chip" data-value="CE1">CE1</button>
+        <button class="filter-chip" data-value="CE2">CE2</button>
+        <button class="filter-chip" data-value="CM1">CM1</button>
+        <button class="filter-chip" data-value="CM2">CM2</button>
+        <button class="filter-chip" data-value="6ème">6ème</button>
+        <button class="filter-chip" data-value="5ème">5ème</button>
+        <button class="filter-chip" data-value="4ème">4ème</button>
+        <button class="filter-chip" data-value="3ème">3ème</button>
+      </div>
+
+      <div class="filter-spacer"></div>
+
+      <div class="filter-right">
+        <select class="sort-select" id="sort-select">
+          <option value="rating">Trier par : Mieux notés</option>
+          <option value="price-asc">Prix croissant</option>
+          <option value="price-desc">Prix décroissant</option>
+          <option value="sessions">Plus de séances</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="clear-filters">✕ Effacer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- Tutors Grid -->
+    <div class="tutors-grid" id="tutors-grid">
+      <!-- Cards injected by JS -->
+      <div class="tutor-card" style="background:#f3f4f6;border:none;" id="skel-1">
+        <div style="height:44px;width:44px;border-radius:50%;background:#e5e7eb;margin-bottom:12px;"></div>
+        <div style="height:18px;width:60%;background:#e5e7eb;border-radius:6px;margin-bottom:8px;"></div>
+        <div style="height:14px;width:80%;background:#e5e7eb;border-radius:6px;margin-bottom:8px;"></div>
+        <div style="height:14px;width:40%;background:#e5e7eb;border-radius:6px;"></div>
+      </div>
+      <div class="tutor-card" style="background:#f3f4f6;border:none;" id="skel-2">
+        <div style="height:44px;width:44px;border-radius:50%;background:#e5e7eb;margin-bottom:12px;"></div>
+        <div style="height:18px;width:55%;background:#e5e7eb;border-radius:6px;margin-bottom:8px;"></div>
+        <div style="height:14px;width:75%;background:#e5e7eb;border-radius:6px;margin-bottom:8px;"></div>
+        <div style="height:14px;width:45%;background:#e5e7eb;border-radius:6px;"></div>
+      </div>
+      <div class="tutor-card" style="background:#f3f4f6;border:none;" id="skel-3">
+        <div style="height:44px;width:44px;border-radius:50%;background:#e5e7eb;margin-bottom:12px;"></div>
+        <div style="height:18px;width:65%;background:#e5e7eb;border-radius:6px;margin-bottom:8px;"></div>
+        <div style="height:14px;width:70%;background:#e5e7eb;border-radius:6px;margin-bottom:8px;"></div>
+        <div style="height:14px;width:35%;background:#e5e7eb;border-radius:6px;"></div>
+      </div>
+    </div><!-- /tutors-grid -->
+
+    <!-- Empty state -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">Aucun tuteur trouvé</div>
+      <p class="empty-desc">Essayez d'autres filtres ou <a href="https://wa.me/22677166565" style="color:var(--primary);font-weight:600;">contactez-nous sur WhatsApp</a> pour un profil sur mesure.</p>
+    </div>
+
+    <!-- Load More -->
+    <div class="load-more" id="load-more">
+      <button class="btn btn-secondary btn-lg" onclick="this.textContent='Chargement…'; setTimeout(()=>this.textContent='✓ Tous les tuteurs affichés',1000)">
+        ↓ Charger plus de tuteurs
+      </button>
+    </div>
+
+    <!-- CTA Banner -->
+    <div class="cta-banner">
+      <h2>Vous ne trouvez pas le bon tuteur ?</h2>
+      <p>Contactez-nous sur WhatsApp, nous vous aidons à trouver le profil idéal pour votre enfant.</p>
+      <a href="https://wa.me/22677166565" target="_blank" class="btn btn-white btn-lg">
+        💬 +226 77 16 65 65
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">🔆 Brillance Académie</div>
+          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <div class="footer-payment">
+            <span class="footer-pay-chip">🟠 Orange Money</span>
+            <span class="footer-pay-chip">🔵 Moov Money</span>
+            <span class="footer-pay-chip">🟢 Coris</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigation</div>
+          <div class="footer-links">
+            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="comment-ca-marche.html">Fonctionnement</a>
+            <a href="matieres.html">Matières</a>
+            <a href="temoignages.html">Témoignages</a>
+            <a href="a-propos.html">À propos</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Matières</div>
+          <div class="footer-links">
+            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
+            <a href="matieres.html">🔢 Mathématiques</a>
+            <a href="matieres.html">🔬 Sciences</a>
+            <a href="matieres.html">🌍 Histoire / Géo</a>
+            <a href="matieres.html">💻 Technologie</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-links">
+            <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
+            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Formulaire contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>Tous droits réservés</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { getTuteurs, initNavAuth, MATIERES_EMOJI, fmt } from '/js/ba-sdk.js';
+    initNavAuth();
+
+    // ── State ─────────────────────────────────────────────────────
+    let allTuteurs = [];
+    let activeMatiere = '';
+    let activeNiveau  = '';
+    let activeSort    = 'rating';
+
+    // ── Build card HTML ───────────────────────────────────────────
+    function statutClass(s) {
+      if (!s) return 'status-actif';
+      const l = s.toLowerCase();
+      if (l.includes('actif')) return 'status-actif';
+      if (l.includes('attente')) return 'status-attente';
+      return 'status-inactif';
+    }
+    function statutLabel(s) {
+      if (!s) return '● Actif';
+      const l = s.toLowerCase();
+      if (l.includes('actif')) return '● Actif';
+      if (l.includes('attente')) return '◎ En attente';
+      return '○ Inactif';
+    }
+    function starsHtml(rating) {
+      let h = '';
+      for (let i = 1; i <= 5; i++) {
+        h += `<span class="star ${i <= Math.round(rating) ? 'filled' : 'empty'}">★</span>`;
+      }
+      return h;
+    }
+    function subjectEmoji(subject) {
+      if (!subject) return '';
+      return (MATIERES_EMOJI && MATIERES_EMOJI[subject]) ? MATIERES_EMOJI[subject] + ' ' : '';
+    }
+    function buildCard(t) {
+      const isInactif = t.statut && t.statut.toLowerCase().includes('inactif');
+      const niveaux = Array.isArray(t.niveaux) ? t.niveaux : (t.niveaux || '').split(',').map(s => s.trim()).filter(Boolean);
+      const niveauxStr = niveaux.join(',');
+      const price = t.price || t.prix || 0;
+      const sessions = t.sessions || t.nb_sessions || 0;
+      const rating = t.rating || t.note || 0;
+      return `
+        <div class="tutor-card ${isInactif ? 'inactive' : ''}"
+             data-id="${t.id}" data-matiere="${t.subject || t.matiere || ''}" data-niveaux="${niveauxStr}"
+             data-rating="${rating}" data-price="${price}" data-sessions="${sessions}" data-statut="${t.statut || 'Actif'}">
+          <div class="card-top">
+            <span class="tutor-avatar">👨‍🏫</span>
+            <span class="status-badge ${statutClass(t.statut)}">${statutLabel(t.statut)}</span>
+          </div>
+          <a href="tuteur-profil.html?id=${t.id}" class="tutor-name" style="color:var(--ink);">
+            ${t.prenom || ''} ${(t.nom || '').charAt(0)}.
+          </a>
+          <div class="tutor-subject-chip">${subjectEmoji(t.subject || t.matiere)}${t.subject || t.matiere || ''}</div>
+          <div class="tutor-stars">${starsHtml(rating)}</div>
+          <div class="tutor-sessions">${sessions > 0 ? sessions + ' séances réalisées' : 'Nouveau tuteur'}</div>
+          <p class="tutor-bio">${t.bio || ''}</p>
+          <div class="tutor-price">${fmt ? fmt(price) : price.toLocaleString('fr-FR')} FCFA <span>/ séance</span></div>
+          ${niveaux.length ? `<div class="tutor-levels">${niveaux.map(n => `<span class="level-chip">${n}</span>`).join('')}</div>` : ''}
+          <div class="card-actions">
+            <a href="tuteur-profil.html?id=${t.id}" class="btn btn-secondary">👤 Voir le profil</a>
+            ${isInactif
+              ? `<button class="btn btn-ghost" disabled style="flex:1;opacity:.5;cursor:not-allowed;">Indisponible</button>`
+              : `<a href="reservation.html?tuteur=${t.id}" class="btn btn-primary">📅 Réserver</a>`}
+          </div>
+        </div>`;
+    }
+
+    // ── Render ────────────────────────────────────────────────────
+    function renderTuteurs(list) {
+      const grid = document.getElementById('tutors-grid');
+      const empty = document.getElementById('empty-state');
+      const badge = document.getElementById('count-badge');
+      const loadMore = document.getElementById('load-more');
+
+      if (list.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.add('visible');
+        badge.textContent = '✅ 0 tuteur trouvé';
+        loadMore.style.display = 'none';
+      } else {
+        empty.classList.remove('visible');
+        grid.innerHTML = list.map(buildCard).join('');
+        badge.textContent = `✅ ${list.length} tuteur${list.length > 1 ? 's' : ''} trouvé${list.length > 1 ? 's' : ''}`;
+        loadMore.style.display = '';
+      }
+    }
+
+    // ── Filter + sort ─────────────────────────────────────────────
+    function applyFilters() {
+      let filtered = allTuteurs.filter(t => {
+        const m = t.subject || t.matiere || '';
+        const n = Array.isArray(t.niveaux) ? t.niveaux.join(',') : (t.niveaux || '');
+        const matchM = !activeMatiere || m === activeMatiere;
+        const matchN = !activeNiveau  || n.includes(activeNiveau);
+        return matchM && matchN;
+      });
+
+      filtered.sort((a, b) => {
+        const ra = a.rating || a.note || 0, rb = b.rating || b.note || 0;
+        const pa = a.price || a.prix || 0, pb = b.price || b.prix || 0;
+        const sa = a.sessions || a.nb_sessions || 0, sb = b.sessions || b.nb_sessions || 0;
+        switch (activeSort) {
+          case 'rating':     return rb - ra;
+          case 'price-asc':  return pa - pb;
+          case 'price-desc': return pb - pa;
+          case 'sessions':   return sb - sa;
+        }
+        return 0;
+      });
+
+      renderTuteurs(filtered);
+    }
+
+    // ── Chip toggle ───────────────────────────────────────────────
+    function setupChips(groupId, onSelect) {
+      const group = document.getElementById(groupId);
+      group.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          group.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          onSelect(chip.dataset.value);
+          applyFilters();
+        });
+      });
+    }
+
+    setupChips('filter-matiere', v => activeMatiere = v);
+    setupChips('filter-niveau',  v => activeNiveau  = v);
+
+    document.getElementById('sort-select').addEventListener('change', e => {
+      activeSort = e.target.value;
+      applyFilters();
+    });
+
+    document.getElementById('clear-filters').addEventListener('click', () => {
+      activeMatiere = ''; activeNiveau = ''; activeSort = 'rating';
+      document.querySelectorAll('.filter-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.value === '');
+      });
+      document.getElementById('sort-select').value = 'rating';
+      applyFilters();
+    });
+
+    // ── Load from Supabase ────────────────────────────────────────
+    try {
+      const tuteurs = await getTuteurs();
+      allTuteurs = tuteurs || [];
+      applyFilters();
+    } catch (err) {
+      console.error('Erreur chargement tuteurs:', err);
+      document.getElementById('tutors-grid').innerHTML =
+        '<p style="color:var(--muted);padding:40px;grid-column:1/-1;text-align:center;">Impossible de charger les tuteurs. <a href="https://wa.me/22677166565" style="color:var(--primary);">Contactez-nous sur WhatsApp</a>.</p>';
+    }
+  </script>
+</body>
+</html>

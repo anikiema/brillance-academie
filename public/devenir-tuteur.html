@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devenir Tuteur — Brillance Académie · Ouagadougou</title>
+  <meta name="description" content="Rejoignez Brillance Académie et donnez des cours à domicile à Ouagadougou. Horaires flexibles, paiement Orange Money. Candidature gratuite, réponse sous 24h." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:        #1d6fe8;
+      --primary-dark:   #155ec8;
+      --primary-soft:   #dbeafe;
+      --primary-softer: #eff6ff;
+      --success:        #10b981;
+      --success-soft:   #d1fae5;
+      --success-ink:    #065f46;
+      --warning:        #f59e0b;
+      --ink:            #111827;
+      --body:           #374151;
+      --muted:          #6b7280;
+      --subtle:         #9ca3af;
+      --border:         #e5e7eb;
+      --bg:             #fafafa;
+      --card:           #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--body);
+      font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ──────────────────────────────────────────────────────── */
+    .nav { position: sticky; top: 0; z-index: 200; background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 20px; height: 64px; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--primary); white-space: nowrap; flex-shrink: 0; }
+    .nav-logo span { font-size: 22px; }
+    .nav-links { display: flex; gap: 20px; list-style: none; flex: 1; justify-content: center; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--body); transition: color .15s; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-active { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; white-space: nowrap; font-family: inherit; }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(29,111,232,.30); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+    .btn-white:hover { background: var(--primary-softer); }
+    .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
+    .btn-outline-white:hover { background: rgba(255,255,255,.15); border-color: #fff; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ── HERO ─────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #155ec8 0%, var(--primary) 50%, #3b82f6 100%);
+      padding: 80px 24px;
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: center;
+    }
+
+    /* Left copy */
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.15); color: #fff;
+      font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .hero h1 { font-size: clamp(32px, 4vw, 52px); font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 20px; }
+    .hero-sub { font-size: 17px; color: rgba(255,255,255,.80); margin-bottom: 32px; line-height: 1.7; }
+    .hero-benefits { display: flex; flex-direction: column; gap: 10px; }
+    .hero-benefit {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,.12); color: #fff;
+      padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    }
+    .hero-benefit-icon { font-size: 16px; }
+
+    /* Right: apply card */
+    .apply-card {
+      background: var(--card); border-radius: 16px; padding: 32px;
+      box-shadow: 0 16px 48px rgba(0,0,0,.20);
+    }
+    .apply-card-title { font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+    .apply-card-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--body); margin-bottom: 6px; }
+    .form-input, .form-select {
+      width: 100%; padding: 11px 14px; border-radius: 10px;
+      border: 1.5px solid var(--border); font-size: 15px; color: var(--ink);
+      font-family: inherit; background: var(--card); transition: border-color .15s;
+      appearance: none;
+    }
+    .form-input::placeholder { color: var(--subtle); }
+    .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(29,111,232,.08); }
+    .form-select-wrap { position: relative; }
+    .form-select-wrap::after { content: '▾'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 13px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .apply-ghost { display: block; text-align: center; margin-top: 12px; font-size: 14px; color: var(--primary); font-weight: 600; }
+    .apply-ghost:hover { text-decoration: underline; }
+
+    /* ── WHY JOIN ─────────────────────────────────────────────────── */
+    .section { padding: 80px 24px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-soft { background: var(--primary-softer); }
+    .section-title { font-size: clamp(22px, 3vw, 30px); font-weight: 800; color: var(--ink); margin-bottom: 40px; text-align: center; }
+
+    .benefits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .benefit-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px 20px;
+      text-align: center; transition: box-shadow .2s, transform .2s;
+    }
+    .benefit-card:hover { box-shadow: 0 4px 20px rgba(29,111,232,.10); transform: translateY(-2px); }
+    .benefit-icon { font-size: 40px; margin-bottom: 14px; display: block; }
+    .benefit-title { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .benefit-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── HOW IT WORKS FOR TUTORS ──────────────────────────────────── */
+    .steps-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; position: relative; }
+    .step-col { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 32px; position: relative; }
+    .step-col:not(:last-child)::after { content: '→'; position: absolute; right: -10px; top: 28px; font-size: 28px; color: var(--primary); font-weight: 700; }
+    .step-badge {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(29,111,232,.30);
+    }
+    .step-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── EARNINGS CALCULATOR ──────────────────────────────────────── */
+    .earnings-section { background: var(--card); }
+    .earnings-inner { max-width: 860px; margin: 0 auto; }
+    .scenarios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+    .scenario-card {
+      border: 2px solid var(--border); border-radius: 14px; padding: 24px; text-align: center;
+      cursor: pointer; transition: all .2s;
+    }
+    .scenario-card:hover, .scenario-card.active { border-color: var(--primary); background: var(--primary-softer); }
+    .scenario-sessions { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 8px; }
+    .scenario-amount { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .scenario-period { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .scenario-check { display: inline-flex; align-items: center; gap: 6px; background: var(--success-soft); color: var(--success-ink); padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+
+    /* Slider */
+    .slider-section { background: var(--primary-softer); border-radius: 16px; padding: 28px 32px; }
+    .slider-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .slider-label { font-size: 15px; font-weight: 600; color: var(--body); }
+    .slider-value { font-size: 22px; font-weight: 800; color: var(--primary); }
+    input[type=range] {
+      width: 100%; height: 6px; border-radius: 3px; appearance: none;
+      background: linear-gradient(to right, var(--primary) 0%, var(--primary) 40%, var(--border) 40%);
+      outline: none; cursor: pointer; margin-bottom: 8px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--primary); box-shadow: 0 2px 8px rgba(29,111,232,.40); cursor: pointer;
+    }
+    .slider-result { text-align: center; margin-top: 16px; }
+    .slider-result-amount { font-size: 36px; font-weight: 800; color: var(--primary); }
+    .slider-result-label { font-size: 14px; color: var(--muted); margin-top: 2px; }
+
+    /* ── REQUIREMENTS ─────────────────────────────────────────────── */
+    .req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .req-col-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .req-list { display: flex; flex-direction: column; gap: 12px; }
+    .req-item { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--body); }
+    .req-check {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;
+    }
+    .req-check.green { background: var(--success-soft); color: var(--success-ink); }
+    .req-check.indigo { background: var(--primary-soft); color: var(--primary); }
+
+    /* ── TUTOR TESTIMONIALS ───────────────────────────────────────── */
+    .tutor-reviews-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .tutor-review-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px;
+    }
+    .tutor-review-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .tutor-review-avatar { font-size: 44px; }
+    .tutor-review-name { font-size: 17px; font-weight: 700; color: var(--ink); }
+    .tutor-review-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .tutor-review-stars { font-size: 15px; color: var(--warning); margin-top: 2px; }
+    .tutor-review-text { font-size: 15px; color: var(--body); line-height: 1.7; font-style: italic; }
+    .tutor-review-text::before { content: '"'; }
+    .tutor-review-text::after { content: '"'; }
+
+    /* ── FINAL CTA ────────────────────────────────────────────────── */
+    .cta-section { background: var(--primary); padding: 80px 24px; text-align: center; }
+    .cta-inner { max-width: 640px; margin: 0 auto; }
+    .cta-section h2 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .cta-section p  { font-size: 17px; color: rgba(255,255,255,.80); margin-bottom: 32px; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    .footer { background: var(--ink); color: rgba(255,255,255,.80); padding: 64px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-logo { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .footer-tagline { font-size: 14px; color: rgba(255,255,255,.60); margin-bottom: 20px; }
+    .footer-payment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-pay-chip { background: rgba(255,255,255,.10); color: rgba(255,255,255,.80); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500; }
+    .footer-col-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #fff; margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,.65); transition: color .15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.10); padding-top: 24px; display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,.40); flex-wrap: wrap; gap: 8px; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 1024px) { .hero-inner { grid-template-columns: 1fr; } .apply-card { max-width: 480px; } .benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .nav-links { display: none; } .steps-row { grid-template-columns: 1fr; gap: 40px; } .step-col:not(:last-child)::after { content: '↓'; right: 50%; top: auto; bottom: -24px; } .scenarios { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto 32px; } .req-grid { grid-template-columns: 1fr; } .tutor-reviews-grid { grid-template-columns: 1fr; } .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } }
+    @media (max-width: 600px) { .benefits-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .footer-top { grid-template-columns: 1fr; } .cta-actions { flex-direction: column; align-items: center; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span>🔆</span> Brillance Académie</a>
+      <ul class="nav-links">
+        <li><a href="tuteurs.html">Tuteurs</a></li>
+        <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
+        <li><a href="matieres.html">Matières</a></li>
+        <li><a href="temoignages.html">Témoignages</a></li>
+      </ul>
+      <div class="nav-actions">
+        <span class="nav-active">🎓 Devenir tuteur</span>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+
+      <!-- Left: copy -->
+      <div>
+        <div class="hero-chip">🎓 Rejoignez notre équipe</div>
+        <h1>Enseignez, inspirez,<br />et gagnez à Ouagadougou</h1>
+        <p class="hero-sub">Rejoignez Brillance Académie et donnez des cours à domicile à votre rythme. Vous fixez vos disponibilités, vos quartiers et vos matières. Paiement rapide via Orange Money.</p>
+        <div class="hero-benefits">
+          <div class="hero-benefit"><span class="hero-benefit-icon">✓</span> Fixez vos propres horaires</div>
+          <div class="hero-benefit"><span class="hero-benefit-icon">✓</span> Payé en Orange Money / Moov / Coris</div>
+          <div class="hero-benefit"><span class="hero-benefit-icon">✓</span> Rejoignez 15 tuteurs certifiés</div>
+        </div>
+      </div>
+
+      <!-- Right: apply card -->
+      <div class="apply-card" id="apply-form">
+        <div class="apply-card-title">Candidater en 2 minutes</div>
+        <div class="apply-card-sub">Réponse de notre équipe sous 24h.</div>
+
+        <form id="candidature-form" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Prénom</label>
+              <input class="form-input" type="text" placeholder="Aminata" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nom</label>
+              <input class="form-input" type="text" placeholder="Diallo" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Téléphone / WhatsApp</label>
+            <input class="form-input" type="tel" placeholder="+226 77 00 00 00" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="vous@email.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Matière principale</label>
+            <div class="form-select-wrap">
+              <select class="form-select" required>
+                <option value="" disabled selected>Choisir une matière…</option>
+                <option>Mathématiques</option>
+                <option>Lecture &amp; Phonics</option>
+                <option>Écriture</option>
+                <option>Sciences</option>
+                <option>Histoire &amp; Géo</option>
+                <option>Langues</option>
+                <option>Arts &amp; Musique</option>
+                <option>Technologie</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Niveau enseigné</label>
+            <div class="form-select-wrap">
+              <select class="form-select" required>
+                <option value="" disabled selected>Choisir un niveau…</option>
+                <option>Primaire (CP – CM2)</option>
+                <option>Collège (6ème – 3ème)</option>
+                <option>Les deux</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quartier(s) d'intervention</label>
+            <input class="form-input" type="text" placeholder="Ex : Ouaga 2000, Hamdalaye…" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="submit-btn">
+            🚀 Envoyer ma candidature
+          </button>
+        </form>
+        <a href="https://wa.me/22677166565?text=Bonjour%2C%20je%20souhaite%20devenir%20tuteur%20chez%20Brillance%20Acad%C3%A9mie%20!" target="_blank" class="apply-ghost">
+          Ou contactez-nous directement sur 💬 WhatsApp →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHY JOIN -->
+  <section class="section">
+    <div class="section-inner">
+      <h2 class="section-title">Pourquoi rejoindre Brillance Académie ?</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <span class="benefit-icon">💰</span>
+          <div class="benefit-title">Revenus complémentaires</div>
+          <p class="benefit-desc">Gagnez entre 25 000 et 40 000 FCFA par séance selon la matière et le niveau enseigné.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">📅</span>
+          <div class="benefit-title">Horaires flexibles</div>
+          <p class="benefit-desc">Vous choisissez vos jours, vos créneaux et le nombre de séances par semaine. Zéro contrainte.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">📍</span>
+          <div class="benefit-title">Dans votre quartier</div>
+          <p class="benefit-desc">Donnez cours dans les quartiers où vous êtes disponible à Ouagadougou. Pas de longs trajets.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-icon">🚀</span>
+          <div class="benefit-title">Plateforme simple</div>
+          <p class="benefit-desc">Nous gérons les réservations et les paiements. Vous vous concentrez uniquement sur l'enseignement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS FOR TUTORS -->
+  <section class="section section-soft">
+    <div class="section-inner">
+      <h2 class="section-title">Comment ça se passe ?</h2>
+      <div class="steps-row">
+        <div class="step-col">
+          <div class="step-badge">📝</div>
+          <div class="step-title">Candidatez</div>
+          <p class="step-desc">Remplissez le formulaire ci-dessus. Notre équipe vous contacte sous 24h via WhatsApp.</p>
+        </div>
+        <div class="step-col">
+          <div class="step-badge">✅</div>
+          <div class="step-title">Vérification</div>
+          <p class="step-desc">Nous vérifions vos diplômes et vous faites une session test. Processus simple et rapide.</p>
+        </div>
+        <div class="step-col">
+          <div class="step-badge">🎓</div>
+          <div class="step-title">Enseignez</div>
+          <p class="step-desc">Votre profil est publié. Les parents vous réservent directement. Vous recevez vos paiements aussitôt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EARNINGS CALCULATOR -->
+  <section class="section earnings-section">
+    <div class="section-inner">
+      <div class="earnings-inner">
+        <h2 class="section-title">Estimez vos revenus</h2>
+
+        <div class="scenarios">
+          <div class="scenario-card" onclick="selectScenario(this, 2, 220000)">
+            <div class="scenario-sessions">2 séances / semaine</div>
+            <div class="scenario-amount">220 000</div>
+            <div class="scenario-period">FCFA / mois</div>
+            <span class="scenario-check">✓ Temps partiel</span>
+          </div>
+          <div class="scenario-card active" onclick="selectScenario(this, 4, 440000)">
+            <div class="scenario-sessions">4 séances / semaine</div>
+            <div class="scenario-amount">440 000</div>
+            <div class="scenario-period">FCFA / mois</div>
+            <span class="scenario-check">✓ Recommandé</span>
+          </div>
+          <div class="scenario-card" onclick="selectScenario(this, 6, 660000)">
+            <div class="scenario-sessions">6 séances / semaine</div>
+            <div class="scenario-amount">660 000</div>
+            <div class="scenario-period">FCFA / mois</div>
+            <span class="scenario-check">✓ Revenu principal</span>
+          </div>
+        </div>
+
+        <div class="slider-section">
+          <div class="slider-header">
+            <span class="slider-label">Nombre de séances par semaine</span>
+            <span class="slider-value" id="slider-display">4 séances</span>
+          </div>
+          <input type="range" id="sessions-slider" min="1" max="10" value="4" oninput="updateSlider(this.value)" />
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--subtle);">
+            <span>1 séance</span><span>10 séances</span>
+          </div>
+          <div class="slider-result">
+            <div class="slider-result-amount" id="slider-result">440 000 FCFA</div>
+            <div class="slider-result-label">revenus estimés par mois</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- REQUIREMENTS -->
+  <section class="section section-soft">
+    <div class="section-inner">
+      <h2 class="section-title">Profil recherché</h2>
+      <div class="req-grid">
+        <div>
+          <div class="req-col-title">✅ Critères requis</div>
+          <div class="req-list">
+            <div class="req-item"><span class="req-check green">✓</span> Diplôme dans la matière enseignée (BAC minimum)</div>
+            <div class="req-item"><span class="req-check green">✓</span> Expérience en enseignement ou tutorat</div>
+            <div class="req-item"><span class="req-check green">✓</span> Disponible au moins 2 jours par semaine</div>
+            <div class="req-item"><span class="req-check green">✓</span> Basé(e) à Ouagadougou</div>
+            <div class="req-item"><span class="req-check green">✓</span> Téléphone avec WhatsApp et Orange/Moov/Coris</div>
+          </div>
+        </div>
+        <div>
+          <div class="req-col-title">🎁 Ce que nous fournissons</div>
+          <div class="req-list">
+            <div class="req-item"><span class="req-check indigo">✓</span> Profil vérifié et mis en ligne gratuitement</div>
+            <div class="req-item"><span class="req-check indigo">✓</span> Gestion des réservations et paiements</div>
+            <div class="req-item"><span class="req-check indigo">✓</span> Support WhatsApp de notre équipe 7j/7</div>
+            <div class="req-item"><span class="req-check indigo">✓</span> Accès à une communauté de tuteurs</div>
+            <div class="req-item"><span class="req-check indigo">✓</span> Statistiques de vos séances et avis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TUTOR TESTIMONIALS -->
+  <section class="section">
+    <div class="section-inner">
+      <h2 class="section-title">Ce que disent nos tuteurs</h2>
+      <div class="tutor-reviews-grid">
+        <div class="tutor-review-card">
+          <div class="tutor-review-header">
+            <span class="tutor-review-avatar">👩‍🏫</span>
+            <div>
+              <div class="tutor-review-name">Claire B.</div>
+              <div class="tutor-review-sub">Mathématiques · CP–CM2</div>
+              <div class="tutor-review-stars">★★★★★</div>
+            </div>
+          </div>
+          <p class="tutor-review-text">Brillance Académie m'a permis de trouver des familles sérieuses rapidement. Les paiements arrivent via Orange Money le jour même. Je recommande à tous les enseignants de Ouagadougou.</p>
+        </div>
+        <div class="tutor-review-card">
+          <div class="tutor-review-header">
+            <span class="tutor-review-avatar">👨‍💻</span>
+            <div>
+              <div class="tutor-review-name">Daniel K.</div>
+              <div class="tutor-review-sub">Technologie · CM1–3ème</div>
+              <div class="tutor-review-stars">★★★★★</div>
+            </div>
+          </div>
+          <p class="tutor-review-text">La plateforme est simple et les parents sont bien préparés. J'ai pu remplir mon agenda en moins de 2 semaines après mon inscription. Excellente expérience.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2>Prêt(e) à rejoindre l'équipe ?</h2>
+      <p>Candidature gratuite. Réponse sous 24h. Commencez à enseigner dès cette semaine.</p>
+      <div class="cta-actions">
+        <a href="#apply-form" class="btn btn-lg btn-white">🚀 Candidater maintenant</a>
+        <a href="https://wa.me/22677166565?text=Bonjour%2C%20je%20souhaite%20devenir%20tuteur%20chez%20Brillance%20Acad%C3%A9mie%20!" target="_blank" class="btn btn-lg btn-outline-white">💬 WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">🔆 Brillance Académie</div>
+          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <div class="footer-payment">
+            <span class="footer-pay-chip">🟠 Orange Money</span>
+            <span class="footer-pay-chip">🔵 Moov Money</span>
+            <span class="footer-pay-chip">🟢 Coris</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigation</div>
+          <div class="footer-links">
+            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="comment-ca-marche.html">Fonctionnement</a>
+            <a href="matieres.html">Matières</a>
+            <a href="temoignages.html">Témoignages</a>
+            <a href="a-propos.html">À propos</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Tuteurs</div>
+          <div class="footer-links">
+            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="#apply-form">Candidater</a>
+            <a href="faq.html">FAQ tuteurs</a>
+            <a href="https://wa.me/22677166565">Support WhatsApp</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-links">
+            <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Formulaire contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>Tous droits réservés</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Scenario card toggle ───────────────────────────────────────
+    function selectScenario(el, sessions, amount) {
+      document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('sessions-slider').value = sessions;
+      updateSlider(sessions);
+    }
+
+    // ── Slider ────────────────────────────────────────────────────
+    const RATE = 27500;
+    const WEEKS = 4;
+
+    function updateSlider(val) {
+      const sessions = parseInt(val);
+      const monthly = sessions * RATE * WEEKS;
+      document.getElementById('slider-display').textContent = `${sessions} séance${sessions > 1 ? 's' : ''}`;
+      document.getElementById('slider-result').textContent = monthly.toLocaleString('fr-FR') + ' FCFA';
+      const pct = ((sessions - 1) / 9) * 100;
+      document.getElementById('sessions-slider').style.background =
+        `linear-gradient(to right, var(--primary) ${pct}%, var(--border) ${pct}%)`;
+      document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('active'));
+      if (sessions === 2) document.querySelectorAll('.scenario-card')[0].classList.add('active');
+      if (sessions === 4) document.querySelectorAll('.scenario-card')[1].classList.add('active');
+      if (sessions === 6) document.querySelectorAll('.scenario-card')[2].classList.add('active');
+    }
+  </script>
+
+  <script type="module">
+    import { ajouterCandidatureTuteur, initNavAuth } from '/js/ba-sdk.js';
+    initNavAuth();
+
+    const form = document.getElementById('candidature-form');
+    const btn  = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours…';
+
+      const inputs = form.querySelectorAll('input, select');
+      const prenom   = inputs[0].value.trim();
+      const nom      = inputs[1].value.trim();
+      const tel      = inputs[2].value.trim();
+      const email    = inputs[3].value.trim();
+      const matiere  = form.querySelector('select:nth-of-type(1)').value;
+      const niveau   = form.querySelector('select:nth-of-type(2)').value;
+      const quartier = inputs[inputs.length - 1].value.trim();
+
+      try {
+        await ajouterCandidatureTuteur({ prenom, nom, telephone: tel, email, matiere, niveau, quartier });
+        btn.textContent = '✅ Candidature envoyée ! Nous vous contacterons dans 24-48h.';
+        btn.style.background = 'var(--success)';
+        btn.style.boxShadow = '0 2px 8px rgba(16,185,129,.30)';
+        form.reset();
+        setTimeout(() => {
+          btn.textContent = '🚀 Envoyer ma candidature';
+          btn.style.background = '';
+          btn.style.boxShadow = '';
+          btn.disabled = false;
+        }, 6000);
+      } catch (err) {
+        console.error('Candidature error:', err);
+        btn.textContent = '⚠️ Erreur — réessayez ou contactez-nous';
+        btn.style.background = '#ef4444';
+        btn.style.boxShadow = 'none';
+        // Fallback WhatsApp link
+        const waMsg = encodeURIComponent(`Bonjour, je souhaite devenir tuteur chez Brillance Académie !\nPrénom: ${prenom}\nNom: ${nom}\nTél: ${tel}\nMatière: ${matiere}`);
+        const waDiv = document.createElement('p');
+        waDiv.style.cssText = 'margin-top:12px;font-size:14px;color:var(--body);text-align:center;';
+        waDiv.innerHTML = `Problème technique ? <a href="https://wa.me/22677166565?text=${waMsg}" target="_blank" style="color:var(--primary);font-weight:600;">Candidatez via WhatsApp →</a>`;
+        btn.after(waDiv);
+        setTimeout(() => {
+          btn.textContent = '🚀 Envoyer ma candidature';
+          btn.style.background = '';
+          btn.style.boxShadow = '';
+          btn.disabled = false;
+          waDiv.remove();
+        }, 8000);
+      }
+    });
+  </script>
+</body>
+</html>

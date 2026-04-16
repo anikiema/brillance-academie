@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brillance Académie — Tutorat à Ouagadougou | CP au 3ème</title>
+  <meta name="description" content="Trouvez le meilleur tuteur à domicile à Ouagadougou. Soutien scolaire en maths, lecture, sciences pour les élèves du CP au 3ème. Première séance à −20 %. Paiement Orange Money, Moov, Coris." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:        #1d6fe8;
+      --primary-dark:   #155ec8;
+      --primary-soft:   #dbeafe;
+      --primary-softer: #eff6ff;
+      --success:        #10b981;
+      --success-soft:   #d1fae5;
+      --success-ink:    #065f46;
+      --warning:        #f59e0b;
+      --warning-soft:   #fef3c7;
+      --warning-ink:    #92400e;
+      --ink:            #111827;
+      --body:           #374151;
+      --muted:          #6b7280;
+      --subtle:         #9ca3af;
+      --border:         #e5e7eb;
+      --border-soft:    #f1f5f9;
+      --bg:             #fafafa;
+      --card:           #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ──────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 20px;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 18px; font-weight: 700; color: var(--primary);
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .nav-logo span { font-size: 22px; }
+    .nav-links {
+      display: flex; gap: 20px; list-style: none;
+      flex: 1; justify-content: center;
+    }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--body);
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-ghost {
+      font-size: 15px; font-weight: 500; color: var(--muted);
+      transition: color 0.15s;
+    }
+    .nav-ghost:hover { color: var(--primary); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 10px 20px;
+      border-radius: 10px; font-size: 15px; font-weight: 600;
+      cursor: pointer; border: none; transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 2px 8px rgba(29,111,232,.30);
+    }
+    .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(29,111,232,.40); }
+    .btn-secondary {
+      background: var(--card); color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    .btn-secondary:hover { background: var(--primary-softer); }
+    .btn-white {
+      background: #fff; color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,.10);
+    }
+    .btn-white:hover { background: var(--primary-softer); }
+    .btn-outline-white {
+      background: transparent; color: #fff;
+      border: 2px solid rgba(255,255,255,.6);
+    }
+    .btn-outline-white:hover { background: rgba(255,255,255,.15); border-color: #fff; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+
+    /* ── HERO ─────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(160deg, var(--primary-softer) 0%, var(--card) 60%);
+      padding: 80px 24px 100px;
+      text-align: center;
+    }
+    .hero-inner { max-width: 760px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--warning-soft); color: var(--warning-ink);
+      font-size: 14px; font-weight: 600;
+      padding: 6px 16px; border-radius: 999px;
+      margin-bottom: 32px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 56px); font-weight: 800;
+      color: var(--ink); line-height: 1.1; margin-bottom: 20px;
+    }
+    .hero h1 em { color: var(--primary); font-style: normal; }
+    .hero-sub {
+      font-size: 18px; color: var(--muted); max-width: 560px; margin: 0 auto 40px;
+    }
+    .search-bar {
+      display: flex; align-items: center; gap: 0;
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 6px 6px 6px 20px;
+      max-width: 560px; margin: 0 auto 28px;
+      box-shadow: 0 4px 20px rgba(29,111,232,.10);
+    }
+    .search-bar input {
+      flex: 1; border: none; outline: none;
+      font-size: 16px; color: var(--ink);
+      background: transparent; font-family: inherit;
+    }
+    .search-bar input::placeholder { color: var(--subtle); }
+    .search-bar .btn { border-radius: 10px; padding: 12px 24px; }
+    .social-proof {
+      font-size: 15px; color: var(--muted); font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .social-proof strong { color: var(--ink); }
+    .payment-chips {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      flex-wrap: wrap;
+    }
+    .payment-chip {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 999px; padding: 5px 14px;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+    }
+
+    /* ── SECTION BASE ─────────────────────────────────────────────── */
+    .section { padding: 80px 24px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-soft { background: var(--primary-softer); }
+    .section-dark { background: var(--ink); color: #fff; }
+    .section-gray { background: #f3f4f6; }
+    .section-indigo { background: var(--primary); color: #fff; }
+    .section-title {
+      font-size: clamp(24px, 3vw, 32px); font-weight: 700;
+      color: var(--ink); text-align: center; margin-bottom: 48px;
+    }
+    .section-indigo .section-title,
+    .section-dark .section-title { color: #fff; }
+
+    /* ── SUBJECT CHIPS ────────────────────────────────────────────── */
+    .chips-section { padding: 32px 24px; background: var(--card); border-bottom: 1px solid var(--border); }
+    .chips-inner { max-width: 1200px; margin: 0 auto; }
+    .chips-row {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-soft); color: var(--primary);
+      padding: 8px 18px; border-radius: 999px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      border: none; transition: all 0.15s; font-family: inherit;
+    }
+    .chip:hover { background: var(--primary); color: #fff; }
+    .chip.active { background: var(--primary); color: #fff; }
+
+    /* ── TUTOR CARDS ──────────────────────────────────────────────── */
+    .tutors-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; margin-bottom: 32px;
+    }
+    .tutor-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .tutor-card:hover {
+      box-shadow: 0 4px 16px rgba(29,111,232,.12), 0 2px 6px rgba(0,0,0,.06);
+      transform: translateY(-2px);
+    }
+    .tutor-avatar {
+      font-size: 40px; margin-bottom: 12px; display: block;
+    }
+    .tutor-name { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .tutor-subject-chip {
+      display: inline-block;
+      background: var(--primary-soft); color: var(--primary);
+      padding: 3px 12px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; margin-bottom: 12px;
+    }
+    .tutor-stars { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+    .star { font-size: 15px; }
+    .star.filled { color: var(--warning); }
+    .star.empty { color: var(--border); }
+    .tutor-sessions { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .tutor-price {
+      font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px;
+    }
+    .tutor-price span { font-size: 13px; font-weight: 400; color: var(--muted); }
+    .tutor-days { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+    .tutor-days strong { color: var(--body); font-weight: 600; }
+    .tutor-card .btn { width: 100%; }
+    .see-all {
+      text-align: center;
+      font-size: 16px; font-weight: 600; color: var(--primary);
+    }
+    .see-all a:hover { text-decoration: underline; }
+
+    /* ── HOW IT WORKS ─────────────────────────────────────────────── */
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0; position: relative;
+    }
+    .step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 32px; position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '→';
+      position: absolute; right: -12px; top: 36px;
+      font-size: 28px; color: var(--primary); font-weight: 700;
+    }
+    .step-num {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 800; margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(29,111,232,.30);
+    }
+    .step-icon { font-size: 28px; }
+    .step-title { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .step-desc { font-size: 15px; color: var(--muted); }
+
+    /* ── TRUST SECTION ────────────────────────────────────────────── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; margin-bottom: 48px;
+    }
+    .stat-box {
+      background: var(--primary-softer);
+      border-radius: 12px; padding: 28px;
+      text-align: center;
+    }
+    .stat-number { font-size: 40px; font-weight: 800; color: var(--primary); }
+    .stat-label { font-size: 15px; color: var(--muted); margin-top: 4px; }
+    .testimonials-row {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+    }
+    .testimonial-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+    }
+    .testimonial-text {
+      font-size: 16px; color: var(--body); font-style: italic;
+      margin-bottom: 16px; line-height: 1.7;
+    }
+    .testimonial-text::before { content: '"'; }
+    .testimonial-text::after { content: '"'; }
+    .testimonial-author { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .testimonial-meta { font-size: 13px; color: var(--muted); }
+    .testimonial-stars { margin-bottom: 12px; }
+
+    /* ── PARTNER SCHOOLS ──────────────────────────────────────────── */
+    .partners-label {
+      text-align: center; font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--subtle); margin-bottom: 16px;
+    }
+    .partners-row {
+      display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;
+    }
+    .partner-name {
+      font-size: 14px; color: var(--muted); font-weight: 500;
+      padding: 6px 16px; background: var(--card); border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── CTA BANNER ───────────────────────────────────────────────── */
+    .cta-banner { background: var(--primary); text-align: center; }
+    .cta-banner h2 { font-size: clamp(24px, 3vw, 36px); font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .cta-banner p { font-size: 17px; color: rgba(255,255,255,.80); margin-bottom: 32px; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    .footer { background: var(--ink); color: rgba(255,255,255,.80); padding: 64px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-size: 18px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .footer-tagline { font-size: 14px; color: rgba(255,255,255,.60); margin-bottom: 20px; }
+    .footer-payment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-pay-chip {
+      background: rgba(255,255,255,.10); color: rgba(255,255,255,.80);
+      border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500;
+    }
+    .footer-col-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: #fff; margin-bottom: 16px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      font-size: 14px; color: rgba(255,255,255,.65);
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.10);
+      padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; color: rgba(255,255,255,.40);
+      flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .tutors-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 40px; }
+      .step:not(:last-child)::after { content: '↓'; right: 50%; top: auto; bottom: -24px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .testimonials-row { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .search-bar { flex-direction: column; gap: 10px; padding: 12px; border-radius: 12px; }
+      .search-bar .btn { width: 100%; }
+      .footer-top { grid-template-columns: 1fr; }
+      .cta-actions { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span>🔆</span> Brillance Académie
+      </a>
+      <ul class="nav-links">
+        <li><a href="tuteurs.html">Tuteurs</a></li>
+        <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
+        <li><a href="matieres.html">Matières</a></li>
+        <li><a href="temoignages.html">Témoignages</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="devenir-tuteur.html" class="nav-ghost">Devenir tuteur</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        🎉 Première séance à −20% pour tous les nouveaux élèves
+      </div>
+      <h1>Le meilleur tuteur pour votre enfant,<br /><em>à Ouagadougou</em></h1>
+      <p class="hero-sub">Des tuteurs certifiés du CP au 3ème. Cours à domicile dans votre quartier. Réservation en 2 minutes.</p>
+      <div class="search-bar">
+        <input type="text" placeholder="Votre quartier ou matière… (ex: Mathématiques, Ouaga 2000)" />
+        <button class="btn btn-primary">🔍 Rechercher</button>
+      </div>
+      <p class="social-proof">
+        <strong>⭐ 4.9/5</strong> · <strong>120+</strong> séances réservées · <strong>15</strong> tuteurs actifs
+      </p>
+      <div class="payment-chips">
+        <span class="payment-chip">🟠 Orange Money</span>
+        <span class="payment-chip">🔵 Moov Money</span>
+        <span class="payment-chip">🟢 Coris Money</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SUBJECT CHIPS
+  ═══════════════════════════════════════════════ -->
+  <div class="chips-section">
+    <div class="chips-inner">
+      <div class="chips-row">
+        <button class="chip active">📖 Lecture &amp; Phonics</button>
+        <button class="chip">🔢 Mathématiques</button>
+        <button class="chip">✏️ Écriture</button>
+        <button class="chip">🔬 Sciences</button>
+        <button class="chip">🌍 Histoire / Géo</button>
+        <button class="chip">💬 Langues</button>
+        <button class="chip">🎨 Arts &amp; Musique</button>
+        <button class="chip">💻 Technologie</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FEATURED TUTORS
+  ═══════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-inner">
+      <h2 class="section-title">Nos tuteurs disponibles cette semaine</h2>
+      <div class="tutors-grid">
+
+        <!-- Card 1 -->
+        <div class="tutor-card">
+          <span class="tutor-avatar">👩‍🏫</span>
+          <div class="tutor-name">Claire B.</div>
+          <div class="tutor-subject-chip">🔢 Mathématiques</div>
+          <div class="tutor-stars">
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span>
+          </div>
+          <div class="tutor-sessions">42 séances réalisées</div>
+          <div class="tutor-price">32 500 FCFA <span>/ séance</span></div>
+          <div class="tutor-days"><strong>Disponible :</strong> Lun, Mer, Ven</div>
+          <a href="tuteur-profil.html" class="btn btn-primary">📅 Réserver</a>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="tutor-card">
+          <span class="tutor-avatar">👨‍🏫</span>
+          <div class="tutor-name">Kwame A.</div>
+          <div class="tutor-subject-chip">📖 Lecture &amp; Phonics</div>
+          <div class="tutor-stars">
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span>
+          </div>
+          <div class="tutor-sessions">38 séances réalisées</div>
+          <div class="tutor-price">27 500 FCFA <span>/ séance</span></div>
+          <div class="tutor-days"><strong>Disponible :</strong> Mar, Jeu, Sam</div>
+          <a href="tuteur-profil.html" class="btn btn-primary">📅 Réserver</a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="tutor-card">
+          <span class="tutor-avatar">👩‍🔬</span>
+          <div class="tutor-name">Sofia R.</div>
+          <div class="tutor-subject-chip">🔬 Sciences</div>
+          <div class="tutor-stars">
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star empty">★</span>
+          </div>
+          <div class="tutor-sessions">27 séances réalisées</div>
+          <div class="tutor-price">35 000 FCFA <span>/ séance</span></div>
+          <div class="tutor-days"><strong>Disponible :</strong> Lun, Mar, Jeu</div>
+          <a href="tuteur-profil.html" class="btn btn-primary">📅 Réserver</a>
+        </div>
+
+      </div>
+      <p class="see-all"><a href="tuteurs.html">Voir tous les tuteurs →</a></p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       HOW IT WORKS
+  ═══════════════════════════════════════════════ -->
+  <section class="section section-soft">
+    <div class="section-inner">
+      <h2 class="section-title">Comment ça marche ?</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"><span class="step-icon">🔍</span></div>
+          <div class="step-title">Cherchez</div>
+          <p class="step-desc">Filtrez par matière, niveau scolaire et quartier. Trouvez le tuteur idéal en quelques secondes.</p>
+        </div>
+        <div class="step">
+          <div class="step-num"><span class="step-icon">📅</span></div>
+          <div class="step-title">Réservez</div>
+          <p class="step-desc">Choisissez un créneau disponible et payez en 2 clics via Orange Money, Moov ou Coris Money.</p>
+        </div>
+        <div class="step">
+          <div class="step-num"><span class="step-icon">🎓</span></div>
+          <div class="step-title">Apprenez</div>
+          <p class="step-desc">Le tuteur vient chez vous. Première séance à −20 %. Résultats visibles dès les premières semaines.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       TRUST & SOCIAL PROOF
+  ═══════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-inner">
+      <h2 class="section-title">Pourquoi les parents nous font confiance</h2>
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-number">120+</div>
+          <div class="stat-label">séances réservées</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">15</div>
+          <div class="stat-label">tuteurs actifs</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">4.9/5</div>
+          <div class="stat-label">satisfaction parents</div>
+        </div>
+      </div>
+      <div class="testimonials-row">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span>
+          </div>
+          <p class="testimonial-text">Mon fils a rattrapé son retard en maths en 3 séances. Claire est exceptionnelle !</p>
+          <div class="testimonial-author">Aminata D.</div>
+          <div class="testimonial-meta">Maman de Moussa, CM1 · Ouaga 2000</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span><span class="star filled">★</span>
+            <span class="star filled">★</span>
+          </div>
+          <p class="testimonial-text">Service rapide et tuteur très professionnel. Je recommande vivement à tous les parents.</p>
+          <div class="testimonial-author">Ibrahima S.</div>
+          <div class="testimonial-meta">Papa de Fatou, CE2 · Hamdalaye</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       PARTNER SCHOOLS
+  ═══════════════════════════════════════════════ -->
+  <section class="section section-gray" style="padding: 40px 24px;">
+    <div class="section-inner">
+      <p class="partners-label">Écoles partenaires</p>
+      <div class="partners-row">
+        <span class="partner-name">Les Élites De Demain</span>
+        <span class="partner-name">La Réussite</span>
+        <span class="partner-name">Saint-Viateur</span>
+        <span class="partner-name">Les Étoiles Brillantes</span>
+        <span class="partner-name">Sainte-Famille</span>
+        <span class="partner-name">La Lumière</span>
+        <span class="partner-name">Académie Excellence</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CTA BANNER
+  ═══════════════════════════════════════════════ -->
+  <section class="section cta-banner">
+    <div class="section-inner">
+      <h2>Prêt à trouver le tuteur parfait ?</h2>
+      <p>Première séance avec −20% de réduction. Paiement Orange Money, Moov, Coris.</p>
+      <div class="cta-actions">
+        <a href="tuteurs.html" class="btn btn-lg btn-white">🔍 Trouver un tuteur</a>
+        <a href="https://wa.me/22677166565" target="_blank" class="btn btn-lg btn-outline-white">💬 Contacter via WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">🔆 Brillance Académie</div>
+          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <div class="footer-payment">
+            <span class="footer-pay-chip">🟠 Orange Money</span>
+            <span class="footer-pay-chip">🔵 Moov Money</span>
+            <span class="footer-pay-chip">🟢 Coris</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigation</div>
+          <div class="footer-links">
+            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="comment-ca-marche.html">Fonctionnement</a>
+            <a href="matieres.html">Matières</a>
+            <a href="temoignages.html">Témoignages</a>
+            <a href="a-propos.html">À propos</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Matières</div>
+          <div class="footer-links">
+            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
+            <a href="matieres.html">🔢 Mathématiques</a>
+            <a href="matieres.html">🔬 Sciences</a>
+            <a href="matieres.html">🌍 Histoire / Géo</a>
+            <a href="matieres.html">💻 Technologie</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-links">
+            <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
+            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Formulaire contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>Tous droits réservés</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Subject chip toggle
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+  </script>
+
+  <script type="module">
+    import { initNavAuth } from '/js/ba-sdk.js';
+    initNavAuth();
+  </script>
+</body>
+</html>

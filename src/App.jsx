@@ -3,11 +3,11 @@ import React, { useState, useEffect, useMemo } from "react";
 
 // ─── THEME (source unique de vérité couleurs) ─────────────────────────────────
 const T = {
-  primary:       "#4f46e5",  // indigo — CTA principaux
-  primaryDark:   "#4338ca",  // hover primary
-  primarySoft:   "#ede9fe",  // fond léger primary
-  primarySofter: "#f5f3ff",  // fond très léger primary
-  primaryText:   "#4f46e5",  // texte sur soft
+  primary:       "#1d6fe8",  // sapphire — CTA principaux
+  primaryDark:   "#155ec8",  // hover primary
+  primarySoft:   "#dbeafe",  // fond léger primary
+  primarySofter: "#eff6ff",  // fond très léger primary
+  primaryText:   "#1d6fe8",  // texte sur soft
   ink:           "#111827",  // titres
   body:          "#374151",  // texte courant
   muted:         "#6b7280",  // texte secondaire
@@ -100,9 +100,9 @@ function Pill({ children, active, onClick }) {
     <button onClick={onClick}
       style={{
         padding: "8px 18px", borderRadius: 999, border: "1.5px solid",
-        borderColor: active ? "#4f46e5" : "#e5e7eb",
+        borderColor: active ? "#1d6fe8" : "#e5e7eb",
         background: active ? "#eef2ff" : "#fff",
-        color: active ? "#4f46e5" : "#6b7280",
+        color: active ? "#1d6fe8" : "#6b7280",
         fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all .15s",
         whiteSpace: "nowrap",
       }}>
@@ -126,7 +126,7 @@ function Inp({ label, value, onChange, placeholder, type="text", min, max, filte
       <input type={type} value={value} onChange={handleChange} placeholder={placeholder}
         min={min} max={max} inputMode={filter==="tel"||filter==="number"?"numeric":undefined}
         style={{border:"1.5px solid #e5e7eb",borderRadius:12,padding:"11px 16px",fontSize:14,outline:"none",background:"#fafafa"}}
-        onFocus={e=>e.target.style.borderColor="#4f46e5"}
+        onFocus={e=>e.target.style.borderColor="#1d6fe8"}
         onBlur={e=>{ e.target.style.borderColor="#e5e7eb"; if (onBlur) onBlur(e.target.value); }}
       />
     </div>
@@ -170,9 +170,9 @@ function SexeToggle({ value, onChange, label="Sexe" }) {
           <button key={o.k} type="button" onClick={()=>onChange(o.k)}
             style={{
               flex:1,padding:"11px 14px",borderRadius:12,fontSize:13,fontWeight:700,cursor:"pointer",
-              border: value===o.k ? "2px solid #4f46e5" : "1.5px solid #e5e7eb",
-              background: value===o.k ? "#ede9fe" : "#fafafa",
-              color: value===o.k ? "#4f46e5" : "#6b7280",
+              border: value===o.k ? "2px solid #1d6fe8" : "1.5px solid #e5e7eb",
+              background: value===o.k ? "#dbeafe" : "#fafafa",
+              color: value===o.k ? "#1d6fe8" : "#6b7280",
             }}>
             <span style={{marginRight:6}}>{o.emoji}</span>{o.text}
           </button>
@@ -190,7 +190,7 @@ function Steps({ labels, current }) {
           <div style={{
             width:30,height:30,borderRadius:999,display:"flex",alignItems:"center",justifyContent:"center",
             fontSize:12,fontWeight:700,
-            background: i<current?"#10b981":i===current?"#4f46e5":"#f3f4f6",
+            background: i<current?"#10b981":i===current?"#1d6fe8":"#f3f4f6",
             color: i<=current?"#fff":"#9ca3af",
           }}>{i<current?"✓":i+1}</div>
           {i<labels.length-1 && <div style={{width:32,height:2,background:i<current?"#10b981":"#e5e7eb"}}/>}
@@ -222,7 +222,7 @@ function FaqItem({ q, r }) {
       <button onClick={()=>setOpen(!open)}
         style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",background:"none",border:"none",cursor:"pointer",textAlign:"left",fontFamily:"'Inter',sans-serif"}}>
         <span style={{fontSize:16,fontWeight:700,color:"#111827"}}>{q}</span>
-        <span style={{fontSize:22,color:"#4f46e5",fontWeight:300,flexShrink:0,marginLeft:16,lineHeight:1}}>{open?"−":"+"}</span>
+        <span style={{fontSize:22,color:"#1d6fe8",fontWeight:300,flexShrink:0,marginLeft:16,lineHeight:1}}>{open?"−":"+"}</span>
       </button>
       {open && <p style={{fontSize:14,color:"#6b7280",lineHeight:1.8,margin:"12px 0 0",paddingRight:32}}>{r}</p>}
     </div>
@@ -315,7 +315,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
         <div style={{textAlign:"center", marginBottom:32}}>
           <div style={{width:80, height:80, background:"#d1fae5", borderRadius:999, display:"flex", alignItems:"center", justifyContent:"center", fontSize:40, margin:"0 auto 20px", boxShadow:"0 0 0 12px #f0fdf4, 0 0 0 20px #dcfce7"}}>✅</div>
           <h2 style={{fontSize:26, fontWeight:900, margin:"0 0 8px"}}>Réservation enregistrée !</h2>
-          <p style={{color:"#6b7280", fontSize:14, margin:0}}>Référence : <strong style={{color:"#4f46e5"}}>{refNum}</strong></p>
+          <p style={{color:"#6b7280", fontSize:14, margin:0}}>Référence : <strong style={{color:"#1d6fe8"}}>{refNum}</strong></p>
         </div>
 
         <div style={{background:"#fff", borderRadius:20, padding:24, marginBottom:16, boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
@@ -379,7 +379,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
       {/* Header */}
       <div style={{background:"#fff", borderBottom:"1px solid #f3f4f6", padding:"0 40px", height:60, display:"flex", alignItems:"center", justifyContent:"space-between"}}>
-        <span style={{fontWeight:900, fontSize:20, color:"#4f46e5"}}>🎓 Brillance Académie</span>
+        <span style={{fontWeight:900, fontSize:20, color:"#1d6fe8"}}>🎓 Brillance Académie</span>
         <span style={{fontSize:13, color:"#6b7280", fontWeight:600}}>Réservation sécurisée</span>
       </div>
 
@@ -388,14 +388,14 @@ function PagePaiement({ booking, onSuccess, onBack }) {
         {/* Résumé */}
         <div style={{background:"#fff", borderRadius:20, padding:24, marginBottom:24, boxShadow:"0 4px 20px rgba(0,0,0,.06)"}}>
           <div style={{display:"flex", gap:14, alignItems:"center", marginBottom:20, paddingBottom:20, borderBottom:"1px solid #f3f4f6"}}>
-            <div style={{width:52, height:52, background:"#ede9fe", borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28}}>{tuteur?.emoji||"👩‍🏫"}</div>
+            <div style={{width:52, height:52, background:"#dbeafe", borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", fontSize:28}}>{tuteur?.emoji||"👩‍🏫"}</div>
             <div style={{flex:1}}>
               <p style={{fontWeight:800, fontSize:16, margin:0}}>{tuteur?.prenom} {tuteur?.nom}</p>
               <p style={{fontSize:13, color:"#6366f1", margin:"3px 0 0", fontWeight:600}}>{tuteur?.subject}</p>
             </div>
             <div style={{textAlign:"right"}}>
               {isFirstSession && <p style={{fontSize:12, color:"#9ca3af", margin:0, textDecoration:"line-through"}}>{fmt((tuteur?.price||0)*duree)}</p>}
-              <p style={{fontSize:22, fontWeight:900, color:"#4f46e5", margin:0}}>{fmt(essaiAmount)}</p>
+              <p style={{fontSize:22, fontWeight:900, color:"#1d6fe8", margin:0}}>{fmt(essaiAmount)}</p>
               {isFirstSession && <span style={{fontSize:11, background:"#dcfce7", color:"#065f46", padding:"2px 8px", borderRadius:999, fontWeight:700}}>−20 % 1ère séance</span>}
             </div>
           </div>
@@ -430,7 +430,7 @@ function PagePaiement({ booking, onSuccess, onBack }) {
 
         <button onClick={confirmer} disabled={loading}
           style={{width:"100%", padding:"15px", borderRadius:14, border:"none", cursor:"pointer",
-            fontWeight:700, fontSize:15, background:"#4f46e5", color:"#fff",
+            fontWeight:700, fontSize:15, background:"#1d6fe8", color:"#fff",
             display:"flex", alignItems:"center", justifyContent:"center", gap:10, marginBottom:12}}>
           {loading
             ? <><svg style={{width:18,height:18,animation:"spin 1s linear infinite"}} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>Enregistrement…</>
@@ -484,7 +484,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
       <div style={{textAlign:"center",padding:"24px 0"}}>
         <div style={{fontSize:52}}>🎉</div>
         <p style={{color:"#6b7280",marginTop:16,lineHeight:1.6}}>Notre équipe va vous trouver le meilleur tuteur sous 24h.<br/>Vous serez contacté par WhatsApp ou e-mail.</p>
-        <button onClick={onClose} style={{marginTop:24,padding:"12px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>Fermer</button>
+        <button onClick={onClose} style={{marginTop:24,padding:"12px 32px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>Fermer</button>
       </div>
     </Modal>
   );
@@ -536,7 +536,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
     </>,
     <>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",marginBottom:14}}>Récapitulatif</p>
-      <div style={{background:"#f5f3ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
+      <div style={{background:"#eff6ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
         {[["Parent",d.nom],["Contact",`${d.tel} · ${d.email}`],["Enfant",`${d.enfant}, ${d.age} ans`],["Niveau",d.niveau],["Matières",d.matieres.join(", ")],["Objectif",d.objectif],["Fréquence",d.frequence]]
           .map(([k,v])=><div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827",textAlign:"right",maxWidth:"60%"}}>{v||"—"}</span></div>)}
       </div>
@@ -551,7 +551,7 @@ function InscriptionParent({ onClose, ecolesList=[] }) {
       <div style={{display:"flex",gap:10,marginTop:20}}>
         {step>0 && <button onClick={()=>setStep(s=>s-1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>}
         <button disabled={!ok[step]||saving} onClick={step===3 ? envoyer : ()=>setStep(s=>s+1)}
-          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed",transition:"background .15s"}}>
+          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#1d6fe8":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed",transition:"background .15s"}}>
           {saving?"Envoi en cours…":step===3?"Envoyer ma demande ✓":"Continuer →"}
         </button>
       </div>
@@ -624,7 +624,7 @@ function InscriptionTuteur({ onClose }) {
       <div style={{textAlign:"center",padding:"24px 0"}}>
         <div style={{fontSize:52}}>🎉</div>
         <p style={{color:"#6b7280",marginTop:16,lineHeight:1.6}}>Paiement confirmé. Votre profil sera examiné par notre équipe.<br/>Réponse garantie sous 48h.</p>
-        <button onClick={onClose} style={{marginTop:24,padding:"12px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>Fermer</button>
+        <button onClick={onClose} style={{marginTop:24,padding:"12px 32px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>Fermer</button>
       </div>
     </Modal>
   );
@@ -656,25 +656,25 @@ function InscriptionTuteur({ onClose }) {
       <Inp label="Diplôme le plus élevé" value={d.diplome} onChange={v=>set("diplome",v)} placeholder="Master Sciences de l'éducation"/>
       <div>
         <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:12}}>💰 Tarif horaire souhaité</label>
-        <div style={{background:"#f5f3ff",borderRadius:14,padding:"18px 20px"}}>
+        <div style={{background:"#eff6ff",borderRadius:14,padding:"18px 20px"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
             <span style={{fontSize:13,color:"#6b7280"}}>1 000 FCFA</span>
-            <span style={{fontSize:22,fontWeight:900,color:"#4f46e5"}}>{d.tarif.toLocaleString("fr-FR")} FCFA<span style={{fontSize:13,fontWeight:500,color:"#6b7280"}}>/h</span></span>
+            <span style={{fontSize:22,fontWeight:900,color:"#1d6fe8"}}>{d.tarif.toLocaleString("fr-FR")} FCFA<span style={{fontSize:13,fontWeight:500,color:"#6b7280"}}>/h</span></span>
             <span style={{fontSize:13,color:"#6b7280"}}>15 000 FCFA</span>
           </div>
           <input type="range" min={1000} max={15000} step={1000} value={d.tarif}
             onChange={e=>set("tarif", +e.target.value)}
-            style={{width:"100%",accentColor:"#4f46e5",cursor:"pointer",height:6}}/>
+            style={{width:"100%",accentColor:"#1d6fe8",cursor:"pointer",height:6}}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:10,flexWrap:"wrap",gap:6}}>
             {[1000,3000,5000,8000,10000,12000,15000].map(v=>(
               <button key={v} type="button" onClick={()=>set("tarif",v)}
-                style={{padding:"4px 10px",borderRadius:999,border:`1.5px solid ${d.tarif===v?"#4f46e5":"#e5e7eb"}`,background:d.tarif===v?"#4f46e5":"#fff",color:d.tarif===v?"#fff":"#6b7280",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                style={{padding:"4px 10px",borderRadius:999,border:`1.5px solid ${d.tarif===v?"#1d6fe8":"#e5e7eb"}`,background:d.tarif===v?"#1d6fe8":"#fff",color:d.tarif===v?"#fff":"#6b7280",fontSize:12,fontWeight:700,cursor:"pointer"}}>
                 {(v/1000).toLocaleString("fr-FR")}k
               </button>
             ))}
           </div>
           {/* Indication tarif moyen */}
-          <div style={{marginTop:14,padding:"10px 12px",background:"#fff",borderRadius:10,border:"1px dashed #ddd6fe",fontSize:12,color:"#4f46e5",lineHeight:1.6}}>
+          <div style={{marginTop:14,padding:"10px 12px",background:"#fff",borderRadius:10,border:"1px dashed #ddd6fe",fontSize:12,color:"#1d6fe8",lineHeight:1.6}}>
             <strong>💡 Bon à savoir :</strong> la majorité des tuteurs sur Brillance Académie facturent entre <strong>3 000 et 8 000 FCFA/h</strong> selon leur niveau. Les débutants commencent souvent à 2 500–4 000 FCFA. Un tarif juste = plus de réservations.
           </div>
         </div>
@@ -690,7 +690,7 @@ function InscriptionTuteur({ onClose }) {
         <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
         <div style={{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}}>
           <button onClick={()=>set("tousQuartiers",!d.tousQuartiers)}
-            style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.tousQuartiers?"#4f46e5":"#e5e7eb"}`,background:d.tousQuartiers?"#ede9fe":"#f9fafb",color:d.tousQuartiers?"#4f46e5":"#374151",fontWeight:700,fontSize:13,cursor:"pointer"}}>
+            style={{padding:"8px 16px",borderRadius:999,border:`2px solid ${d.tousQuartiers?"#1d6fe8":"#e5e7eb"}`,background:d.tousQuartiers?"#dbeafe":"#f9fafb",color:d.tousQuartiers?"#1d6fe8":"#374151",fontWeight:700,fontSize:13,cursor:"pointer"}}>
             {d.tousQuartiers?"✓ Tous les quartiers de Ouaga":"Tous les quartiers"}
           </button>
           <button onClick={()=>set("enLigne",!d.enLigne)}
@@ -712,7 +712,7 @@ function InscriptionTuteur({ onClose }) {
     </div>,
     <div style={{display:"flex",flexDirection:"column",gap:12}}>
       <p style={{fontSize:15,fontWeight:700,color:"#111827",margin:0}}>Récapitulatif</p>
-      <div style={{background:"#f5f3ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
+      <div style={{background:"#eff6ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
         {[["Nom",`${d.prenom} ${d.nom}`],["Contact",d.email],["Ville",d.ville],["Matières",d.matieres.join(", ")],["Niveaux",d.niveaux.join(", ")],["Expérience",d.experience],["Tarif",`${d.tarif.toLocaleString("fr-FR")} FCFA/h`],["Jours",d.jours.join(", ")],["Quartiers",d.tousQuartiers?"Tous les quartiers de Ouagadougou":d.quartiersCouVerts.join(", ")]]
           .map(([k,v])=><div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827",textAlign:"right",maxWidth:"60%"}}>{v||"—"}</span></div>)}
       </div>
@@ -721,9 +721,9 @@ function InscriptionTuteur({ onClose }) {
 
     /* ── STEP 4 : CONFIRMATION ENVOI LIEN ── */
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
-      <div style={{background:"#f5f3ff",borderRadius:16,padding:24,textAlign:"center"}}>
+      <div style={{background:"#eff6ff",borderRadius:16,padding:24,textAlign:"center"}}>
         <p style={{fontSize:40,margin:"0 0 12px"}}>📩</p>
-        <p style={{fontSize:16,fontWeight:800,color:"#4f46e5",margin:"0 0 8px"}}>Presque terminé !</p>
+        <p style={{fontSize:16,fontWeight:800,color:"#1d6fe8",margin:"0 0 8px"}}>Presque terminé !</p>
         <p style={{fontSize:13,color:"#6b7280",margin:0,lineHeight:1.7}}>
           Cliquez sur <strong>"Soumettre ma candidature"</strong>. Votre dossier sera examiné sous <strong>48h</strong>. Un lien de paiement des frais d'inscription vous sera envoyé directement sur votre WhatsApp et par e-mail.
         </p>
@@ -751,7 +751,7 @@ function InscriptionTuteur({ onClose }) {
       <div style={{display:"flex",gap:10,marginTop:20}}>
         {step>0 && step<5 && <button onClick={()=>setStep(s=>s-1)} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>}
         <button disabled={!ok[step]||saving} onClick={step===4 ? envoyer : ()=>setStep(s=>s+1)}
-          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#4f46e5":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed"}}>
+          style={{flex:1,padding:13,border:"none",borderRadius:12,background:ok[step]&&!saving?"#1d6fe8":"#e5e7eb",color:ok[step]&&!saving?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:ok[step]&&!saving?"pointer":"not-allowed"}}>
           {saving?"Enregistrement…":step===4?"✅ Soumettre ma candidature":step===3?"Étape suivante →":"Continuer →"}
         </button>
       </div>
@@ -796,7 +796,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",gap:16}}>
       <p style={{fontSize:48}}>😕</p>
       <p style={{color:"#374151",fontWeight:700,fontSize:18}}>Tuteur introuvable</p>
-      <button onClick={goHome} style={{padding:"10px 28px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,cursor:"pointer"}}>← Retour</button>
+      <button onClick={goHome} style={{padding:"10px 28px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,cursor:"pointer"}}>← Retour</button>
     </div>
   );
 
@@ -808,7 +808,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
       {/* Navbar */}
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
         <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
-        <button onClick={goHome} style={{padding:"8px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Tous les tuteurs</button>
+        <button onClick={goHome} style={{padding:"8px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Tous les tuteurs</button>
       </nav>
 
       <div style={{maxWidth:820,margin:"0 auto",padding:"48px 24px"}}>
@@ -816,7 +816,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
         {/* Carte principale */}
         <div style={{background:"#fff",borderRadius:24,padding:36,marginBottom:24,boxShadow:"0 4px 24px rgba(0,0,0,.07)"}}>
           <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
-            <div style={{width:90,height:90,borderRadius:999,background:"#ede9fe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:48,flexShrink:0}}>{tuteur.emoji||"👩‍🏫"}</div>
+            <div style={{width:90,height:90,borderRadius:999,background:"#dbeafe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:48,flexShrink:0}}>{tuteur.emoji||"👩‍🏫"}</div>
             <div style={{flex:1,minWidth:200}}>
               <h1 style={{fontSize:26,fontWeight:900,margin:"0 0 4px",color:"#111827"}}>{tuteur.prenom} {tuteur.nom}</h1>
               <p style={{fontSize:16,color:"#6366f1",fontWeight:700,margin:"0 0 10px"}}>{tuteur.subject}</p>
@@ -826,9 +826,9 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
                 <span><Stars n={tuteur.rating}/></span>
               </div>
             </div>
-            <div style={{textAlign:"center",background:"#f5f3ff",borderRadius:16,padding:"16px 24px",flexShrink:0}}>
+            <div style={{textAlign:"center",background:"#eff6ff",borderRadius:16,padding:"16px 24px",flexShrink:0}}>
               <p style={{fontSize:12,color:"#9ca3af",margin:"0 0 4px"}}>Tarif / heure</p>
-              <p style={{fontSize:28,fontWeight:900,color:"#4f46e5",margin:"0 0 4px"}}>{fmt(tuteur.price)}</p>
+              <p style={{fontSize:28,fontWeight:900,color:"#1d6fe8",margin:"0 0 4px"}}>{fmt(tuteur.price)}</p>
               <p style={{fontSize:12,color:"#10b981",fontWeight:700,margin:0}}>1ère séance −20 % → {fmt(essaiPrice)}</p>
             </div>
           </div>
@@ -855,7 +855,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
             <p style={{fontWeight:700,fontSize:14,color:"#111827",margin:"0 0 12px"}}>📚 Niveaux enseignés</p>
             <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
               {(tuteur.niveaux||[]).map(n=>(
-                <span key={n} style={{padding:"5px 12px",background:"#ede9fe",color:"#4f46e5",borderRadius:999,fontSize:13,fontWeight:600}}>{n}</span>
+                <span key={n} style={{padding:"5px 12px",background:"#dbeafe",color:"#1d6fe8",borderRadius:999,fontSize:13,fontWeight:600}}>{n}</span>
               ))}
               {!(tuteur.niveaux||[]).length && <span style={{color:"#9ca3af",fontSize:13}}>Non renseigné</span>}
             </div>
@@ -868,7 +868,7 @@ function PageTuteur({ tuteurId, goHome, goPayment }) {
           <p style={{color:"#6b7280",fontSize:14,margin:"0 0 20px"}}>Réservez directement ou inscrivez-vous pour trouver le tuteur idéal.</p>
           <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
             <button onClick={()=>goPayment({tuteur,jour:tuteur.availableDays?.[0]||"À définir",creneau:"À définir",enfant:"",niveau:"",parentNom:"",parentEmail:""})}
-              style={{padding:"14px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+              style={{padding:"14px 32px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
               📅 Réserver avec {tuteur.prenom} →
             </button>
             <button onClick={()=>setShowInscription(true)}
@@ -1053,31 +1053,31 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           {/* Matières */}
           <div style={{position:"relative"}}>
             <select value={activeM||""} onChange={e=>setActiveM(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeM?"#4f46e5":"#e5e7eb"}`,background:activeM?"#eef2ff":"#fff",color:activeM?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Inter',sans-serif",minWidth:150}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeM?"#1d6fe8":"#e5e7eb"}`,background:activeM?"#eef2ff":"#fff",color:activeM?"#1d6fe8":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Inter',sans-serif",minWidth:150}}>
               <option value="">📚 Toutes les matières</option>
               {MATIERES.map(({label,emoji})=><option key={label} value={label}>{emoji} {label}</option>)}
             </select>
-            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeM?"#4f46e5":"#f0f0f0",borderLeft:`1px solid ${activeM?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeM?"#fff":"#6b7280"}}>▼</span>
+            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeM?"#1d6fe8":"#f0f0f0",borderLeft:`1px solid ${activeM?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeM?"#fff":"#6b7280"}}>▼</span>
           </div>
 
           {/* Quartiers */}
           <div style={{position:"relative"}}>
             <select value={activeQ||""} onChange={e=>setActiveQ(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeQ?"#4f46e5":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff",color:activeQ?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Inter',sans-serif",minWidth:160}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeQ?"#1d6fe8":"#e5e7eb"}`,background:activeQ?"#eef2ff":"#fff",color:activeQ?"#1d6fe8":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Inter',sans-serif",minWidth:160}}>
               <option value="">📍 Tous les quartiers</option>
               {QUARTIERS.map(q=><option key={q} value={q}>{q}</option>)}
             </select>
-            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeQ?"#4f46e5":"#f0f0f0",borderLeft:`1px solid ${activeQ?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeQ?"#fff":"#6b7280"}}>▼</span>
+            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeQ?"#1d6fe8":"#f0f0f0",borderLeft:`1px solid ${activeQ?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeQ?"#fff":"#6b7280"}}>▼</span>
           </div>
 
           {/* Niveaux */}
           <div style={{position:"relative"}}>
             <select value={activeN||""} onChange={e=>setActiveN(e.target.value||null)}
-              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeN?"#4f46e5":"#e5e7eb"}`,background:activeN?"#eef2ff":"#fff",color:activeN?"#4f46e5":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Inter',sans-serif",minWidth:140}}>
+              style={{appearance:"none",WebkitAppearance:"none",padding:"10px 44px 10px 14px",borderRadius:10,border:`1.5px solid ${activeN?"#1d6fe8":"#e5e7eb"}`,background:activeN?"#eef2ff":"#fff",color:activeN?"#1d6fe8":"#374151",fontWeight:600,fontSize:13,cursor:"pointer",outline:"none",fontFamily:"'Inter',sans-serif",minWidth:140}}>
               <option value="">🎓 Tous les niveaux</option>
               {NIVEAUX.map(n=><option key={n} value={n}>{n}</option>)}
             </select>
-            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeN?"#4f46e5":"#f0f0f0",borderLeft:`1px solid ${activeN?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeN?"#fff":"#6b7280"}}>▼</span>
+            <span style={{position:"absolute",right:0,top:0,bottom:0,width:32,display:"flex",alignItems:"center",justifyContent:"center",background:activeN?"#1d6fe8":"#f0f0f0",borderLeft:`1px solid ${activeN?"#6366f1":"#d1d5db"}`,borderRadius:"0 8px 8px 0",pointerEvents:"none",fontSize:11,color:activeN?"#fff":"#6b7280"}}>▼</span>
           </div>
 
           {/* Filtre En ligne */}
@@ -1179,7 +1179,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <h3 style={{fontSize:22,fontWeight:800,color:"#f9fafb",margin:"0 0 8px"}}>Première séance non satisfaisante ? On rembourse.</h3>
               <p style={{color:"#d1d5db",fontSize:14,margin:0}}>Aucun risque pour les familles. C'est ça, la confiance Brillance Académie.</p>
             </div>
-            <button onClick={()=>setModal("parent")} style={{padding:"14px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
+            <button onClick={()=>setModal("parent")} style={{padding:"14px 32px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>
               Démarrer gratuitement →
             </button>
           </div>
@@ -1197,7 +1197,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
         {loadingTuteurs && (
           <div style={{textAlign:"center",padding:"60px 0"}}>
-            <div style={{display:"inline-block",width:40,height:40,border:"4px solid #ede9fe",borderTopColor:"#4f46e5",borderRadius:999,animation:"spin 0.8s linear infinite"}}/>
+            <div style={{display:"inline-block",width:40,height:40,border:"4px solid #dbeafe",borderTopColor:"#1d6fe8",borderRadius:999,animation:"spin 0.8s linear infinite"}}/>
             <p style={{fontSize:14,color:"#9ca3af",marginTop:16}}>Chargement des tuteurs…</p>
           </div>
         )}
@@ -1208,7 +1208,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
             <p style={{fontSize:16,fontWeight:600,marginTop:12}}>Aucun tuteur trouvé</p>
             <p style={{fontSize:14,marginTop:4}}>Essayez un autre terme ou matière.</p>
             <button onClick={()=>{setActiveM(null);setActiveQ(null);setActiveN(null);setActiveOnline(false);setSearch("");}}
-              style={{marginTop:16,padding:"10px 24px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+              style={{marginTop:16,padding:"10px 24px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>
               Effacer les filtres
             </button>
           </div>
@@ -1224,7 +1224,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
               {/* Ligne 1 : avatar + nom/matière + badges + prix */}
               <div style={{display:"flex",alignItems:"center",gap:10}}>
-                <div style={{width:44,height:44,borderRadius:999,background:"#ede9fe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{t.emoji}</div>
+                <div style={{width:44,height:44,borderRadius:999,background:"#dbeafe",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{t.emoji}</div>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
                     <p style={{fontWeight:800,fontSize:15,margin:0,color:"#111827"}}>{t.prenom} {t.nom}</p>
@@ -1257,9 +1257,9 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                   👤 Profil
                 </button>
                 <button onClick={()=>{setTuteur(t);setBook(parentConnu!==null?2:0);scrollTo("book");}}
-                  style={{flex:2,padding:"8px",borderRadius:10,border:"none",background:"#4f46e5",fontWeight:700,fontSize:12,cursor:"pointer",color:"#fff"}}
+                  style={{flex:2,padding:"8px",borderRadius:10,border:"none",background:"#1d6fe8",fontWeight:700,fontSize:12,cursor:"pointer",color:"#fff"}}
                   onMouseOver={e=>e.currentTarget.style.background="#3730a3"}
-                  onMouseOut={e=>e.currentTarget.style.background="#4f46e5"}>
+                  onMouseOut={e=>e.currentTarget.style.background="#1d6fe8"}>
                   📅 Réserver →
                 </button>
               </div>
@@ -1279,7 +1279,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 <Pill key={v} active={tab===v} onClick={()=>setTab(v)}>{l}</Pill>
               ))}
               <button onClick={()=>{ setAvisForm({auteur:"",ville:"",commentaire:"",note:5,type:tab}); setShowAvisForm(true); setAvisEnvoye(false); }}
-                style={{padding:"8px 18px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>
+                style={{padding:"8px 18px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>
                 ✏️ Laisser un avis
               </button>
             </div>
@@ -1312,7 +1312,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                     <div style={{fontSize:52}}>🎉</div>
                     <h3 style={{fontWeight:800,fontSize:20,margin:"16px 0 8px"}}>Merci pour votre avis !</h3>
                     <p style={{color:"#6b7280",fontSize:14}}>Votre témoignage sera publié après validation par notre équipe.</p>
-                    <button onClick={()=>setShowAvisForm(false)} style={{marginTop:20,padding:"10px 28px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,cursor:"pointer"}}>Fermer</button>
+                    <button onClick={()=>setShowAvisForm(false)} style={{marginTop:20,padding:"10px 28px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,cursor:"pointer"}}>Fermer</button>
                   </div>
                 ) : (
                   <>
@@ -1321,7 +1321,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                       <div style={{display:"flex",gap:8}}>
                         {[["parent","👨‍👩‍👧 Parent"],["tuteur","📖 Tuteur"]].map(([v,l])=>(
                           <button key={v} onClick={()=>setAvisForm(f=>({...f,type:v}))}
-                            style={{flex:1,padding:"10px",border:`2px solid ${avisForm.type===v?"#4f46e5":"#e5e7eb"}`,borderRadius:10,background:avisForm.type===v?"#f5f3ff":"#fff",fontWeight:700,fontSize:13,cursor:"pointer",color:avisForm.type===v?"#4f46e5":"#374151"}}>
+                            style={{flex:1,padding:"10px",border:`2px solid ${avisForm.type===v?"#1d6fe8":"#e5e7eb"}`,borderRadius:10,background:avisForm.type===v?"#eff6ff":"#fff",fontWeight:700,fontSize:13,cursor:"pointer",color:avisForm.type===v?"#1d6fe8":"#374151"}}>
                             {l}
                           </button>
                         ))}
@@ -1352,7 +1352,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                           } catch(e){ alert("Erreur : "+e.message); }
                           setAvisSaving(false);
                         }}
-                        style={{padding:"13px",background:avisForm.auteur&&avisForm.commentaire?"#4f46e5":"#e5e7eb",color:avisForm.auteur&&avisForm.commentaire?"#fff":"#9ca3af",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:avisForm.auteur&&avisForm.commentaire?"pointer":"not-allowed"}}>
+                        style={{padding:"13px",background:avisForm.auteur&&avisForm.commentaire?"#1d6fe8":"#e5e7eb",color:avisForm.auteur&&avisForm.commentaire?"#fff":"#9ca3af",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:avisForm.auteur&&avisForm.commentaire?"pointer":"not-allowed"}}>
                         {avisSaving?"Envoi en cours…":"Envoyer mon avis →"}
                       </button>
                     </div>
@@ -1383,7 +1383,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <h3 style={{fontSize:24,fontWeight:800,color:"#111827",marginTop:20}}>Séance confirmée !</h3>
               <p style={{color:"#6b7280",marginTop:8}}>{tuteur?.prenom} {tuteur?.nom} · {jour} à {creneau}</p>
               <button onClick={()=>{setBook(0);setTuteur(null);setJour(null);setCreneau(null);setBookDone(false);setBi({nom:"",email:"",enfant:"",niveau:""});setEmailQ("");setParentConnu(null);setPremiereSeance(false);}}
-                style={{marginTop:24,padding:"12px 32px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                style={{marginTop:24,padding:"12px 32px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 Nouvelle réservation
               </button>
             </div>
@@ -1415,7 +1415,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                       }
                     } catch { setParentConnu(false); setPremiereSeance(true); }
                     setEmailLooking(false);
-                  }} style={{padding:"11px 20px",background:emailQ?"#4f46e5":"#e5e7eb",color:emailQ?"#fff":"#9ca3af",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:emailQ?"pointer":"not-allowed",whiteSpace:"nowrap"}}>
+                  }} style={{padding:"11px 20px",background:emailQ?"#1d6fe8":"#e5e7eb",color:emailQ?"#fff":"#9ca3af",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:emailQ?"pointer":"not-allowed",whiteSpace:"nowrap"}}>
                     {emailLooking ? "…" : "Vérifier →"}
                   </button>
                 </div>
@@ -1452,7 +1452,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
               {parentConnu !== null && (
                 <button onClick={()=>setBook(tuteur ? 2 : 1)}
-                  style={{padding:"14px",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:15,cursor:"pointer"}}>
+                  style={{padding:"14px",border:"none",borderRadius:12,background:"#1d6fe8",color:"#fff",fontWeight:700,fontSize:15,cursor:"pointer"}}>
                   {parentConnu ? "Continuer avec mon compte →" : "Continuer & créer mon compte →"}
                 </button>
               )}
@@ -1482,7 +1482,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
           {/* ÉTAPE 2 — Créneau (tuteur déjà choisi → sauter étape 1) */}
           {!bookDone && bookStep>=1 && bookStep<=2 && tuteur && (
             <div>
-              <div style={{background:"#f5f3ff",borderRadius:16,padding:16,display:"flex",gap:14,alignItems:"center",marginBottom:24}}>
+              <div style={{background:"#eff6ff",borderRadius:16,padding:16,display:"flex",gap:14,alignItems:"center",marginBottom:24}}>
                 <span style={{fontSize:32}}>{tuteur.emoji}</span>
                 <div><p style={{fontWeight:700,margin:0,color:"#111827"}}>{tuteur.prenom} {tuteur.nom}</p><p style={{fontSize:13,color:"#6366f1",margin:"2px 0 0"}}>{tuteur.subject} · {fmt(tuteur.price)}/h</p></div>
                 {premiereSeance && <span style={{marginLeft:"auto",background:"#dcfce7",color:"#065f46",fontSize:11,fontWeight:800,padding:"4px 10px",borderRadius:999,whiteSpace:"nowrap"}}>🌟 −20 %</span>}
@@ -1491,7 +1491,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <p style={{fontSize:13,fontWeight:700,color:"#374151",marginBottom:10}}>Mode de la séance</p>
               <div style={{display:"flex",gap:10,marginBottom:20}}>
                 <button onClick={()=>setModeSeance("domicile")}
-                  style={{flex:1,padding:"12px",borderRadius:12,border:`2px solid ${modeSeance==="domicile"?"#4f46e5":"#e5e7eb"}`,background:modeSeance==="domicile"?"#eef2ff":"#fff",fontWeight:700,fontSize:13,cursor:"pointer",color:modeSeance==="domicile"?"#4f46e5":"#374151"}}>
+                  style={{flex:1,padding:"12px",borderRadius:12,border:`2px solid ${modeSeance==="domicile"?"#1d6fe8":"#e5e7eb"}`,background:modeSeance==="domicile"?"#eef2ff":"#fff",fontWeight:700,fontSize:13,cursor:"pointer",color:modeSeance==="domicile"?"#1d6fe8":"#374151"}}>
                   🏠 À domicile
                 </button>
                 {tuteur?.en_ligne && (
@@ -1514,7 +1514,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                 <div style={{display:"flex",gap:8,marginBottom:20}}>
                   {[1,2,3].map(h=>(
                     <button key={h} onClick={()=>setDuree(h)}
-                      style={{flex:1,padding:"12px 0",borderRadius:12,border:`2px solid ${duree===h?"#4f46e5":"#e5e7eb"}`,background:duree===h?"#ede9fe":"#fff",color:duree===h?"#4f46e5":"#374151",fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                      style={{flex:1,padding:"12px 0",borderRadius:12,border:`2px solid ${duree===h?"#1d6fe8":"#e5e7eb"}`,background:duree===h?"#dbeafe":"#fff",color:duree===h?"#1d6fe8":"#374151",fontWeight:700,fontSize:14,cursor:"pointer"}}>
                       {h}h — {((tuteur?.price||0)*h).toLocaleString("fr-FR")} FCFA
                     </button>
                   ))}
@@ -1523,7 +1523,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
               <div style={{display:"flex",gap:10}}>
                 <button onClick={()=>{ setBook(0); setTuteur(null); setJour(null); setCreneau(null); }} style={{flex:1,padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
                 <button disabled={!jour||!creneau} onClick={()=>setBook(parentConnu ? 4 : 3)}
-                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:jour&&creneau?"#4f46e5":"#e5e7eb",color:jour&&creneau?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:jour&&creneau?"pointer":"not-allowed"}}>
+                  style={{flex:1,padding:13,border:"none",borderRadius:12,background:jour&&creneau?"#1d6fe8":"#e5e7eb",color:jour&&creneau?"#fff":"#9ca3af",fontWeight:700,fontSize:14,cursor:jour&&creneau?"pointer":"not-allowed"}}>
                   {parentConnu ? "Confirmer →" : "Continuer →"}
                 </button>
               </div>
@@ -1584,7 +1584,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                   </div>
                 </div>
               )}
-              <div style={{background:"#f5f3ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
+              <div style={{background:"#eff6ff",borderRadius:16,padding:18,display:"flex",flexDirection:"column",gap:10}}>
                 {[["Tuteur",`${tuteur?.prenom} ${tuteur?.nom}`],["Matière",tuteur?.subject],["Jour",jour],["Créneau",creneau],["Durée",`${duree}h`],["Parent",bi.nom],["Enfant",`${bi.enfant}${bi.niveau?" · "+bi.niveau:""}`]].map(([k,v])=>(
                   <div key={k} style={{display:"flex",justifyContent:"space-between",fontSize:14}}><span style={{color:"#6b7280"}}>{k}</span><span style={{fontWeight:600,color:"#111827"}}>{v}</span></div>
                 ))}
@@ -1592,7 +1592,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                   <span style={{fontSize:13,color:"#6b7280"}}>{premiereSeance ? `${duree}h d'essai (−20 %)` : `Tarif ${duree}h`}</span>
                   <div style={{textAlign:"right"}}>
                     {premiereSeance && <span style={{textDecoration:"line-through",color:"#9ca3af",fontSize:13,marginRight:8}}>{fmt((tuteur?.price||0)*duree)}</span>}
-                    <span style={{fontWeight:800,color:"#4f46e5",fontSize:20}}>{fmt(premiereSeance ? Math.round((tuteur?.price||0)*duree*0.8) : (tuteur?.price||0)*duree)}</span>
+                    <span style={{fontWeight:800,color:"#1d6fe8",fontSize:20}}>{fmt(premiereSeance ? Math.round((tuteur?.price||0)*duree*0.8) : (tuteur?.price||0)*duree)}</span>
                   </div>
                 </div>
               </div>
@@ -1602,7 +1602,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
                   const jitsiLink = modeSeance==="enligne" ? `https://meet.jit.si/Brillance-${ref}` : null;
                   goPayment({ tuteur, jour, creneau, duree, enfant:bi.enfant, niveau:bi.niveau, parentNom:bi.nom, parentSexe:bi.sexe, parentEmail:bi.email, parentPassword:bi.password, modeSeance, jitsiLink, ref });
                 }}
-                style={{padding:"14px 0",border:"none",borderRadius:12,background:"#4f46e5",color:"#fff",fontWeight:700,fontSize:16,cursor:"pointer"}}>
+                style={{padding:"14px 0",border:"none",borderRadius:12,background:"#1d6fe8",color:"#fff",fontWeight:700,fontSize:16,cursor:"pointer"}}>
                 Procéder au paiement →
               </button>
               <button onClick={()=>setBook(parentConnu ? 2 : 3)} style={{padding:13,border:"1.5px solid #e5e7eb",borderRadius:12,background:"#fff",fontWeight:600,fontSize:14,cursor:"pointer",color:"#6b7280"}}>← Retour</button>
@@ -1616,7 +1616,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
         <h2 style={{fontSize:32,fontWeight:900,color:"#f9fafb",margin:"0 0 10px",letterSpacing:"-0.5px"}}>Prêt à commencer ?</h2>
         <p style={{color:"#d1d5db",fontSize:14,marginBottom:24}}>Première séance gratuite. Sans engagement.</p>
         <div style={{display:"flex",gap:12,justifyContent:"center"}}>
-          <button onClick={()=>setModal("parent")} style={{padding:"12px 30px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+          <button onClick={()=>setModal("parent")} style={{padding:"12px 30px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
             Trouver un tuteur
           </button>
           <button onClick={()=>setModal("tuteur")} style={{padding:"12px 30px",background:"transparent",color:"#e5e7eb",border:"2px solid #6b7280",borderRadius:999,fontWeight:700,fontSize:15,cursor:"pointer"}}>
@@ -1723,7 +1723,7 @@ function SitePublic({ goAdmin, goPayment, goEspaceParent, goEspaceTuteur }) {
 
 // ─── MINI CHART ───────────────────────────────────────────────────────────────
 
-function MiniBarChart({ data, barColor="#4f46e5", accentColor="#6366f1" }) {
+function MiniBarChart({ data, barColor="#1d6fe8", accentColor="#6366f1" }) {
   const max = Math.max(...data.map(d => d.v), 1);
   const W = 560; const H = 130; const BAR_W = 34; const GAP = (W - data.length * BAR_W) / (data.length + 1);
   return (
@@ -1924,7 +1924,7 @@ function Admin({ goHome }) {
                   return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
                 });
                 const revenus = confirmed.reduce((s,r)=>s+(r.montant||0),0);
-                return [{l:"Parents inscrits",v:parents.length,icon:"👨‍👩‍👧",c:"#ede9fe"},{l:"Tuteurs actifs",v:tuteurs.filter(t=>t.statut==="Actif").length,icon:"📖",c:"#dcfce7"},{l:"Séances ce mois",v:thisMonth.length||confirmed.length,icon:"📅",c:"#fef3c7"},{l:"Revenus totaux",v:revenus>0?revenus.toLocaleString("fr-FR")+" FCFA":"—",icon:"💰",c:"#fee2e2"}];
+                return [{l:"Parents inscrits",v:parents.length,icon:"👨‍👩‍👧",c:"#dbeafe"},{l:"Tuteurs actifs",v:tuteurs.filter(t=>t.statut==="Actif").length,icon:"📖",c:"#dcfce7"},{l:"Séances ce mois",v:thisMonth.length||confirmed.length,icon:"📅",c:"#fef3c7"},{l:"Revenus totaux",v:revenus>0?revenus.toLocaleString("fr-FR")+" FCFA":"—",icon:"💰",c:"#fee2e2"}];
               })().map(({l,v,icon,c})=>(
                 <div key={l} style={{...S.card,background:c,boxShadow:"none"}}>
                   <p style={{fontSize:24,margin:"0 0 8px"}}>{icon}</p>
@@ -1965,7 +1965,7 @@ function Admin({ goHome }) {
                   placeholder="BA-XXXXXX"
                   style={{flex:1,padding:"9px 14px",border:"1.5px solid #e5e7eb",borderRadius:10,fontSize:14,outline:"none",fontFamily:"monospace",letterSpacing:1}}/>
                 <button onClick={lookup} disabled={refLoading}
-                  style={{padding:"9px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:13,cursor:"pointer"}}>
+                  style={{padding:"9px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:13,cursor:"pointer"}}>
                   {refLoading?"…":"Chercher"}
                 </button>
               </div>
@@ -2001,7 +2001,7 @@ function Admin({ goHome }) {
                   <p style={{fontSize:12,color:"#9ca3af",margin:0}}>6 derniers mois · FCFA</p>
                 </div>
                 <div style={{textAlign:"right"}}>
-                  <p style={{fontSize:22,fontWeight:900,color:"#4f46e5",margin:0}}>1 540 000</p>
+                  <p style={{fontSize:22,fontWeight:900,color:"#1d6fe8",margin:0}}>1 540 000</p>
                   <p style={{fontSize:12,color:"#10b981",margin:0,fontWeight:600}}>▲ +20 % vs mois dernier</p>
                 </div>
               </div>
@@ -2148,13 +2148,13 @@ function Admin({ goHome }) {
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Parents ({parents.length})</h1>
               <button onClick={()=>openAdd({nom:"",sexe:"",email:"",telephone:"",enfant:"",statut:"En attente"})}
-                style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                style={{padding:"10px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 + Ajouter
               </button>
             </div>
             <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
               {[
-                {k:"all",label:`Tous (${parents.length})`,bg:"#ede9fe",fg:"#4f46e5"},
+                {k:"all",label:`Tous (${parents.length})`,bg:"#dbeafe",fg:"#1d6fe8"},
                 {k:"demande",label:`🔍 Demandes — à trouver un tuteur (${nbDemandes})`,bg:"#fef3c7",fg:"#92400e"},
                 {k:"reservation",label:`📅 Réservations directes (${nbReservations})`,bg:"#dcfce7",fg:"#065f46"},
               ].map(b=>(
@@ -2187,7 +2187,7 @@ function Admin({ goHome }) {
                       </td>
                       <td style={S.td}>{p.enfant}</td>
                       <td style={S.td}>{p.telephone}</td>
-                      <td style={{...S.td,fontWeight:700,color:"#4f46e5"}}>{p.sessions}</td>
+                      <td style={{...S.td,fontWeight:700,color:"#1d6fe8"}}>{p.sessions}</td>
                       <td style={S.td}><BadgeStatus s={p.statut} sexe={p.sexe}/></td>
                       <td style={S.td}>
                         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
@@ -2233,7 +2233,7 @@ function Admin({ goHome }) {
                       if(editTarget) setParents(p=>p.map(x=>x.id===editTarget.id?{...x,...form}:x));
                       else setParents(p=>[...p,{...form,id:Date.now(),sessions:0}]);
                       setShowForm(false);
-                    }} style={{padding:13,background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:"pointer",opacity:form.nom&&form.email?1:.5}}>
+                    }} style={{padding:13,background:"#1d6fe8",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:"pointer",opacity:form.nom&&form.email?1:.5}}>
                       {editTarget?"Enregistrer":"Ajouter"}
                     </button>
                   </div>
@@ -2262,7 +2262,7 @@ function Admin({ goHome }) {
                       <tr key={a.id}>
                         <td style={{...S.td,fontWeight:600}}>{a.auteur}</td>
                         <td style={S.td}>{a.ville||"—"}</td>
-                        <td style={S.td}><span style={{padding:"2px 8px",borderRadius:999,fontSize:12,fontWeight:700,background:a.type==="tuteur"?"#dcfce7":"#ede9fe",color:a.type==="tuteur"?"#065f46":"#4f46e5"}}>{a.type}</span></td>
+                        <td style={S.td}><span style={{padding:"2px 8px",borderRadius:999,fontSize:12,fontWeight:700,background:a.type==="tuteur"?"#dcfce7":"#dbeafe",color:a.type==="tuteur"?"#065f46":"#1d6fe8"}}>{a.type}</span></td>
                         <td style={S.td}><span style={{color:"#f59e0b"}}>{"★".repeat(a.note)}</span></td>
                         <td style={{...S.td,maxWidth:280,fontSize:13,color:"#374151"}}>« {a.commentaire} »</td>
                         <td style={S.td}>
@@ -2305,7 +2305,7 @@ function Admin({ goHome }) {
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
               <h1 style={{fontSize:24,fontWeight:800,color:"#111827",margin:0}}>Écoles partenaires ({ecolesAdmin.length})</h1>
               <button onClick={()=>{ setET(null); setForm({nom:"",quartier:"",type:"École"}); setShowForm(true); }}
-                style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                style={{padding:"10px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                 + Ajouter
               </button>
             </div>
@@ -2323,7 +2323,7 @@ function Admin({ goHome }) {
                         <td style={S.td}>{ec.quartier||"—"}</td>
                         <td style={S.td}>
                           <span style={{padding:"3px 10px",borderRadius:999,fontSize:12,fontWeight:700,
-                            background:ec.type==="Lycée"?"#ede9fe":ec.type==="Collège"?"#dbeafe":ec.type==="Institut"?"#fef3c7":ec.type==="Académie"?"#dcfce7":"#f3f4f6",
+                            background:ec.type==="Lycée"?"#dbeafe":ec.type==="Collège"?"#dbeafe":ec.type==="Institut"?"#fef3c7":ec.type==="Académie"?"#dcfce7":"#f3f4f6",
                             color:ec.type==="Lycée"?"#5b21b6":ec.type==="Collège"?"#1e40af":ec.type==="Institut"?"#92400e":ec.type==="Académie"?"#065f46":"#374151"}}>
                             {ec.type||"École"}
                           </span>
@@ -2363,7 +2363,7 @@ function Admin({ goHome }) {
                       <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
                         {["École","Collège","Lycée","Institut","Académie"].map(t=>(
                           <button key={t} type="button" onClick={()=>setF("type",t)}
-                            style={{padding:"8px 16px",borderRadius:999,border:`1.5px solid ${form.type===t?"#4f46e5":"#e5e7eb"}`,background:form.type===t?"#eef2ff":"#fff",color:form.type===t?"#4f46e5":"#6b7280",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+                            style={{padding:"8px 16px",borderRadius:999,border:`1.5px solid ${form.type===t?"#1d6fe8":"#e5e7eb"}`,background:form.type===t?"#eef2ff":"#fff",color:form.type===t?"#1d6fe8":"#6b7280",fontSize:13,fontWeight:600,cursor:"pointer"}}>
                             {t}
                           </button>
                         ))}
@@ -2380,7 +2380,7 @@ function Admin({ goHome }) {
                         }
                         setShowForm(false);
                       } catch(e){ alert("Erreur : "+e.message); }
-                    }} style={{padding:13,background:form.nom?"#4f46e5":"#e5e7eb",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:form.nom?"pointer":"not-allowed"}}>
+                    }} style={{padding:13,background:form.nom?"#1d6fe8":"#e5e7eb",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:form.nom?"pointer":"not-allowed"}}>
                       {editTarget?"Enregistrer les modifications":"Ajouter l'établissement"}
                     </button>
                   </div>
@@ -2401,7 +2401,7 @@ function Admin({ goHome }) {
                   ⬇ CSV
                 </button>
                 <button onClick={()=>openAdd({name:"",subject:"",email:"",statut:"En attente",price:"",jours:[],availableDays:[],quartiersCouVerts:[]})}
-                  style={{padding:"10px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                  style={{padding:"10px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                   + Ajouter
                 </button>
               </div>
@@ -2416,7 +2416,7 @@ function Admin({ goHome }) {
                     <tr key={t.id}>
                       <td style={S.td}><div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:24}}>{t.emoji}</span><div><p style={{fontWeight:600,margin:0}}>{t.prenom||t.name} {t.nom||""}</p><p style={{fontSize:12,color:"#9ca3af",margin:0}}>{t.email}</p></div></div></td>
                       <td style={S.td}>{t.subject}</td>
-                      <td style={{...S.td,fontWeight:700,color:"#4f46e5"}}>{fmt(t.price)}/h</td>
+                      <td style={{...S.td,fontWeight:700,color:"#1d6fe8"}}>{fmt(t.price)}/h</td>
                       <td style={{...S.td,fontWeight:700}}>{t.sessions}</td>
                       <td style={S.td}><Stars n={t.rating}/></td>
                       <td style={S.td}><BadgeStatus s={t.statut} sexe={t.sexe}/></td>
@@ -2464,7 +2464,7 @@ function Admin({ goHome }) {
                     <div>
                       <label style={{fontSize:13,fontWeight:600,color:"#374151",display:"block",marginBottom:8}}>📍 Quartiers couverts</label>
                       <button type="button" onClick={()=>setF("quartiersCouVerts", (form.quartiersCouVerts||[]).length===QUARTIERS.length ? [] : [...QUARTIERS])}
-                        style={{padding:"6px 14px",borderRadius:999,border:`2px solid ${(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#4f46e5":"#e5e7eb"}`,background:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#ede9fe":"#f9fafb",color:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#4f46e5":"#374151",fontWeight:700,fontSize:12,cursor:"pointer",marginBottom:8}}>
+                        style={{padding:"6px 14px",borderRadius:999,border:`2px solid ${(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#1d6fe8":"#e5e7eb"}`,background:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#dbeafe":"#f9fafb",color:(form.quartiersCouVerts||[]).length===QUARTIERS.length?"#1d6fe8":"#374151",fontWeight:700,fontSize:12,cursor:"pointer",marginBottom:8}}>
                         {(form.quartiersCouVerts||[]).length===QUARTIERS.length?"✓ Tous les quartiers":"Tous les quartiers"}
                       </button>
                       <div style={{display:"flex",flexWrap:"wrap",gap:5,maxHeight:120,overflowY:"auto"}}>
@@ -2472,7 +2472,7 @@ function Admin({ goHome }) {
                           const qc = form.quartiersCouVerts||[];
                           const active = qc.includes(q);
                           return <button key={q} type="button" onClick={()=>setF("quartiersCouVerts", active?qc.filter(x=>x!==q):[...qc,q])}
-                            style={{padding:"5px 12px",borderRadius:999,border:`1.5px solid ${active?"#4f46e5":"#e5e7eb"}`,background:active?"#eef2ff":"#fff",color:active?"#4f46e5":"#6b7280",fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>
+                            style={{padding:"5px 12px",borderRadius:999,border:`1.5px solid ${active?"#1d6fe8":"#e5e7eb"}`,background:active?"#eef2ff":"#fff",color:active?"#1d6fe8":"#6b7280",fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>
                             {q}
                           </button>;
                         })}
@@ -2481,7 +2481,7 @@ function Admin({ goHome }) {
                     <button disabled={!form.name&&!form.prenom||!form.subject} onClick={()=>{
                       if(editTarget) handleModifierTuteur();
                       else handleAjouterTuteur();
-                    }} style={{padding:13,background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:"pointer"}}>
+                    }} style={{padding:13,background:"#1d6fe8",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:14,cursor:"pointer"}}>
                       {editTarget?"Enregistrer":"Ajouter"}
                     </button>
                   </div>
@@ -2568,6 +2568,7 @@ function PageEspaceTuteur({ goHome }) {
       const t = await loginTuteur(email.trim(), password);
       if (!t) { setError("Email ou mot de passe incorrect."); setLoading(false); return; }
       const s = await getReservationsByTuteurId(t.id);
+      localStorage.setItem("ba_session", JSON.stringify({ role: "tuteur", id: t.id, prenom: t.prenom, nom: t.nom, email: t.email }));
       setTuteur(t);
       setSeances(s);
       setForm({
@@ -2635,7 +2636,7 @@ function PageEspaceTuteur({ goHome }) {
     <div style={{minHeight:"100vh",background:"#e8ddd0",fontFamily:"'Inter',sans-serif",display:"flex",flexDirection:"column"}}>
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
-        <button onClick={goHome} style={{padding:"8px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Retour</button>
+        <button onClick={goHome} style={{padding:"8px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Retour</button>
       </nav>
 
       <div style={{flex:1,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"48px 20px"}}>
@@ -2698,7 +2699,7 @@ function PageEspaceTuteur({ goHome }) {
                 {[["profil","✏️ Mon profil"],["seances","📅 Mes séances"]].map(([id,label])=>(
                   <button key={id} onClick={()=>setTab(id)}
                     style={{padding:"10px 20px",borderRadius:10,border:"none",fontWeight:700,fontSize:13,cursor:"pointer",
-                      background:tab===id?"#4f46e5":"#fff",color:tab===id?"#fff":"#6b7280",
+                      background:tab===id?"#1d6fe8":"#fff",color:tab===id?"#fff":"#6b7280",
                       boxShadow:tab===id?"0 2px 8px rgba(79,70,229,.3)":"none"}}>
                     {label}
                   </button>
@@ -2730,8 +2731,8 @@ function PageEspaceTuteur({ goHome }) {
                       {NIVEAUX_LIST.map(n=>(
                         <button key={n} onClick={()=>toggleItem("niveaux",n)}
                           style={{padding:"5px 12px",borderRadius:999,border:"1.5px solid",fontSize:12,fontWeight:600,cursor:"pointer",
-                            borderColor:form.niveaux?.includes(n)?"#4f46e5":"#e5e7eb",
-                            background:form.niveaux?.includes(n)?"#4f46e5":"#fff",
+                            borderColor:form.niveaux?.includes(n)?"#1d6fe8":"#e5e7eb",
+                            background:form.niveaux?.includes(n)?"#1d6fe8":"#fff",
                             color:form.niveaux?.includes(n)?"#fff":"#6b7280"}}>
                           {n}
                         </button>
@@ -2841,7 +2842,7 @@ function PageEspaceTuteur({ goHome }) {
                 )}
               </div>
 
-              <button onClick={()=>{setTuteur(null);setEmail("");setPassword("");setSeances([]);setTab("profil");setShowChangePwd(false);}}
+              <button onClick={()=>{ localStorage.removeItem("ba_session"); setTuteur(null);setEmail("");setPassword("");setSeances([]);setTab("profil");setShowChangePwd(false);}}
                 style={{marginTop:16,width:"100%",padding:12,background:"none",border:"1.5px solid #e5e7eb",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer",color:"#6b7280"}}>
                 Se déconnecter
               </button>
@@ -2874,6 +2875,7 @@ function PageEspaceParent({ goHome }) {
       const p = await loginParent(email.trim(), password);
       if (!p) { setError("Email ou mot de passe incorrect."); setLoading(false); return; }
       const resa = await getReservationsByParentEmail(email.trim());
+      localStorage.setItem("ba_session", JSON.stringify({ role: "parent", id: p.id, prenom: p.nom?.split(" ")[0], nom: p.nom, email: p.email }));
       setParent(p);
       setReservations(resa);
     } catch(e) { setError("Erreur de connexion. Réessayez."); }
@@ -2904,7 +2906,7 @@ function PageEspaceParent({ goHome }) {
       {/* Nav */}
       <nav style={{background:"#ebebE2",borderBottom:"1px solid #d4d4c8",padding:"0 40px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <button onClick={goHome} style={{background:"none",border:"none",fontWeight:900,fontSize:18,color:"#22c55e",cursor:"pointer"}}>🎓 Brillance Académie</button>
-        <button onClick={goHome} style={{padding:"8px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Retour</button>
+        <button onClick={goHome} style={{padding:"8px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:999,fontWeight:700,fontSize:13,cursor:"pointer"}}>← Retour</button>
       </nav>
 
       <div style={{flex:1,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"48px 20px"}}>
@@ -2913,7 +2915,7 @@ function PageEspaceParent({ goHome }) {
           {!parent ? (
             /* ── FORMULAIRE LOGIN ── */
             <div style={{background:"#fff",borderRadius:24,padding:40,boxShadow:"0 8px 40px rgba(0,0,0,.1)"}}>
-              <p style={{fontSize:12,fontWeight:700,color:"#4f46e5",textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px"}}>🎓 Brillance Académie</p>
+              <p style={{fontSize:12,fontWeight:700,color:"#1d6fe8",textTransform:"uppercase",letterSpacing:2,margin:"0 0 6px"}}>🎓 Brillance Académie</p>
               <h2 style={{fontSize:24,fontWeight:900,color:"#111827",margin:"0 0 8px"}}>Mon espace parent</h2>
               <p style={{fontSize:14,color:"#6b7280",margin:"0 0 32px"}}>Entrez l'email utilisé lors de votre inscription pour accéder à vos réservations.</p>
 
@@ -2932,12 +2934,12 @@ function PageEspaceParent({ goHome }) {
               {error && <p style={{fontSize:13,color:"#ef4444",margin:"0 0 12px"}}>{error}</p>}
 
               <button onClick={login} disabled={loading||!email.trim()||!password}
-                style={{width:"100%",padding:14,background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer",opacity:(loading||!email.trim()||!password)?0.6:1}}>
+                style={{width:"100%",padding:14,background:"#1d6fe8",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer",opacity:(loading||!email.trim()||!password)?0.6:1}}>
                 {loading ? "Vérification…" : "Accéder à mon espace →"}
               </button>
 
               <p style={{fontSize:12,color:"#9ca3af",textAlign:"center",marginTop:20}}>
-                Pas encore de compte ? <button onClick={goHome} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:700,cursor:"pointer",fontSize:12,fontFamily:"inherit"}}>Réserver une séance</button>
+                Pas encore de compte ? <button onClick={goHome} style={{background:"none",border:"none",color:"#1d6fe8",fontWeight:700,cursor:"pointer",fontSize:12,fontFamily:"inherit"}}>Réserver une séance</button>
               </p>
             </div>
 
@@ -2947,13 +2949,13 @@ function PageEspaceParent({ goHome }) {
               {/* Header */}
               <div style={{background:"#fff",borderRadius:20,padding:24,marginBottom:16,boxShadow:"0 4px 20px rgba(0,0,0,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
                 <div>
-                  <p style={{fontSize:11,fontWeight:700,color:"#4f46e5",textTransform:"uppercase",letterSpacing:2,margin:"0 0 2px"}}>Bienvenue</p>
+                  <p style={{fontSize:11,fontWeight:700,color:"#1d6fe8",textTransform:"uppercase",letterSpacing:2,margin:"0 0 2px"}}>Bienvenue</p>
                   <h2 style={{fontSize:20,fontWeight:900,color:"#111827",margin:"0 0 2px"}}>{parent.nom}</h2>
                   <p style={{fontSize:13,color:"#6b7280",margin:0}}>{parent.email}</p>
                 </div>
                 <div style={{display:"flex",gap:12}}>
-                  <div style={{textAlign:"center",background:"#ede9fe",borderRadius:12,padding:"10px 20px"}}>
-                    <p style={{fontSize:22,fontWeight:900,color:"#4f46e5",margin:0}}>{reservations.length}</p>
+                  <div style={{textAlign:"center",background:"#dbeafe",borderRadius:12,padding:"10px 20px"}}>
+                    <p style={{fontSize:22,fontWeight:900,color:"#1d6fe8",margin:0}}>{reservations.length}</p>
                     <p style={{fontSize:11,color:"#7c3aed",margin:0}}>Réservations</p>
                   </div>
                   <div style={{textAlign:"center",background:"#dcfce7",borderRadius:12,padding:"10px 20px"}}>
@@ -2983,7 +2985,7 @@ function PageEspaceParent({ goHome }) {
                         {/* Ligne 2 : tuteur + matière */}
                         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
                           <span style={{fontSize:13,fontWeight:700,color:"#111827"}}>👩‍🏫 {r.tuteur_nom||"Tuteur"}</span>
-                          {r.niveau && <span style={{fontSize:12,background:"#ede9fe",color:"#4f46e5",padding:"2px 8px",borderRadius:999,fontWeight:600}}>{r.niveau}</span>}
+                          {r.niveau && <span style={{fontSize:12,background:"#dbeafe",color:"#1d6fe8",padding:"2px 8px",borderRadius:999,fontWeight:600}}>{r.niveau}</span>}
                           {r.enfant && <span style={{fontSize:12,color:"#6b7280"}}>• {r.enfant}</span>}
                         </div>
                         {/* Ligne 3 : date + montant */}
@@ -3000,7 +3002,7 @@ function PageEspaceParent({ goHome }) {
               {/* Changer mot de passe */}
               <div style={{background:"#fff",borderRadius:20,padding:24,marginTop:16,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
                 <button onClick={()=>setShowChangePwd(v=>!v)}
-                  style={{background:"none",border:"none",fontWeight:700,fontSize:14,color:"#4f46e5",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:8}}>
+                  style={{background:"none",border:"none",fontWeight:700,fontSize:14,color:"#1d6fe8",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:8}}>
                   🔒 {showChangePwd ? "Masquer" : "Changer mon mot de passe"}
                 </button>
                 {showChangePwd && (
@@ -3019,14 +3021,14 @@ function PageEspaceParent({ goHome }) {
                     </div>
                     {pwdMsg && <p style={{fontSize:13,color:pwdMsg.startsWith("✅")?"#16a34a":"#ef4444",margin:0}}>{pwdMsg}</p>}
                     <button onClick={changerPwd} disabled={pwdLoading}
-                      style={{padding:"11px 20px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer",opacity:pwdLoading?0.6:1}}>
+                      style={{padding:"11px 20px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer",opacity:pwdLoading?0.6:1}}>
                       {pwdLoading ? "Enregistrement…" : "Enregistrer le mot de passe"}
                     </button>
                   </div>
                 )}
               </div>
 
-              <button onClick={()=>{setParent(null);setEmail("");setPassword("");setReservations([]);}}
+              <button onClick={()=>{ localStorage.removeItem("ba_session"); setParent(null);setEmail("");setPassword("");setReservations([]);}}
                 style={{marginTop:16,width:"100%",padding:12,background:"none",border:"1.5px solid #e5e7eb",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer",color:"#6b7280"}}>
                 Se déconnecter
               </button>
@@ -3083,7 +3085,7 @@ function LoginAdmin({ onSuccess, onBack }) {
           {error && <p style={{color:"#ef4444",fontSize:13,margin:0,textAlign:"center"}}>Mot de passe incorrect</p>}
 
           <button onClick={check}
-            style={{padding:"14px",background:"#4f46e5",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
+            style={{padding:"14px",background:"#1d6fe8",color:"#fff",border:"none",borderRadius:12,fontWeight:700,fontSize:15,cursor:"pointer"}}>
             Accéder au tableau de bord →
           </button>
 

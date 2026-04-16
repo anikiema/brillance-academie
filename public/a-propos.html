@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>À propos — Brillance Académie · Notre histoire &amp; mission</title>
+  <meta name="description" content="Découvrez l'histoire de Brillance Académie, la plateforme de tutorat à domicile de Ouagadougou. Notre mission : rendre l'éducation de qualité accessible à toutes les familles du Burkina Faso." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:        #1d6fe8;
+      --primary-dark:   #155ec8;
+      --primary-soft:   #dbeafe;
+      --primary-softer: #eff6ff;
+      --success:        #10b981;
+      --success-soft:   #d1fae5;
+      --success-ink:    #065f46;
+      --warning:        #f59e0b;
+      --ink:            #111827;
+      --body:           #374151;
+      --muted:          #6b7280;
+      --subtle:         #9ca3af;
+      --border:         #e5e7eb;
+      --bg:             #fafafa;
+      --card:           #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ──────────────────────────────────────────────────────── */
+    .nav { position: sticky; top: 0; z-index: 200; background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 20px; height: 64px; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--primary); white-space: nowrap; flex-shrink: 0; }
+    .nav-logo span { font-size: 22px; }
+    .nav-links { display: flex; gap: 20px; list-style: none; flex: 1; justify-content: center; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--body); transition: color .15s; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-ghost { font-size: 15px; font-weight: 500; color: var(--muted); }
+    .nav-ghost:hover { color: var(--primary); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; white-space: nowrap; font-family: inherit; }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(29,111,232,.30); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+    .btn-white:hover { background: var(--primary-softer); }
+    .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
+    .btn-outline-white:hover { background: rgba(255,255,255,.15); border-color: #fff; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+
+    /* ── HERO ─────────────────────────────────────────────────────── */
+    .hero { background: linear-gradient(140deg, #155ec8 0%, var(--primary) 55%, #3b82f6 100%); padding: 88px 24px 72px; text-align: center; }
+    .hero-inner { max-width: 720px; margin: 0 auto; }
+    .hero-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.15); color: #fff; font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 999px; margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 800; color: #fff; line-height: 1.12; margin-bottom: 20px; }
+    .hero-sub { font-size: 18px; color: rgba(255,255,255,.80); margin-bottom: 52px; max-width: 580px; margin-left: auto; margin-right: auto; }
+
+    /* Impact stats bar */
+    .stats-bar { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .stat-card {
+      background: rgba(255,255,255,.12); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.20);
+      border-radius: 14px; padding: 20px 28px; text-align: center; min-width: 160px;
+    }
+    .stat-icon { font-size: 24px; margin-bottom: 6px; }
+    .stat-num { font-size: 28px; font-weight: 800; color: #fff; }
+    .stat-label { font-size: 13px; color: rgba(255,255,255,.75); margin-top: 2px; }
+
+    /* ── STORY SECTION ────────────────────────────────────────────── */
+    .story-section { background: var(--card); padding: 88px 24px; }
+    .story-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 380px; gap: 64px; align-items: start; }
+    .story-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--primary); margin-bottom: 12px; }
+    .story-h { font-size: clamp(24px, 3vw, 34px); font-weight: 800; color: var(--ink); margin-bottom: 28px; line-height: 1.2; }
+    .story-paras { display: flex; flex-direction: column; gap: 18px; }
+    .story-paras p { font-size: 16px; color: var(--body); line-height: 1.8; }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item { display: flex; gap: 16px; align-items: flex-start; position: relative; padding-bottom: 32px; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-line-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 40px; }
+    .tl-dot { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 10px rgba(29,111,232,.30); }
+    .tl-connector { width: 2px; flex: 1; background: var(--primary-soft); margin-top: 8px; min-height: 32px; }
+    .tl-item:last-child .tl-connector { display: none; }
+    .tl-content { padding-top: 6px; }
+    .tl-date { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+    .tl-text { font-size: 15px; font-weight: 600; color: var(--ink); }
+    .tl-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    /* ── VALUES ───────────────────────────────────────────────────── */
+    .values-section { background: var(--primary-softer); padding: 80px 24px; }
+    .values-inner { max-width: 1100px; margin: 0 auto; }
+    .section-title { font-size: clamp(22px, 3vw, 30px); font-weight: 800; color: var(--ink); margin-bottom: 40px; text-align: center; }
+    .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .value-card { background: var(--card); border-radius: 14px; padding: 28px 20px; text-align: center; border: 1px solid var(--border); transition: box-shadow .2s, transform .2s; }
+    .value-card:hover { box-shadow: 0 6px 24px rgba(29,111,232,.12); transform: translateY(-3px); }
+    .value-icon { font-size: 44px; margin-bottom: 14px; display: block; }
+    .value-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+    .value-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── IMPACT NUMBERS ───────────────────────────────────────────── */
+    .impact-section { background: var(--card); padding: 80px 24px; }
+    .impact-inner { max-width: 900px; margin: 0 auto; }
+    .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-bottom: 56px; }
+    .impact-item { text-align: center; padding: 24px; }
+    .impact-item:not(:last-child) { border-right: 1px solid var(--border); }
+    .impact-num { font-size: clamp(48px, 6vw, 72px); font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 8px; }
+    .impact-desc { font-size: 15px; color: var(--muted); max-width: 180px; margin: 0 auto; line-height: 1.5; }
+
+    /* Schools strip */
+    .schools-label { text-align: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--subtle); margin-bottom: 16px; }
+    .schools-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .school-chip { font-size: 13px; color: var(--muted); font-weight: 500; padding: 6px 16px; background: var(--bg); border-radius: 999px; border: 1px solid var(--border); }
+
+    /* ── TEAM ─────────────────────────────────────────────────────── */
+    .team-section { background: var(--primary-softer); padding: 80px 24px; }
+    .team-inner { max-width: 900px; margin: 0 auto; }
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .team-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; transition: box-shadow .2s, transform .2s; }
+    .team-card:hover { box-shadow: 0 8px 28px rgba(29,111,232,.10); transform: translateY(-3px); }
+    .team-avatar { font-size: 56px; margin-bottom: 14px; display: block; }
+    .team-name { font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+    .team-role { font-size: 13px; font-weight: 600; color: var(--primary); background: var(--primary-soft); padding: 3px 12px; border-radius: 999px; display: inline-block; margin-bottom: 14px; }
+    .team-bio { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── JOIN MISSION ─────────────────────────────────────────────── */
+    .join-section { background: var(--primary); padding: 80px 24px; }
+    .join-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+    .join-section h2 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .join-section p { font-size: 17px; color: rgba(255,255,255,.80); margin-bottom: 40px; }
+    .join-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 680px; margin: 0 auto; }
+    .join-card { background: #fff; border-radius: 14px; padding: 28px 24px; text-align: left; }
+    .join-card-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+    .join-card-title { font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+    .join-card-desc { font-size: 14px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+    .join-card-link { font-size: 15px; font-weight: 700; color: var(--primary); display: inline-flex; align-items: center; gap: 4px; }
+    .join-card-link:hover { text-decoration: underline; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    .footer { background: var(--ink); color: rgba(255,255,255,.80); padding: 64px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-logo { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .footer-tagline { font-size: 14px; color: rgba(255,255,255,.60); margin-bottom: 20px; }
+    .footer-payment { display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-pay-chip { background: rgba(255,255,255,.10); color: rgba(255,255,255,.80); border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 500; }
+    .footer-col-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #fff; margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,.65); transition: color .15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.10); padding-top: 24px; display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,.40); flex-wrap: wrap; gap: 8px; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────── */
+    @media (max-width: 1024px) { .values-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .story-inner { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .join-cards { grid-template-columns: 1fr; max-width: 400px; }
+      .impact-grid { grid-template-columns: 1fr; }
+      .impact-item:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .stats-bar { flex-direction: column; align-items: center; }
+      .values-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span>🔆</span> Brillance Académie</a>
+      <ul class="nav-links">
+        <li><a href="tuteurs.html">Tuteurs</a></li>
+        <li><a href="comment-ca-marche.html">Fonctionnement</a></li>
+        <li><a href="matieres.html">Matières</a></li>
+        <li><a href="temoignages.html">Témoignages</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="devenir-tuteur.html" class="nav-ghost">Devenir tuteur</a>
+        <a href="tuteurs.html" class="btn btn-primary" id="nav-cta">Trouver un tuteur</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-chip">🌟 Notre histoire</div>
+      <h1>Nous croyons que chaque enfant mérite le meilleur tuteur</h1>
+      <p class="hero-sub">Brillance Académie est née d'un constat simple : les familles de Ouagadougou ont du mal à trouver des tuteurs fiables, vérifiés et disponibles près de chez elles.</p>
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-icon">🎓</div>
+          <div class="stat-num">15</div>
+          <div class="stat-label">tuteurs certifiés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-num">120+</div>
+          <div class="stat-label">séances réalisées</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-num">4.9/5</div>
+          <div class="stat-label">satisfaction parents</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story-section">
+    <div class="story-inner">
+      <div>
+        <div class="story-label">Notre histoire</div>
+        <h2 class="story-h">Comment Brillance Académie est née</h2>
+        <div class="story-paras">
+          <p>En 2024, face à la difficulté de trouver un bon tuteur de confiance pour leurs enfants, des parents de Ouagadougou ont exprimé un besoin clair : un service simple, local et sécurisé de mise en relation avec des enseignants qualifiés.</p>
+          <p>Brillance Académie a été créée pour répondre à ce besoin. Notre mission : rendre le tutorat de qualité accessible à toutes les familles de Ouagadougou, du quartier Ouaga 2000 à Pissy, de Hamdalaye à Tampouy.</p>
+          <p>Aujourd'hui, 15 tuteurs certifiés et plus de 120 séances plus tard, nous continuons à grandir grâce aux familles qui nous font confiance et aux tuteurs passionnés qui rejoignent notre équipe chaque mois.</p>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-line-col">
+              <div class="tl-dot">🌱</div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">2024 — Fondation</div>
+              <div class="tl-text">Brillance Académie est lancée à Ouagadougou</div>
+              <div class="tl-sub">L'idée naît d'un besoin réel des familles du quartier.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line-col">
+              <div class="tl-dot">🚀</div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">Mois 2 — Lancement</div>
+              <div class="tl-text">Premiers tuteurs certifiés rejoignent la plateforme</div>
+              <div class="tl-sub">Claire, Kwame, Sofia et Daniel sont les pionniers.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line-col">
+              <div class="tl-dot">🏆</div>
+              <div class="tl-connector"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">Mois 6 — Croissance</div>
+              <div class="tl-text">120+ séances, 4.9/5 de satisfaction</div>
+              <div class="tl-sub">10 quartiers couverts, 7 écoles partenaires.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-line-col">
+              <div class="tl-dot">🌍</div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">Aujourd'hui — Mission</div>
+              <div class="tl-text">Vers toutes les familles de Ouagadougou</div>
+              <div class="tl-sub">15 tuteurs actifs, expansion en cours dans tous les quartiers.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="values-section">
+    <div class="values-inner">
+      <h2 class="section-title">Nos valeurs</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <span class="value-icon">🤝</span>
+          <div class="value-title">Confiance</div>
+          <p class="value-desc">Chaque tuteur est vérifié. Chaque avis est réel. Nous ne publions que des profils en qui nous avons pleinement confiance.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🎯</span>
+          <div class="value-title">Excellence</div>
+          <p class="value-desc">Nous sélectionnons des tuteurs passionnés et expérimentés, engagés à aider chaque enfant à progresser à son rythme.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🌍</span>
+          <div class="value-title">Accessibilité</div>
+          <p class="value-desc">Nos services sont pensés pour toutes les familles de Ouagadougou, avec des paiements simples via Orange Money, Moov et Coris.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">💛</span>
+          <div class="value-title">Bienveillance</div>
+          <p class="value-desc">Nous plaçons le bien-être de l'enfant au cœur de chaque décision, chaque séance, chaque interaction avec les familles.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACT NUMBERS -->
+  <section class="impact-section">
+    <div class="impact-inner">
+      <h2 class="section-title">Notre impact en chiffres</h2>
+      <div class="impact-grid">
+        <div class="impact-item">
+          <div class="impact-num">120+</div>
+          <div class="impact-desc">séances réalisées depuis le lancement</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-num">15</div>
+          <div class="impact-desc">tuteurs certifiés et actifs sur la plateforme</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-num">10</div>
+          <div class="impact-desc">quartiers de Ouagadougou couverts</div>
+        </div>
+      </div>
+      <div class="schools-label">Écoles partenaires</div>
+      <div class="schools-row">
+        <span class="school-chip">Les Élites De Demain</span>
+        <span class="school-chip">La Réussite</span>
+        <span class="school-chip">Saint-Viateur</span>
+        <span class="school-chip">Les Étoiles Brillantes</span>
+        <span class="school-chip">Sainte-Famille</span>
+        <span class="school-chip">La Lumière</span>
+        <span class="school-chip">Académie Excellence</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team-section">
+    <div class="team-inner">
+      <h2 class="section-title">L'équipe</h2>
+      <div class="team-grid">
+        <div class="team-card">
+          <span class="team-avatar">👨‍💼</span>
+          <div class="team-name">Amadou K.</div>
+          <div class="team-role">Fondateur &amp; CEO</div>
+          <p class="team-bio">Passionné d'éducation et d'entrepreneuriat social. Ex-enseignant au lycée de Ouagadougou. Vision : rendre le tutorat accessible à tous.</p>
+        </div>
+        <div class="team-card">
+          <span class="team-avatar">👩‍💻</span>
+          <div class="team-name">Mariama S.</div>
+          <div class="team-role">Responsable tuteurs</div>
+          <p class="team-bio">Coordonne le recrutement et la formation des tuteurs. Ancienne directrice d'école primaire avec 12 ans d'expérience en pédagogie.</p>
+        </div>
+        <div class="team-card">
+          <span class="team-avatar">👨‍📱</span>
+          <div class="team-name">Issouf T.</div>
+          <div class="team-role">Relations parents</div>
+          <p class="team-bio">Accompagne les familles dans leurs réservations et suit la satisfaction des parents. Disponible 7j/7 sur WhatsApp pour toute question.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN MISSION -->
+  <section class="join-section">
+    <div class="join-inner">
+      <h2>Rejoignez la mission</h2>
+      <p>Que vous soyez parent à la recherche d'un tuteur, ou enseignant souhaitant partager votre savoir, Brillance Académie est fait pour vous.</p>
+      <div class="join-cards">
+        <div class="join-card">
+          <span class="join-card-icon">👨‍👩‍👧</span>
+          <div class="join-card-title">Je suis parent</div>
+          <p class="join-card-desc">Trouvez un tuteur certifié pour votre enfant dès aujourd'hui. Première séance à −20%.</p>
+          <a href="tuteurs.html" class="join-card-link">Trouver un tuteur →</a>
+        </div>
+        <div class="join-card">
+          <span class="join-card-icon">🎓</span>
+          <div class="join-card-title">Je suis tuteur</div>
+          <p class="join-card-desc">Rejoignez notre équipe et commencez à enseigner cette semaine. Candidature gratuite.</p>
+          <a href="devenir-tuteur.html" class="join-card-link">Candidater →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">🔆 Brillance Académie</div>
+          <p class="footer-tagline">Des tuteurs certifiés pour votre enfant, du CP au 3ème, à Ouagadougou.</p>
+          <div class="footer-payment">
+            <span class="footer-pay-chip">🟠 Orange Money</span>
+            <span class="footer-pay-chip">🔵 Moov Money</span>
+            <span class="footer-pay-chip">🟢 Coris</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigation</div>
+          <div class="footer-links">
+            <a href="tuteurs.html">Nos tuteurs</a>
+            <a href="comment-ca-marche.html">Fonctionnement</a>
+            <a href="matieres.html">Matières</a>
+            <a href="temoignages.html">Témoignages</a>
+            <a href="a-propos.html">À propos</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Matières</div>
+          <div class="footer-links">
+            <a href="matieres.html">📖 Lecture &amp; Phonics</a>
+            <a href="matieres.html">🔢 Mathématiques</a>
+            <a href="matieres.html">🔬 Sciences</a>
+            <a href="matieres.html">🌍 Histoire / Géo</a>
+            <a href="matieres.html">💻 Technologie</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-links">
+            <a href="https://wa.me/22677166565">💬 WhatsApp : +226 77 16 65 65</a>
+            <a href="devenir-tuteur.html">Devenir tuteur</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Formulaire contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Brillance Académie · Ouagadougou, Burkina Faso</span>
+        <span>Tous droits réservés</span>
+      </div>
+    </div>
+  </footer>
+
+
+  <script type="module">
+    import { initNavAuth } from '/js/ba-sdk.js';
+    initNavAuth();
+  </script>
+</body>
+</html>
