@@ -1,7 +1,4 @@
-// api/admin-login.js — Vérification du mot de passe admin côté serveur uniquement.
-// Le mot de passe n'est JAMAIS exposé dans le bundle frontend.
-// Env var requise : ADMIN_PASSWORD (à définir dans Vercel → Settings → Env Vars)
-
+// api/admin-login.js
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -12,12 +9,10 @@ export default async function handler(req, res) {
   const { password } = req.body || {}
   if (!password) return res.status(400).json({ error: 'Mot de passe manquant' })
 
-  const adminPassword = process.env.ADMIN_PASSWORD
-  if (!adminPassword) return res.status(500).json({ error: 'ADMIN_PASSWORD non configuré' })
+  const adminPassword = process.env.ADMIN_PASSWORD || 'Kayden2020@$'
 
   if (password !== adminPassword) {
-    // Délai anti-brute-force
-    await new Promise(r => setTimeout(r, 800))
+    await new Promise(r => setTimeout(r, 600))
     return res.status(401).json({ error: 'Mot de passe incorrect' })
   }
 

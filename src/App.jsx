@@ -3076,9 +3076,16 @@ function LoginAdmin({ onSuccess, onBack }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: pwd }),
       });
-      if (res.ok) { onSuccess(); }
-      else { setError("Mot de passe incorrect"); setTimeout(() => setError(""), 2000); }
-    } catch { setError("Erreur réseau. Réessayez."); }
+      if (res.ok) {
+        onSuccess();
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setError(body.error || "Mot de passe incorrect");
+        setTimeout(() => setError(""), 3000);
+      }
+    } catch (e) {
+      setError("Erreur réseau — vérifiez votre connexion.");
+    }
     setLoading(false);
   };
 
