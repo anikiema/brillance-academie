@@ -1,8 +1,19 @@
 {
   "installCommand": "npm install --legacy-peer-deps",
   "rewrites": [
-    { "source": "/app",      "destination": "/app.html" },
-    { "source": "/app/(.*)", "destination": "/app.html" },
-    { "source": "/(.*)",     "destination": "/index.html" }
+    { "source": "/app",                    "destination": "/app.html" },
+    { "source": "/app/(.*)",               "destination": "/app.html" },
+    { "source": "/matieres.html",          "destination": "/matieres.html" },
+    { "source": "/tuteurs.html",           "destination": "/tuteurs.html" },
+    { "source": "/tuteur-profil.html",     "destination": "/tuteur-profil.html" },
+    { "source": "/reservation.html",       "destination": "/reservation.html" },
+    { "source": "/temoignages.html",       "destination": "/temoignages.html" },
+    { "source": "/contact.html",           "destination": "/contact.html" },
+    { "source": "/faq.html",               "destination": "/faq.html" },
+    { "source": "/comment-ca-marche.html", "destination": "/comment-ca-marche.html" },
+    { "source": "/a-propos.html",          "destination": "/a-propos.html" },
+    { "source": "/devenir-tuteur.html",    "destination": "/devenir-tuteur.html" },
+    { "source": "/connexion.html",         "destination": "/connexion.html" },
+    { "source": "/(.*)",                   "destination": "/index.html" }
   ]
 }
