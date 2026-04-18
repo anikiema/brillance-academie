@@ -12,10 +12,10 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --primary:        #E87B30;
-      --primary-dark:   #C85E15;
-      --primary-soft:   #FEE4CC;
-      --primary-softer: #FFF4EC;
+      --primary:        #7C3AED;
+      --primary-dark:   #6D28D9;
+      --primary-soft:   #EDE9FE;
+      --primary-softer: #F5F3FF;
       --success:        #10b981;
       --success-soft:   #d1fae5;
       --success-ink:    #065f46;
@@ -44,7 +44,7 @@
     .nav-ghost { font-size: 15px; font-weight: 500; color: var(--muted); }
     .nav-ghost:hover { color: var(--primary); }
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; white-space: nowrap; font-family: inherit; }
-    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(232,123,48,.30); }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(124,58,237,.30); }
     .btn-primary:hover { background: var(--primary-dark); }
     .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
     .btn-white:hover { background: var(--primary-softer); }
@@ -53,7 +53,7 @@
     .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
 
     /* ── HERO ─────────────────────────────────────────────────────── */
-    .hero { background: linear-gradient(140deg, #C85E15 0%, var(--primary) 55%, #F59E0B 100%); padding: 88px 24px 72px; text-align: center; }
+    .hero { background: linear-gradient(140deg, #6D28D9 0%, var(--primary) 55%, #8B5CF6 100%); padding: 88px 24px 72px; text-align: center; }
     .hero-inner { max-width: 720px; margin: 0 auto; }
     .hero-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.15); color: #fff; font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 999px; margin-bottom: 24px; }
     .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 800; color: #fff; line-height: 1.12; margin-bottom: 20px; }
@@ -83,7 +83,7 @@
     .tl-item { display: flex; gap: 16px; align-items: flex-start; position: relative; padding-bottom: 32px; }
     .tl-item:last-child { padding-bottom: 0; }
     .tl-line-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 40px; }
-    .tl-dot { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 10px rgba(232,123,48,.30); }
+    .tl-dot { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 10px rgba(124,58,237,.30); }
     .tl-connector { width: 2px; flex: 1; background: var(--primary-soft); margin-top: 8px; min-height: 32px; }
     .tl-item:last-child .tl-connector { display: none; }
     .tl-content { padding-top: 6px; }
@@ -97,7 +97,7 @@
     .section-title { font-size: clamp(22px, 3vw, 30px); font-weight: 800; color: var(--ink); margin-bottom: 40px; text-align: center; }
     .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
     .value-card { background: var(--card); border-radius: 14px; padding: 28px 20px; text-align: center; border: 1px solid var(--border); transition: box-shadow .2s, transform .2s; }
-    .value-card:hover { box-shadow: 0 6px 24px rgba(232,123,48,.12); transform: translateY(-3px); }
+    .value-card:hover { box-shadow: 0 6px 24px rgba(124,58,237,.12); transform: translateY(-3px); }
     .value-icon { font-size: 44px; margin-bottom: 14px; display: block; }
     .value-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
     .value-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
@@ -121,7 +121,7 @@
     .team-inner { max-width: 900px; margin: 0 auto; }
     .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
     .team-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; transition: box-shadow .2s, transform .2s; }
-    .team-card:hover { box-shadow: 0 8px 28px rgba(232,123,48,.10); transform: translateY(-3px); }
+    .team-card:hover { box-shadow: 0 8px 28px rgba(124,58,237,.10); transform: translateY(-3px); }
     .team-avatar { font-size: 56px; margin-bottom: 14px; display: block; }
     .team-name { font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
     .team-role { font-size: 13px; font-weight: 600; color: var(--primary); background: var(--primary-soft); padding: 3px 12px; border-radius: 999px; display: inline-block; margin-bottom: 14px; }

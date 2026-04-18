@@ -12,10 +12,10 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --primary:        #E87B30;
-      --primary-dark:   #C85E15;
-      --primary-soft:   #FEE4CC;
-      --primary-softer: #FFF4EC;
+      --primary:        #7C3AED;
+      --primary-dark:   #6D28D9;
+      --primary-soft:   #EDE9FE;
+      --primary-softer: #F5F3FF;
       --success:        #10b981;
       --success-soft:   #d1fae5;
       --warning:        #f59e0b;
@@ -51,7 +51,7 @@
 
     /* ── BUTTONS ──────────────────────────────────────────────────── */
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; white-space: nowrap; font-family: inherit; }
-    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(232,123,48,.30); }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(124,58,237,.30); }
     .btn-primary:hover { background: var(--primary-dark); }
     .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
     .btn-white:hover { background: var(--primary-softer); }
@@ -85,7 +85,7 @@
       break-inside: avoid; margin-bottom: 24px;
       transition: box-shadow .2s, transform .2s;
     }
-    .t-card:hover { box-shadow: 0 4px 16px rgba(232,123,48,.10); transform: translateY(-2px); }
+    .t-card:hover { box-shadow: 0 4px 16px rgba(124,58,237,.10); transform: translateY(-2px); }
 
     /* Accent top border — alternate colors */
     .t-card.accent-indigo { border-top: 3px solid var(--primary); }
@@ -108,7 +108,7 @@
     .featured-card {
       background: var(--card); border-radius: 20px; padding: 48px;
       display: grid; grid-template-columns: 1fr 260px; gap: 48px; align-items: center;
-      box-shadow: 0 8px 40px rgba(232,123,48,.10);
+      box-shadow: 0 8px 40px rgba(124,58,237,.10);
     }
     .featured-quote-icon { font-size: 64px; color: var(--primary-soft); font-family: Georgia, serif; font-weight: 900; line-height: 1; margin-bottom: 8px; }
     .featured-text { font-size: 18px; color: var(--body); line-height: 1.8; font-style: italic; margin-bottom: 0; }
@@ -128,7 +128,7 @@
       display: flex; gap: 16px; align-items: flex-start;
       transition: border-color .2s, box-shadow .2s;
     }
-    .result-card:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(232,123,48,.08); }
+    .result-card:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(124,58,237,.08); }
     .result-icon { font-size: 36px; flex-shrink: 0; }
     .result-subject { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
     .result-stat { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
