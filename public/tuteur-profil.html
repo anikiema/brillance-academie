@@ -337,7 +337,7 @@
 
         <div class="bio-section">
           <h3>À propos de Claire</h3>
-          <p>Spécialiste Anglais débutant et intermédiaire pour enfants de 7 à 14 ans. Passionnée par les méthodes ludiques et l'apprentissage par le jeu. Diplômée en Lettres Modernes (option Anglais), j'ai 5 ans d'expérience en formation à domicile et en ligne au Burkina Faso.</p>
+          <p>Spécialiste Anglais débutant et intermédiaire pour enfants de 7 à 14 ans. Passionnée par les méthodes ludiques et l'apprentissage par le jeu. Diplômée en Lettres Modernes (option Anglais), j'ai 5 ans d'expérience en formation à domicile et en ligne.</p>
         </div>
 
         <div class="tags-row">
@@ -612,7 +612,7 @@
       <div class="footer-top">
         <div>
           <div class="footer-logo">🔆 Brillance Académie</div>
-          <p class="footer-tagline">Des formateurs certifiés en Anglais &amp; Informatique pour les 7–17 ans, partout au Burkina Faso.</p>
+          <p class="footer-tagline">Des formateurs certifiés en Anglais &amp; Informatique pour les 7–17 ans, partout.</p>
           <div class="footer-payment">
             <span class="footer-pay-chip">🟠 Orange Money</span>
             <span class="footer-pay-chip">🔵 Moov Money</span>
@@ -650,7 +650,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2025 Brillance Académie · Burkina Faso</span>
+        <span>© 2025 Brillance Académie</span>
         <span>Tous droits réservés</span>
       </div>
     </div>
@@ -743,7 +743,7 @@
         document.querySelector('.rating-num').textContent = (t.rating || 5).toFixed(1);
         document.querySelector('.rating-meta:first-of-type').textContent = `${t.sessions || 0} séances réalisées`;
         const locationMeta = document.querySelectorAll('.rating-meta');
-        if (locationMeta[1]) locationMeta[1].textContent = `📍 ${t.ville || t.quartier || 'Burkina Faso'}`;
+        if (locationMeta[1]) locationMeta[1].textContent = `📍 ${t.ville || t.quartier || ''}`;
 
         // Level chips
         const levelChips = document.querySelector('.level-chips');
@@ -761,7 +761,7 @@
         const bioSection = document.querySelector('.bio-section');
         if (bioSection) {
           bioSection.querySelector('h3').textContent = `À propos de ${prenom}`;
-          bioSection.querySelector('p').textContent = t.bio || 'Formateur expérimenté en Anglais et Informatique au Burkina Faso.';
+          bioSection.querySelector('p').textContent = t.bio || 'Formateur expérimenté en Anglais et Informatique.';
         }
 
         // Tags row
