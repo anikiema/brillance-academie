@@ -13,10 +13,10 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --primary:        #1d6fe8;
-      --primary-dark:   #155ec8;
-      --primary-soft:   #dbeafe;
-      --primary-softer: #eff6ff;
+      --primary:        #E87B30;
+      --primary-dark:   #C85E15;
+      --primary-soft:   #FEE4CC;
+      --primary-softer: #FFF4EC;
       --success:        #10b981;
       --success-soft:   #d1fae5;
       --success-ink:    #065f46;
@@ -90,9 +90,9 @@
     }
     .btn-primary {
       background: var(--primary); color: #fff;
-      box-shadow: 0 2px 8px rgba(29,111,232,.30);
+      box-shadow: 0 2px 8px rgba(232,123,48,.30);
     }
-    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(29,111,232,.40); }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(232,123,48,.40); }
     .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
     .btn-white {
       background: #fff; color: var(--primary);
@@ -109,7 +109,7 @@
 
     /* ── HERO ─────────────────────────────────────────────────────── */
     .hero {
-      background: linear-gradient(140deg, #1557c0 0%, #1d6fe8 40%, #2a85f5 100%);
+      background: linear-gradient(140deg, #1557c0 0%, #E87B30 40%, #2a85f5 100%);
       padding: 56px 24px;
       text-align: center;
     }
@@ -234,7 +234,7 @@
     .subject-card.selected {
       border-color: var(--primary);
       background: var(--primary-soft);
-      box-shadow: 0 0 0 3px rgba(29,111,232,.12);
+      box-shadow: 0 0 0 3px rgba(232,123,48,.12);
     }
     .subject-card .emoji { font-size: 22px; }
     .subject-card .label { font-size: 12px; font-weight: 600; color: var(--ink); }
@@ -260,7 +260,7 @@
     .level-chip.selected {
       background: var(--primary); color: #fff;
       border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(29,111,232,.25);
+      box-shadow: 0 2px 8px rgba(232,123,48,.25);
     }
 
     /* ── TUTOR CARDS ──────────────────────────────────────────────── */
@@ -272,11 +272,11 @@
       border-radius: 14px; background: var(--card);
       cursor: pointer; transition: all 0.15s;
     }
-    .tutor-mini-card:hover { border-color: var(--primary); box-shadow: 0 2px 12px rgba(29,111,232,.10); }
+    .tutor-mini-card:hover { border-color: var(--primary); box-shadow: 0 2px 12px rgba(232,123,48,.10); }
     .tutor-mini-card.selected {
       border-color: var(--primary);
       background: var(--primary-softer);
-      box-shadow: 0 0 0 3px rgba(29,111,232,.12);
+      box-shadow: 0 0 0 3px rgba(232,123,48,.12);
     }
     .tutor-avatar { font-size: 36px; flex-shrink: 0; }
     .tutor-info { flex: 1; min-width: 0; }
@@ -334,7 +334,7 @@
     .date-btn:not(:disabled):hover { border-color: var(--primary); background: var(--primary-softer); }
     .date-btn.selected {
       background: var(--primary); border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(29,111,232,.25);
+      box-shadow: 0 2px 8px rgba(232,123,48,.25);
     }
     .date-btn.selected .date-day, .date-btn.selected .date-num { color: #fff; }
     .date-btn:disabled { opacity: 0.38; cursor: not-allowed; }
@@ -355,7 +355,7 @@
     .time-chip:not(:disabled):hover { border-color: var(--primary); color: var(--primary); }
     .time-chip.selected {
       background: var(--primary); color: #fff; border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(29,111,232,.25);
+      box-shadow: 0 2px 8px rgba(232,123,48,.25);
     }
     .time-chip:disabled { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
     .time-booked-note { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
@@ -373,7 +373,7 @@
     .payment-card:hover { border-color: var(--primary); background: var(--primary-softer); }
     .payment-card.selected {
       border-color: var(--primary); background: var(--primary-softer);
-      box-shadow: 0 0 0 3px rgba(29,111,232,.10);
+      box-shadow: 0 0 0 3px rgba(232,123,48,.10);
     }
     .payment-radio {
       width: 20px; height: 20px; border-radius: 50%;

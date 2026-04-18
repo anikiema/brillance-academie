@@ -12,10 +12,10 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --primary:        #1d6fe8;
-      --primary-dark:   #155ec8;
-      --primary-soft:   #dbeafe;
-      --primary-softer: #eff6ff;
+      --primary:        #E87B30;
+      --primary-dark:   #C85E15;
+      --primary-soft:   #FEE4CC;
+      --primary-softer: #FFF4EC;
       --success:        #10b981;
       --success-dark:   #059669;
       --success-soft:   #d1fae5;
@@ -57,8 +57,8 @@
     .nav-ghost { font-size: 15px; font-weight: 500; color: var(--muted); transition: color .15s; }
     .nav-ghost:hover { color: var(--primary); }
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; white-space: nowrap; font-family: inherit; }
-    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(29,111,232,.30); }
-    .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 16px rgba(29,111,232,.40); transform: translateY(-1px); }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(232,123,48,.30); }
+    .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 16px rgba(232,123,48,.40); transform: translateY(-1px); }
     .btn-white { background: #fff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.10); }
     .btn-white:hover { background: var(--primary-softer); transform: translateY(-1px); }
     .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
@@ -69,7 +69,7 @@
     /* ── HERO ─────────────────────────────────────────────────────── */
     .hero {
       position: relative;
-      background: linear-gradient(160deg, #1e3a8a 0%, #1d6fe8 45%, #3b82f6 100%);
+      background: linear-gradient(160deg, #7C2D12 0%, #E87B30 45%, #F59E0B 100%);
       padding: 80px 24px 72px;
       text-align: center;
       overflow: hidden;
@@ -80,7 +80,7 @@
     }
     .hero-orb-1 {
       width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(59,130,246,.4) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(245,158,11,.4) 0%, transparent 70%);
       top: -200px; right: -100px;
     }
     .hero-orb-2 {
@@ -105,7 +105,7 @@
       color: #fff; line-height: 1.1; margin-bottom: 18px;
       opacity: 0;
     }
-    .hero h1 em { font-style: normal; color: #a5f3fc; }
+    .hero h1 em { font-style: normal; color: #FCD34D; }
     .hero-sub {
       font-size: 18px; color: rgba(255,255,255,.82);
       margin-bottom: 48px; max-width: 560px;
@@ -174,7 +174,7 @@
     }
     .band-green  { background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
     .band-green::before  { background: var(--success); }
-    .band-indigo { background: linear-gradient(135deg, #eff6ff, #dbeafe); }
+    .band-indigo { background: linear-gradient(135deg, #FFF4EC, #FEE4CC); }
     .band-indigo::before { background: var(--primary); }
     .band-yellow { background: linear-gradient(135deg, #fffbeb, #fef3c7); }
     .band-yellow::before { background: var(--warning); }
@@ -190,7 +190,7 @@
       position: relative; z-index: 1;
     }
     .bubble-green  { background: #fff; border: 2px solid #a7f3d0; }
-    .bubble-indigo { background: #fff; border: 2px solid #93c5fd; }
+    .bubble-indigo { background: #fff; border: 2px solid #FDBA74; }
     .bubble-yellow { background: #fff; border: 2px solid #fde68a; }
     .bubble-pink   { background: #fff; border: 2px solid #fbcfe8; }
 
@@ -232,7 +232,7 @@
       transition: all .15s;
     }
     .topic-green  { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
-    .topic-indigo { background: #eff6ff; color: #155ec8; border: 1px solid #93c5fd; }
+    .topic-indigo { background: #FFF4EC; color: #C85E15; border: 1px solid #FDBA74; }
     .topic-yellow { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
     .topic-pink   { background: #fdf2f8; color: #831843; border: 1px solid #fbcfe8; }
     .topic-chip:hover { transform: scale(1.05); }
@@ -263,7 +263,7 @@
     /* ── LEVEL MATRIX ─────────────────────────────────────────────── */
     .matrix-section { background: var(--primary-softer); padding: 80px 24px 96px; }
     .matrix-inner { max-width: 1100px; margin: 0 auto; }
-    .matrix-wrap { background: var(--card); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 24px rgba(29,111,232,.07); }
+    .matrix-wrap { background: var(--card); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 24px rgba(232,123,48,.07); }
     .matrix-table { width: 100%; border-collapse: collapse; }
     .matrix-table th {
       padding: 14px 12px; font-size: 12px; font-weight: 700;
@@ -291,11 +291,11 @@
       padding: 2px 7px; border-radius: 4px;
     }
     .cycle-prim { background: #d1fae5; color: #065f46; }
-    .cycle-col  { background: #dbeafe; color: #155ec8; }
+    .cycle-col  { background: #FEE4CC; color: #C85E15; }
     /* availability dot */
     .dot { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 8px; font-size: 14px; }
     .dot-yes-green  { background: #d1fae5; }
-    .dot-yes-indigo { background: #dbeafe; }
+    .dot-yes-indigo { background: #FEE4CC; }
     .dot-yes-yellow { background: #fef3c7; }
     .dot-yes-pink   { background: #fce7f3; }
     .dot-no  { color: var(--border); font-size: 10px; }
@@ -306,7 +306,7 @@
     /* ── CTA BANNER ───────────────────────────────────────────────── */
     .cta-section {
       position: relative;
-      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #3b82f6 100%);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #F59E0B 100%);
       padding: 88px 24px;
       text-align: center;
       overflow: hidden;
@@ -385,8 +385,8 @@
     .hero {
       background: linear-gradient(
         -45deg,
-        #0c2461, #1a3a8a, #1d6fe8, #3b82f6,
-        #1558c8, #155ec8, #1d4ed8, #1e3a8a
+        #431407, #7C2D12, #C85E15, #E87B30,
+        #D97706, #F59E0B, #EA580C, #7C2D12
       ) !important;
       background-size: 400% 400% !important;
       animation: aurora 16s ease-in-out infinite;
@@ -400,8 +400,8 @@
     .hero h1 {
       background: linear-gradient(
         90deg,
-        #fff 0%, #bfdbfe 18%, #93c5fd 36%,
-        #a5f3fc 54%, #fbcfe8 72%, #fff 90%
+        #fff 0%, #FED7AA 18%, #FDBA74 36%,
+        #FCD34D 54%, #FDE68A 72%, #fff 90%
       );
       background-size: 300% auto;
       -webkit-background-clip: text;
@@ -471,13 +471,13 @@
 
     /* 7 ▸ Card accent glow on hover (per color) ─────────────────── */
     .subject-card[data-accent="green"]:hover  { box-shadow: 0 20px 56px rgba(16,185,129,.18),  0 0 0 1.5px rgba(16,185,129,.20); }
-    .subject-card[data-accent="indigo"]:hover { box-shadow: 0 20px 56px rgba(29,111,232,.18),   0 0 0 1.5px rgba(29,111,232,.20); }
+    .subject-card[data-accent="indigo"]:hover { box-shadow: 0 20px 56px rgba(232,123,48,.18),   0 0 0 1.5px rgba(232,123,48,.20); }
     .subject-card[data-accent="yellow"]:hover { box-shadow: 0 20px 56px rgba(245,158,11,.16),  0 0 0 1.5px rgba(245,158,11,.20); }
     .subject-card[data-accent="pink"]:hover   { box-shadow: 0 20px 56px rgba(236,72,153,.16),  0 0 0 1.5px rgba(236,72,153,.20); }
 
     /* 8 ▸ Gradient stat numbers ─────────────────────────────────── */
     .stat-num {
-      background: linear-gradient(135deg, #111827 20%, #1d6fe8 110%);
+      background: linear-gradient(135deg, #111827 20%, #E87B30 110%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -496,22 +496,22 @@
       content: '';
       position: absolute; inset: 0;
       background: linear-gradient(
-        90deg, transparent 0%, rgba(29,111,232,.15) 50%, transparent 100%
+        90deg, transparent 0%, rgba(232,123,48,.15) 50%, transparent 100%
       );
       animation: shimmer-btn 2.4s ease-in-out infinite;
     }
 
     /* 10 ▸ Glowing pulse on primary button ──────────────────────── */
     @keyframes glow-pulse {
-      0%,100% { box-shadow: 0 2px 8px rgba(29,111,232,.32); }
-      50%      { box-shadow: 0 4px 28px rgba(59,130,246,.70); }
+      0%,100% { box-shadow: 0 2px 8px rgba(232,123,48,.32); }
+      50%      { box-shadow: 0 4px 28px rgba(245,158,11,.70); }
     }
     .nav .btn-primary { animation: glow-pulse 2.8s ease-in-out infinite; }
     .cta-section .btn-white { animation: shimmer-btn 2.4s ease-in-out infinite; }
 
     /* 11 ▸ Matrix table row shimmer on hover ────────────────────── */
     .matrix-table tbody tr:hover td {
-      background: linear-gradient(90deg, var(--primary-softer), #dbeafe55, var(--primary-softer)) !important;
+      background: linear-gradient(90deg, var(--primary-softer), #FEE4CC55, var(--primary-softer)) !important;
     }
 
     /* 12 ▸ Topic chip shimmer on hover ──────────────────────────── */
@@ -726,13 +726,14 @@
               <span class="level-tag">7–9 ans</span>
               <span class="level-tag">10–12 ans</span>
             </div>
-            <p class="subject-desc">Premiers pas sur ordinateur : clavier, souris, Internet sécurisé, fichiers et dossiers. Créer son premier dessin numérique et explorer les outils de base.</p>
+            <p class="subject-desc">Premiers pas sur ordinateur : maîtriser la souris (clic, déplacement), la frappe au clavier, Internet sécurisé, fichiers et dossiers. Créer son premier dessin numérique et s'initier aux composants matériels de base.</p>
             <div class="topic-row">
-              <span class="topic-chip topic-green">Clavier</span>
+              <span class="topic-chip topic-green">Souris &amp; clic</span>
+              <span class="topic-chip topic-green">Frappe au clavier</span>
+              <span class="topic-chip topic-green">Art numérique</span>
               <span class="topic-chip topic-green">Internet sécurisé</span>
-              <span class="topic-chip topic-green">Fichiers</span>
-              <span class="topic-chip topic-green">Dessin numérique</span>
-              <span class="topic-chip topic-green">Outils de base</span>
+              <span class="topic-chip topic-green">Fichiers &amp; dossiers</span>
+              <span class="topic-chip topic-green">Matériel informatique</span>
             </div>
           </div>
           <div class="card-footer">
@@ -757,11 +758,12 @@
               <span class="level-tag">10–12 ans</span>
               <span class="level-tag">13–15 ans</span>
             </div>
-            <p class="subject-desc">Créer des jeux, des animations et des histoires interactives avec Scratch. Apprendre les bases de la programmation par blocs de façon ludique et créative.</p>
+            <p class="subject-desc">Créer des jeux, des animations et des histoires interactives avec Scratch. Apprendre les bases de la programmation par blocs : boucles, conditions et événements. Le codage comme langage pour contrôler l'ordinateur — dès 7 ans, par le jeu et la créativité.</p>
             <div class="topic-row">
               <span class="topic-chip topic-pink">Blocs de code</span>
               <span class="topic-chip topic-pink">Animations</span>
-              <span class="topic-chip topic-pink">Jeux</span>
+              <span class="topic-chip topic-pink">Jeux interactifs</span>
+              <span class="topic-chip topic-pink">Histoires animées</span>
               <span class="topic-chip topic-pink">Boucles</span>
               <span class="topic-chip topic-pink">Conditions</span>
             </div>
@@ -787,12 +789,13 @@
               <span class="level-tag">13–15 ans</span>
               <span class="level-tag">16–17 ans</span>
             </div>
-            <p class="subject-desc">Initiation au langage Python, à la logique algorithmique et aux structures de données. Créer des scripts, résoudre des problèmes et développer une pensée computationnelle.</p>
+            <p class="subject-desc">Initiation au langage Python, à la logique algorithmique et aux structures de données. Développer une pensée computationnelle, créer des scripts et s'initier aux bases du développement web (HTML/JavaScript) pour les plus avancés.</p>
             <div class="topic-row">
-              <span class="topic-chip topic-indigo">Variables</span>
-              <span class="topic-chip topic-indigo">Fonctions</span>
-              <span class="topic-chip topic-indigo">Listes</span>
+              <span class="topic-chip topic-indigo">Variables &amp; fonctions</span>
+              <span class="topic-chip topic-indigo">Listes &amp; boucles</span>
               <span class="topic-chip topic-indigo">Algorithmes</span>
+              <span class="topic-chip topic-indigo">HTML &amp; JavaScript</span>
+              <span class="topic-chip topic-indigo">Cybersécurité intro</span>
               <span class="topic-chip topic-indigo">Projets</span>
             </div>
           </div>
@@ -818,13 +821,14 @@
               <span class="level-tag">13–15 ans</span>
               <span class="level-tag">16–17 ans</span>
             </div>
-            <p class="subject-desc">Maîtriser Word pour rédiger des documents professionnels et Excel pour créer des tableaux et des graphiques. Compétences indispensables pour les études et la vie active.</p>
+            <p class="subject-desc">Maîtriser les outils du quotidien scolaire et professionnel : Word/Docs pour rédiger, PowerPoint/Slides pour présenter, Excel pour les formules et tableaux. Apprendre aussi la recherche web efficace et l'organisation de documents numériques.</p>
             <div class="topic-row">
-              <span class="topic-chip topic-yellow">Word</span>
-              <span class="topic-chip topic-yellow">Excel</span>
-              <span class="topic-chip topic-yellow">Tableaux</span>
-              <span class="topic-chip topic-yellow">Formules</span>
+              <span class="topic-chip topic-yellow">Word &amp; Docs</span>
+              <span class="topic-chip topic-yellow">Excel &amp; tableaux</span>
               <span class="topic-chip topic-yellow">Présentations</span>
+              <span class="topic-chip topic-yellow">Formules</span>
+              <span class="topic-chip topic-yellow">Recherche web</span>
+              <span class="topic-chip topic-yellow">Organisation fichiers</span>
             </div>
           </div>
           <div class="card-footer">
@@ -849,13 +853,14 @@
               <span class="level-tag">13–15 ans</span>
               <span class="level-tag">16–17 ans</span>
             </div>
-            <p class="subject-desc">Comprendre le monde numérique : sécurité en ligne, réseaux sociaux responsables, intelligence artificielle, données personnelles et citoyenneté numérique.</p>
+            <p class="subject-desc">Comprendre le monde numérique : sécurité en ligne, e-mails et étiquette numérique, identifier le phishing et créer des mots de passe sécurisés. Réseaux sociaux responsables, empreinte numérique, intelligence artificielle et citoyenneté en ligne.</p>
             <div class="topic-row">
               <span class="topic-chip topic-green">Sécurité en ligne</span>
-              <span class="topic-chip topic-green">Réseaux sociaux</span>
-              <span class="topic-chip topic-green">IA &amp; données</span>
+              <span class="topic-chip topic-green">Phishing &amp; mots de passe</span>
+              <span class="topic-chip topic-green">Email &amp; étiquette</span>
+              <span class="topic-chip topic-green">Empreinte numérique</span>
+              <span class="topic-chip topic-green">IA &amp; outils numériques</span>
               <span class="topic-chip topic-green">E-citoyenneté</span>
-              <span class="topic-chip topic-green">Fake news</span>
             </div>
           </div>
           <div class="card-footer">
@@ -1023,7 +1028,7 @@
     };
     const spotlightColorMap = {
       green:  'rgba(16,185,129,.10)',
-      indigo: 'rgba(29,111,232,.10)',
+      indigo: 'rgba(232,123,48,.10)',
       yellow: 'rgba(245,158,11,.10)',
       pink:   'rgba(236,72,153,.10)'
     };
@@ -1157,7 +1162,7 @@
       const lift = isUnavail ? -3 : -7;
       const shadow = isUnavail
         ? '0 8px 24px rgba(0,0,0,0.09)'
-        : '0 20px 56px rgba(29,111,232,0.16)';
+        : '0 20px 56px rgba(232,123,48,0.16)';
 
       card.addEventListener('mouseenter', () => {
         animate(card, { y: lift }, { type: 'spring', stiffness: 380, damping: 26, mass: 0.8 });
